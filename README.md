@@ -49,17 +49,27 @@ Necesitas **R** (≥ 4.1) y estos paquetes:
 install.packages(c("data.table", "ggplot2", "scales"))
 ```
 
-Luego, desde la carpeta del proyecto:
+Hay dos formas equivalentes de trabajar el lab:
+
+**a) Script de R** (para ejecutar por bloques en clase):
 
 ```r
 source("R/lab1-distribucion-ingreso.R")
 ```
 
-El script carga `datos/geih_pobreza_2019_2021.rds`, imprime las tablas en la consola,
-muestra las gráficas y las guarda en `figuras/`. Corre en pocos segundos.
-
 > En **Positron / RStudio**: abre `R/lab1-distribucion-ingreso.R` y ejecútalo por
 > secciones (los bloques `# ===` separan cada parte) para ir mirando los datos en clase.
+
+**b) Cuaderno Quarto** (mismo contenido, con explicaciones y salida en HTML):
+
+```bash
+quarto render lab1-distribucion-ingreso.qmd
+```
+
+Abre `lab1-distribucion-ingreso.html` (ya incluido en el repo) para leer el lab con
+prosa, tablas y gráficas, sin necesidad de correr nada.
+
+Ambos cargan `datos/geih_pobreza_2019_2021.rds` y corren en pocos segundos.
 
 ---
 

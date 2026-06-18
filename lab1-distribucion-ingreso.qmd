@@ -1,0 +1,242 @@
+---
+title: "Lab 1 — La distribución del ingreso en Colombia"
+subtitle: "Una foto antes y después de la pandemia (GEIH–DANE, 2019 vs 2021)"
+author: "Economía del Desarrollo (06230) · Universidad Icesi"
+lang: es
+date: today
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-title: "Contenido"
+    number-sections: true
+    embed-resources: true
+    fig-width: 8
+    fig-height: 5
+    df-print: kable
+execute:
+  warning: false
+  message: false
+---
+
+## De qué se trata
+
+Vamos a usar las encuestas de hogares de Colombia (**GEIH–DANE**) de **2019** y
+**2021** para mirar, con datos reales, dos cosas que vimos en las lecturas:
+
+1. **La distribución del ingreso** —no solo el promedio—, en la línea de
+   **Sala-i-Martin (2006)**: el promedio esconde quién gana qué.
+2. **Quién es pobre** (edad, género, nivel educativo), replicando el perfil del pobre
+   del **Banco Mundial (2020)**, *Poverty and Shared Prosperity*.
+
+La pregunta de fondo: **¿cómo cambió la distribución del ingreso colombiano entre
+2019 (antes) y 2021 (después) del choque de la pandemia?**
+
+::: {.callout-warning}
+## Esto es descriptivo, no causal
+Es una **foto** antes/después. Entre 2019 y 2021 cambió la pandemia, pero también
+muchas otras cosas (precios, política social, migración…). No hay grupo de
+comparación ni contrafactual, así que **no podemos atribuir los cambios a la
+pandemia**. Esa frontera —de la descripción a la causalidad— es el hilo de la
+Unidad 1, y es justo lo que debe atacar el **Escéptico**.
+:::
+
+## Preparación
+
+```{r setup}
+library(data.table)   # manejo de datos
+library(ggplot2)      # gráficas
+library(scales)       # formato de ejes ($ y %)
+
+# Subset de enseñanza ya listo (~1.47 M personas, 2 años).
+geih <- as.data.table(readRDS("datos/geih_pobreza_2019_2021.rds"))
+geih[, anio := factor(anio)]
+```
+
+El **factor de expansión** (`fex`) es clave: cada fila "representa" a `fex` personas
+del país, así que **toda cifra nacional se pondera por `fex`**.
+
+## Una mirada a los datos
+
+```{r mirada}
+dim(geih)             # filas (personas) x columnas
+head(geih)            # primeras filas
+
+# ¿A cuántos colombianos representa cada año?
+geih[, .(personas_millones = round(sum(fex) / 1e6, 1)), by = anio]
+```
+
+## Ingreso por quintil {#sec-quintiles}
+
+> **Lección de Sala-i-Martin:** mirar la *distribución*, no solo la media.
+
+Un **quintil ponderado** ordena a las personas por ingreso y las parte en 5 grupos de
+igual tamaño poblacional (20 % cada uno).
+
+```{r quintiles}
+quintil_ponderado <- function(x, w) {
+  o  <- order(x)
+  cw <- cumsum(w[o]) / sum(w)                 # proporción de población acumulada
+  q  <- cut(cw, breaks = c(-Inf, .2, .4, .6, .8, Inf), labels = paste0("Q", 1:5))
+  out <- character(length(x)); out[o] <- as.character(q)
+  factor(out, levels = paste0("Q", 1:5))
+}
+
+# Quintil DENTRO de cada año.
+geih[, quintil := quintil_ponderado(ingpcug, fex), by = anio]
+
+# Ingreso promedio y participación en el ingreso total, por quintil y año.
+# OJO: ingreso en pesos CORRIENTES (sin deflactar): los cocientes (razón Q5/Q1,
+# participaciones) son comparables entre años; los niveles, con cautela.
+quintiles <- geih[, .(
+  ingreso_medio = weighted.mean(ingpcug, fex),
+  ingreso_total = sum(ingpcug * fex)
+), by = .(anio, quintil)]
+quintiles[, participacion := ingreso_total / sum(ingreso_total), by = anio]
+quintiles[order(anio, quintil)]
+```
+
+```{r g-quintil-ingreso}
+#| label: fig-quintil-ingreso
+#| fig-cap: "Ingreso per cápita promedio por quintil, 2019 vs 2021."
+ggplot(quintiles, aes(quintil, ingreso_medio, fill = anio)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = label_dollar(prefix = "$", big.mark = ".", decimal.mark = ",")) +
+  labs(x = "Quintil de ingreso (Q1 = más pobre)", y = "Ingreso mensual",
+       fill = "Año", caption = "Fuente: DANE, GEIH (pobreza monetaria).") +
+  theme_minimal(base_size = 13)
+```
+
+```{r g-quintil-part}
+#| label: fig-quintil-part
+#| fig-cap: "Participación en el ingreso total por quintil. El Q5 concentra la mayor parte."
+ggplot(quintiles, aes(quintil, participacion, fill = anio)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = label_percent()) +
+  labs(x = "Quintil de ingreso", y = "% del ingreso nacional",
+       fill = "Año", caption = "Fuente: DANE, GEIH (pobreza monetaria).") +
+  theme_minimal(base_size = 13)
+```
+
+La **razón Q5/Q1** es una medida simple de desigualdad: ¿cuántas veces gana el quintil
+más rico frente al más pobre?
+
+```{r razon-q5q1}
+razon <- dcast(quintiles, anio ~ quintil, value.var = "ingreso_medio")
+razon[, brecha_Q5_Q1 := round(Q5 / Q1, 1)]
+razon[, .(anio, brecha_Q5_Q1)]
+```
+
+## Pobreza 2019 vs 2021 {#sec-pobreza}
+
+Una persona es **pobre** si el ingreso per cápita de su hogar cae bajo la **línea de
+pobreza** oficial del DANE (específica de cada año).
+
+```{r pobreza}
+pobreza <- geih[, .(
+  pobreza_pct         = round(weighted.mean(pobre, fex) * 100, 1),
+  pobreza_extrema_pct = round(weighted.mean(indigente, fex) * 100, 1)
+), by = anio][order(anio)]
+pobreza
+```
+
+```{r g-pobreza}
+#| label: fig-pobreza
+#| fig-cap: "Tasa de pobreza monetaria y extrema, antes/después de la pandemia."
+pob_long <- melt(pobreza, id.vars = "anio",
+                 variable.name = "indicador", value.name = "pct")
+pob_long[, indicador := factor(indicador,
+         labels = c("Pobreza monetaria", "Pobreza extrema"))]
+ggplot(pob_long, aes(anio, pct, fill = anio)) +
+  geom_col(width = .6) +
+  geom_text(aes(label = paste0(pct, "%")), vjust = -0.3, size = 4) +
+  facet_wrap(~ indicador, scales = "free_y") +
+  labs(x = NULL, y = "% de la población",
+       caption = "Fuente: DANE, GEIH (pobreza monetaria).") +
+  theme_minimal(base_size = 13) + theme(legend.position = "none")
+```
+
+La pobreza monetaria pasó de **35,7 %** a **39,3 %**, y la extrema de **9,6 %** a
+**12,2 %**: la foto de 2021 muestra más personas bajo la línea.
+
+## ¿Quién es pobre? El perfil del pobre {#sec-perfil}
+
+> **Lección del Banco Mundial (Figura O.5):** el pobre tiene un rostro —es joven y de
+> baja escolaridad—. Veámoslo en Colombia.
+
+Mostramos la **composición** de la población pobre: de cada 100 pobres, ¿cuántos hay
+en cada grupo?
+
+```{r perfil-setup}
+# Grupos de edad estilo Banco Mundial.
+geih[, grupo_edad := cut(edad,
+     breaks = c(-Inf, 14, 24, 34, 44, 54, 64, Inf),
+     labels = c("0-14","15-24","25-34","35-44","45-54","55-64","65+"))]
+
+# Composición (%) de los POBRES según una variable de grupo.
+perfil_pobres <- function(dat, var) {
+  d <- dat[pobre == 1 & !is.na(get(var))]
+  d <- d[, .(p = sum(fex)), by = c("anio", var)]
+  d[, pct := p / sum(p) * 100, by = anio]
+  setnames(d, var, "categoria")
+  d[, dimension := var][]
+}
+
+perf_edad <- perfil_pobres(geih, "grupo_edad")
+perf_educ <- perfil_pobres(geih[edad >= 15], "educ")  # educación: adultos 15+
+```
+
+```{r g-perfil-edad}
+#| label: fig-perfil-edad
+#| fig-cap: "Composición de los pobres por grupo de edad."
+ggplot(perf_edad, aes(categoria, pct, fill = anio)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  labs(x = "Grupo de edad", y = "% de los pobres", fill = "Año",
+       caption = "Fuente: DANE, GEIH (pobreza monetaria).") +
+  theme_minimal(base_size = 13)
+```
+
+```{r g-perfil-educ}
+#| label: fig-perfil-educ
+#| fig-cap: "Composición de los pobres por nivel educativo (15+ años)."
+ggplot(perf_educ, aes(categoria, pct, fill = anio)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  labs(x = "Máximo nivel educativo", y = "% de los pobres", fill = "Año",
+       caption = "Fuente: DANE, GEIH (pobreza monetaria).") +
+  theme_minimal(base_size = 13)
+```
+
+Como complemento, la **tasa** de pobreza por nivel educativo (¿qué grupo tiene más
+riesgo de ser pobre?):
+
+```{r tasa-educ}
+geih[edad >= 15 & !is.na(educ),
+  .(tasa_pobreza = round(weighted.mean(pobre, fex) * 100, 1)),
+  by = .(anio, educ)][order(educ, anio)]
+```
+
+## Síntesis y discusión
+
+- La pobreza monetaria **subió de 35,7 % a 39,3 %** entre 2019 y 2021.
+- El golpe no fue parejo: revise qué quintil cambió más y cómo se movió la brecha
+  Q5/Q1 (@sec-quintiles).
+- El rostro del pobre sigue siendo **joven y de baja escolaridad** (@sec-perfil), igual
+  que en el informe del Banco Mundial.
+
+::: {.callout-note}
+## Para discutir en clase
+1. **Escéptico:** ¿por qué *no* podemos llamar a esto "el efecto de la pandemia"?
+   ¿Qué necesitaríamos —un grupo de comparación, una fuente de variación exógena— para
+   acercarnos a un efecto causal?
+2. ¿La desigualdad (brecha Q5/Q1) subió o bajó? ¿Qué le falta a esa medida?
+3. Comparando con la Figura O.5 del Banco Mundial, ¿el perfil del pobre colombiano se
+   parece al patrón global?
+4. El ingreso está en pesos corrientes. ¿Cómo cambiaría la lectura si lo deflactáramos?
+:::
+
+---
+
+*Datos: DANE — Medición de Pobreza Monetaria y Desigualdad (GEIH), microdatos
+anonimizados, cat. 684 (2019) y 733 (2021). «Fuente: DANE, www.dane.gov.co».*
