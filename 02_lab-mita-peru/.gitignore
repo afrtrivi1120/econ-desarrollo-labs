@@ -1,0 +1,18 @@
+# Paquete de réplica crudo de Dell (licencia no declarada; no se redistribuye)
+datos/_crudos/
+*.zip
+*.dta
+
+# Artefactos de R y Quarto
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+.quarto/
+lab2-rdd-mita_files/
+
+# Sistema
+.DS_Store
+
+# Dispositivo PDF por defecto de Rscript
+Rplots.pdf

@@ -1,0 +1,378 @@
+---
+title: "Lab 2 — La mita minera del Perú"
+subtitle: "Una frontera que todavía se nota (réplica de Dell, 2010)"
+author: "Economía del Desarrollo (06230) · Universidad Icesi"
+lang: es
+date: today
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-title: "Contenido"
+    number-sections: true
+    embed-resources: true
+    fig-width: 8
+    fig-height: 5
+    df-print: kable
+execute:
+  warning: false
+  message: false
+---
+
+## De qué se trata
+
+Entre **1573 y 1812**, la Corona española obligó a los pueblos que quedaban **dentro**
+de un área definida por decreto a enviar **la séptima parte de sus hombres adultos** a
+trabajar en las minas de **Potosí** y **Huancavelica**. Los pueblos que quedaban
+**justo afuera** de esa línea quedaron exentos.
+
+La mita se abolió en 1812. La pregunta de Melissa Dell es brutal en su simplicidad:
+
+> **Casi doscientos años después, ¿todavía se nota esa frontera?**
+
+Vamos a replicar su respuesta con los datos originales del paper: hogares de la
+**ENAHO 2001** del Perú, a menos de 100 km de la frontera de la mita.
+
+::: {.callout-warning}
+## El supuesto que sostiene todo: continuidad en la frontera
+A diferencia del Lab 1, aquí **sí** vamos a hacer una afirmación causal. Pero descansa
+entera en un supuesto: que todo lo que determina el consumo —geografía, cultura,
+historia previa— varía de forma **suave** al cruzar el límite, y que **lo único que
+salta** es haber estado sujeto a la mita.
+
+Ese supuesto **no se puede probar**. Solo se puede atacar: si algo más salta en el
+mismo lugar (un límite étnico, un piso ecológico, la frontera de las haciendas), el
+diseño se cae. Esa es la tarea del **Escéptico**, y en @sec-balance le damos munición
+y también contraargumentos.
+:::
+
+## Preparación
+
+```{r setup}
+library(data.table)   # manejo de datos
+library(ggplot2)      # gráficas
+library(scales)       # formato de ejes (% y decimales)
+library(fixest)       # regresiones con errores estándar agrupados
+library(rdrobust)     # RDD local lineal con ancho de banda óptimo
+
+hogares   <- as.data.table(readRDS("datos/dell_mita_hogares.rds"))
+distritos <- as.data.table(readRDS("datos/dell_mita_distritos.rds"))
+```
+
+Dos archivos: **hogares** (1.478 hogares de la ENAHO 2001, la muestra de la Tabla II
+del paper) y **distritos** (299 distritos, para el mapa y para el balance histórico).
+
+## Una mirada a los datos
+
+```{r mirada}
+dim(hogares)
+hogares[, .(hogares = .N, distritos = uniqueN(distrito)), by = mita][order(mita)]
+```
+
+Las tres variables que importan:
+
+- `mita` — el **tratamiento**: 1 si el distrito estuvo sujeto al reclutamiento forzoso.
+- `lhhequiv` — el **resultado**: log del consumo del hogar por adulto equivalente.
+- `dist_frontera` — la **variable de asignación**: distancia a la frontera en km, con
+  signo. Negativa fuera de la mita, positiva dentro.
+
+```{r asignacion}
+hogares[, .(min = min(dist_frontera), max = max(dist_frontera)), by = mita][order(mita)]
+```
+
+El tratamiento cambia **de golpe** en `dist_frontera = 0`. Todo lo demás debería
+cambiar de forma suave. Ese contraste es todo el diseño.
+
+## El mapa {#sec-mapa}
+
+> **La idea del RDD geográfico:** no comparamos el Perú de la mita con el Perú sin
+> mita. Comparamos vecinos separados por una línea trazada en un despacho colonial.
+
+```{r g-mapa}
+#| label: fig-mapa
+#| fig-cap: "Distritos del sur del Perú. Los puntos grandes tocan la frontera de la mita."
+distritos[, grupo := factor(mita, levels = c(0, 1),
+                            labels = c("Fuera de la mita", "Dentro de la mita"))]
+
+ggplot(distritos, aes(lon, lat, color = grupo)) +
+  geom_point(aes(size = frontera == 1), alpha = .8) +
+  scale_size_manual(values = c(`FALSE` = 1.3, `TRUE` = 2.6), guide = "none") +
+  scale_color_manual(values = c("Fuera de la mita" = "#2c7fb8",
+                                "Dentro de la mita" = "#d95f0e")) +
+  coord_quickmap() +
+  labs(x = "Longitud", y = "Latitud", color = NULL,
+       caption = "Fuente: datos de réplica de Dell (2010).") +
+  theme_minimal(base_size = 13)
+```
+
+La zona de mita (naranja) es una banda que corre de noroeste a sureste, hacia Potosí.
+Los distritos azules del norte y del sur quedaron fuera. **La comparación válida ocurre
+solo donde los dos colores se tocan.**
+
+## El salto en el consumo {#sec-salto}
+
+Promediamos el consumo en bins de 10 km a cada lado y buscamos un **escalón** en cero.
+Esta es *la* imagen que hay que saber leer en un RDD.
+
+```{r g-salto}
+#| label: fig-salto
+#| fig-cap: "Consumo promedio por bin de 10 km. El tamaño del punto es el número de hogares."
+bins <- copy(hogares)
+bins[, bin := floor(dist_frontera / 10) * 10 + 5]
+resumen <- bins[, .(consumo = mean(lhhequiv), n = .N), by = .(bin, mita)]
+
+ggplot(resumen, aes(bin, consumo)) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_point(aes(size = n, color = factor(mita)), alpha = .8) +
+  geom_smooth(data = hogares, aes(dist_frontera, lhhequiv, color = factor(mita)),
+              method = "lm", formula = y ~ x, se = TRUE) +
+  scale_color_manual(values = c("0" = "#2c7fb8", "1" = "#d95f0e"),
+                     labels = c("Fuera de la mita", "Dentro de la mita")) +
+  scale_size_continuous(range = c(1.5, 6), guide = "none") +
+  labs(x = "Distancia a la frontera (km, negativa = fuera de la mita)",
+       y = "Log del consumo por adulto equivalente", color = NULL,
+       caption = "Fuente: ENAHO 2001, datos de réplica de Dell (2010).") +
+  theme_minimal(base_size = 13)
+```
+
+Hay un escalón hacia abajo al entrar a la zona de mita. Ahora hay que medirlo.
+
+## La estimación {#sec-estimacion}
+
+Dell controla la geografía con un **polinomio cúbico en longitud y latitud**, más
+elevación, pendiente y composición del hogar. Y agrega **efectos fijos de segmento de
+frontera** (`bfe4_*`): la frontera se parte en cuatro tramos, de modo que la comparación
+sea *a lo largo* de la línea y no entre regiones distintas del país.
+
+Los errores estándar se agrupan por **distrito**: los hogares de un mismo distrito
+comparten geografía y tratamiento.
+
+```{r estimacion}
+CUBICA    <- "x + y + I(x^2) + I(y^2) + I(x*y) + I(x^3) + I(y^3) + I(x^2*y) + I(x*y^2)"
+CONTROLES <- "elv_sh + slope + infants + children + adults + bfe4_1 + bfe4_2 + bfe4_3"
+
+m_principal <- feols(
+  as.formula(paste("lhhequiv ~ mita +", CUBICA, "+", CONTROLES)),
+  data = hogares[d_bnd < 100], cluster = ~distrito)
+
+coeftable(m_principal)["mita", ]
+```
+
+Como el resultado está en logaritmos, el coeficiente se traduce a porcentaje con
+`exp(b) - 1`:
+
+```{r efecto-pct}
+b <- coef(m_principal)["mita"]
+data.table(coeficiente = round(b, 3),
+           efecto_pct  = round((exp(b) - 1) * 100, 1),
+           hogares     = nobs(m_principal),
+           distritos   = uniqueN(hogares[d_bnd < 100]$distrito))
+```
+
+**Un hogar de un distrito que estuvo sujeto a la mita consume cerca de un 25 % menos
+que su vecino del otro lado de la frontera**, casi doscientos años después de abolida
+la institución. Es exactamente el número del paper.
+
+Note que el coeficiente **no es estadísticamente significativo**. Eso también está en
+Dell: con 71 distritos y un polinomio bidimensional flexible, la estimación es
+imprecisa. El paper lo dice explícitamente.
+
+## ¿Aguanta el resultado? {#sec-robustez}
+
+> **La lección incómoda:** un RDD no es un botón. Usted elige cómo controlar la
+> geografía y qué tan cerca de la frontera mirar. Si el resultado depende de esas
+> elecciones, no es un resultado.
+
+Dell reporta tres formas de controlar la geografía × tres ventanas. Replicamos la
+rejilla completa:
+
+```{r rejilla}
+especificaciones <- list(
+  "Cúbica en lat-lon"        = CUBICA,
+  "Cúbica en dist. Potosí"   = "dpot + I(dpot^2) + I(dpot^3)",
+  "Cúbica en dist. frontera" = "d_bnd + I(d_bnd^2) + I(d_bnd^3)")
+
+rejilla <- rbindlist(lapply(names(especificaciones), function(nom) {
+  rbindlist(lapply(c(100, 75, 50), function(h) {
+    m <- feols(as.formula(paste("lhhequiv ~ mita +", especificaciones[[nom]],
+                                "+", CONTROLES)),
+               data = hogares[d_bnd < h], cluster = ~distrito)
+    ct <- coeftable(m)["mita", ]
+    data.table(especificacion = nom, ventana = h,
+               coef = round(ct[1], 3), ee = round(ct[2], 3),
+               p = round(ct[4], 3), n = nobs(m))
+  }))
+}))
+rejilla
+```
+
+```{r g-especificaciones}
+#| label: fig-especificaciones
+#| fig-cap: "Coeficiente de la mita e intervalo al 95 %, por especificación y ventana."
+ggplot(rejilla, aes(factor(ventana), coef, color = especificacion)) +
+  geom_hline(yintercept = 0, color = "grey50") +
+  geom_pointrange(aes(ymin = coef - 1.96 * ee, ymax = coef + 1.96 * ee),
+                  position = position_dodge(width = .5)) +
+  labs(x = "Ventana alrededor de la frontera (km)",
+       y = "Efecto sobre el log del consumo", color = NULL,
+       caption = "Fuente: ENAHO 2001, datos de réplica de Dell (2010).") +
+  theme_minimal(base_size = 13) + theme(legend.position = "bottom")
+```
+
+Los nueve coeficientes caen entre **−0,34 y −0,22** (es decir, entre −29 % y −20 %). El
+efecto no depende de la especificación. Y con las dos cúbicas unidimensionales —que
+usan menos grados de libertad— el efecto **sí** resulta significativo.
+
+### El estimador moderno: `rdrobust`
+
+`rdrobust` ajusta rectas locales a cada lado de la frontera y elige el **ancho de banda
+óptimo** por el criterio CCT. Es el estándar hoy. Aquí conviene usarlo con cabeza:
+
+```{r rdrobust}
+covariables <- as.matrix(hogares[, .(elv_sh, slope, infants, children, adults,
+                                     bfe4_1, bfe4_2, bfe4_3)])
+
+rd_auto <- rdrobust(hogares$lhhequiv, hogares$dist_frontera, c = 0,
+                    covs = covariables, cluster = hogares$distrito)
+rd_50   <- rdrobust(hogares$lhhequiv, hogares$dist_frontera, c = 0,
+                    covs = covariables, cluster = hogares$distrito, h = 50)
+
+data.table(version = c("Ancho de banda óptimo (CCT)", "Ancho de banda fijo, 50 km"),
+           h_km = round(c(rd_auto$bws[1, 1], 50), 1),
+           coef = round(c(rd_auto$coef[1], rd_50$coef[1]), 3),
+           n_izq = c(rd_auto$N_h[1], rd_50$N_h[1]),
+           n_der = c(rd_auto$N_h[2], rd_50$N_h[2]))
+```
+
+::: {.callout-important}
+## Por qué el ancho de banda automático se equivoca aquí
+La distancia a la frontera está medida **a nivel de distrito**, no de hogar: la variable
+de asignación solo toma **71 valores distintos**. El algoritmo CCT elige unos 10 km, y a
+esa distancia quedan un puñado de distritos por lado — el ajuste local explota y produce
+un coeficiente absurdo.
+
+El algoritmo no sabe de dónde salieron los datos. **Usted sí.** Con una ventana
+razonable, `rdrobust` vuelve a dar lo mismo que Dell.
+:::
+
+## ¿Es creíble la frontera? {#sec-balance}
+
+El supuesto de continuidad no se prueba, pero sí se ataca. Si algo que **no** es la
+mita salta en la frontera, el diseño está en problemas.
+
+### La geografía de hoy
+
+```{r balance-geo}
+balance_geo <- rbindlist(lapply(c("elv_sh", "slope"), function(v) {
+  m <- feols(as.formula(paste(v, "~ mita +", CUBICA, "+ bfe4_1 + bfe4_2 + bfe4_3")),
+             data = hogares[d_bnd < 100], cluster = ~distrito)
+  ct <- coeftable(m)["mita", ]
+  data.table(variable = v, coef = round(ct[1], 3), ee = round(ct[2], 3), p = round(ct[4], 3))
+}))
+balance_geo
+```
+
+### La prueba fuerte: el censo de Toledo de 1572
+
+El virrey Toledo levantó un censo en **1572**, un año **antes** de que empezara la mita.
+Si los distritos de mita ya eran distintos entonces, la frontera nunca fue "como
+aleatoria" y todo el diseño se cae.
+
+```{r balance-1572}
+pre <- distritos[d_bnd < 100 & !is.na(sh_trib)]
+balance_1572 <- rbindlist(lapply(c("sh_trib", "sh_boys", "sh_women"), function(v) {
+  m <- feols(as.formula(paste(v, "~ mita +", CUBICA,
+                              "+ elv_sh + slope + bfe4_1 + bfe4_2 + bfe4_3")),
+             data = pre, vcov = "hetero")
+  ct <- coeftable(m)["mita", ]
+  data.table(variable = v, coef = round(ct[1], 4), ee = round(ct[2], 4),
+             p = round(ct[4], 3), n = nobs(m))
+}))
+balance_1572
+```
+
+```{r g-balance}
+#| label: fig-balance
+#| fig-cap: "Estadístico t del salto en la frontera. Entre las líneas punteadas, el salto no es significativo."
+etiquetas <- c(elv_sh = "Elevación", slope = "Pendiente",
+               sh_trib = "% tributarios", sh_boys = "% niños", sh_women = "% mujeres")
+
+balance <- rbind(
+  balance_geo[,  .(bloque = "Geografía de hoy", variable, coef, ee)],
+  balance_1572[, .(bloque = "Demografía de 1572 (pre-mita)", variable, coef, ee)])
+balance[, etiqueta := factor(etiquetas[variable], levels = etiquetas)]
+
+ggplot(balance, aes(etiqueta, coef / ee)) +
+  geom_hline(yintercept = c(-1.96, 1.96), linetype = "dashed", color = "grey60") +
+  geom_hline(yintercept = 0, color = "grey30") +
+  geom_point(size = 3.5, color = "#2c7fb8") +
+  facet_wrap(~ bloque, scales = "free_x") +
+  coord_cartesian(ylim = c(-3, 3)) +
+  labs(x = NULL, y = "t del coeficiente de la mita",
+       caption = "Fuente: datos de réplica de Dell (2010); censo de Toledo, 1572.") +
+  theme_minimal(base_size = 13)
+```
+
+**Nada más salta.** Ni la elevación ni la pendiente de hoy, ni la composición
+demográfica de 1572. Es la mejor defensa del diseño que permiten estos datos.
+
+## ¿Por qué persiste? El mecanismo {#sec-mecanismo}
+
+El resultado es desconcertante: la mita se abolió en 1812 y su huella sigue ahí en 2001.
+¿Por qué canal viaja doscientos años? El argumento de Dell, en cuatro pasos:
+
+1. **Haciendas.** Fuera de la mita se formaron grandes haciendas. Dentro, la Corona lo
+   impidió para no competir por la mano de obra que necesitaba en las minas. Hoy hay
+   **menos** tierra en manos de propietarios grandes en los distritos de mita.
+2. **Bienes públicos.** Los hacendados tenían poder político y capital para exigirle al
+   Estado carreteras y escuelas. Las comunidades campesinas dispersas, no. Dell
+   encuentra **1,5 años menos de escolaridad** en zonas de mita en 2001 (su Tabla VII).
+3. **Caminos.** Los distritos de mita quedaron **peor conectados** a la red vial
+   (su Tabla VIII).
+4. **Mercado.** Sin caminos, los hogares venden menos y producen para autoconsumo:
+   agricultura de **subsistencia** en vez de participación en el mercado (su Tabla IX).
+
+La mita no dejó una herida directa que se transmitiera de padres a hijos. **Empujó a la
+región por un camino institucional distinto, y ese camino se reprodujo solo.**
+
+::: {.callout-note}
+## Lo que aquí no se replica
+Las variables de haciendas, caminos, educación y participación en el mercado están en
+los archivos `files1-3.zip` del paquete original de Dell, que no pudimos descargar
+(ver [`datos/SOURCE.md`](datos/SOURCE.md)). Lo que sí replicamos es el efecto sobre el
+consumo y las pruebas de balance.
+
+Decir *"no tengo ese dato"* en vez de inventarlo también es parte del oficio.
+:::
+
+## Síntesis y discusión
+
+- Los hogares de distritos sujetos a la mita consumen **cerca de 25 % menos** que sus
+  vecinos del otro lado de la frontera, casi dos siglos después de abolida la
+  institución (@sec-estimacion).
+- El resultado **sobrevive** a tres formas de controlar la geografía y a tres ventanas
+  (@sec-robustez): no es un artefacto de la especificación.
+- **Nada más salta** en la frontera: ni la geografía de hoy, ni la demografía de 1572
+  (@sec-balance). Eso es lo que sostiene la lectura causal.
+
+::: {.callout-note}
+## Para discutir en clase
+1. **Escéptico:** ¿por qué deberíamos creer que esto es causal? Enuncie el supuesto de
+   continuidad con sus palabras y proponga **una** cosa concreta que lo rompería. ¿El
+   balance de 1572 la descarta, o no la toca?
+2. Este es un efecto **local**, en la frontera. ¿Por qué *no* podemos decir "la mita
+   redujo el consumo del Perú en 25 %"? ¿A quién se parecen los distritos del borde?
+3. En @sec-robustez, el efecto es significativo con las cúbicas unidimensionales pero no
+   con la cúbica en lat-lon. ¿Cuál reportaría usted, y por qué? ¿Qué haría un lector
+   malintencionado con esa libertad?
+4. **Comentarista:** el ancho de banda automático de `rdrobust` dio una cifra absurda.
+   ¿Qué dice eso sobre usar herramientas estadísticas sin mirar de dónde vienen los datos?
+5. Si tuviera acceso a los archivos de haciendas y caminos, ¿qué gráfica haría para
+   convencer a alguien de que ese es el canal, y no otro?
+:::
+
+---
+
+*Datos: paquete de réplica de Dell, M. (2010), "The Persistent Effects of Peru's Mining
+Mita", Econometrica 78(6), 1863–1903. Muestra de hogares vía MIT OpenCourseWare 14.75
+(CC BY-NC-SA 4.0). Ver [`datos/SOURCE.md`](datos/SOURCE.md).*
