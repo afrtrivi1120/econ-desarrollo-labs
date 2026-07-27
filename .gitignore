@@ -1,12 +1,18 @@
-# Microdata cruda del DANE (pesa cientos de MB; se baja desde el portal, no va al repo)
-datos/_crudos/
+# Microdata y paquetes de réplica crudos (pesan cientos de MB; se bajan del
+# portal de la fuente, no van al repo). Cada lab tiene su propio datos/_crudos/.
+**/datos/_crudos/
 *.zip
+*.dta
 
 # Artefactos de R
 .Rhistory
 .RData
 .Rproj.user/
 *.Rproj
+
+# Artefactos de Quarto
+.quarto/
+/*/*_files/
 
 # Sistema
 .DS_Store

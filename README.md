@@ -1,116 +1,91 @@
-# Lab 1 — La distribución del ingreso en Colombia: una foto antes y después de la pandemia
+# Laboratorios de R — Economía del Desarrollo
 
 **Economía del Desarrollo (06230) · Universidad Icesi · Departamento de Economía**
 
-Este laboratorio usa las encuestas de hogares de Colombia (**GEIH–DANE**) de **2019** y
-**2021** para mirar, con datos reales, dos cosas que vimos en las lecturas de la sesión:
+Este repositorio reúne **todos los laboratorios del semestre**. Cada lab es una
+**réplica guiada** de uno de los papers que discutimos en clase: abrimos los datos
+reales, corremos el código por bloques y discutimos qué se puede y qué **no** se puede
+concluir con ellos.
 
-1. **La distribución del ingreso** (no solo el promedio) — en la línea de
-   Sala-i-Martin (2006): el promedio esconde quién gana qué.
-2. **Quién es pobre** — edad, género y nivel educativo — replicando el perfil del
-   pobre del informe del **Banco Mundial (2020)**, *Poverty and Shared Prosperity*.
-
-La pregunta de fondo: **¿cómo se ve la distribución del ingreso colombiano antes
-(2019) y después (2021) del choque de la pandemia?**
-
-> ⚠️ **Esto es descriptivo, no causal.** Es una *foto* antes/después. Entre 2019 y
-> 2021 cambió la pandemia, pero también muchas otras cosas (precios, política social,
-> migración…). No hay grupo de comparación ni contrafactual, así que **no podemos
-> atribuir los cambios a la pandemia**. Esa frontera —de la descripción a la
-> causalidad— es justamente el hilo de la Unidad 1.
+El hilo que los une es la **inferencia causal aplicada**: cada lab agrega una
+herramienta más al kit, y cada uno tiene un supuesto de identificación que el
+**Escéptico** debe atacar.
 
 ---
 
-## ¿Qué vamos a ver en clase?
+## Los labs
 
-| Sección | Qué hacemos | Gráfica |
-|---|---|---|
-| 1 | Mirar los datos y entender el **factor de expansión** | — |
-| 2 | **Ingreso por quintil** 2019 vs 2021 y la brecha Q5/Q1 | `figuras/2a-ingreso-por-quintil.png` |
-| 3 | **Tasa de pobreza** monetaria y extrema, antes/después | `figuras/3-pobreza-antes-despues.png` |
-| 4 | **Perfil del pobre** por edad y educación (estilo Banco Mundial) | `figuras/4a-…`, `figuras/4b-…` |
-| 5–6 | Guardar gráficas y **síntesis** para discutir | — |
-
-**Resultados que reproduce el código** (cifras oficiales DANE):
-
-- Pobreza monetaria: **35,7 % (2019) → 39,3 % (2021)**.
-- Pobreza extrema: **9,6 % (2019) → 12,2 % (2021)**.
-- El quintil más rico (Q5) concentra **~57 %** del ingreso.
-- El pobre sigue siendo **joven** (≈36 % de los pobres tiene 0–14 años) y de **baja
-  escolaridad** (≈88 % tiene secundaria o menos).
+| Lab | Sesión | Tema | Método | Paper / fuente |
+|---|---|---|---|---|
+| [**1**](01_lab-pobreza-colombia/) | 1 | Distribución del ingreso y pobreza en Colombia | Medición y descripción | Sala-i-Martin (2006) · Banco Mundial (2020) · datos GEIH–DANE |
+| [**2**](02_lab-mita-peru/) | 2 | La *mita* minera del Perú y sus efectos persistentes | Regresión discontinua (RDD) geográfica | Dell (2010), *Econometrica* |
+| 3 | 5–6 | Capital humano, tierra y trabajo | Panel con efectos fijos | *(en preparación)* |
+| 4 | 7–8 | Titulación y seguridad de la tenencia | Diferencias en diferencias (DiD) | *(en preparación)* |
+| 5 | 9–10 | Crédito, riesgo y seguros | Experimentos aleatorizados (RCT) | *(en preparación)* |
+| 6 | 11–12 | Migración e informalidad | Estructural vs. forma reducida | *(en preparación)* |
 
 ---
 
-## Cómo correrlo
+## Cómo correr un lab
 
-Necesitas **R** (≥ 4.1) y estos paquetes:
-
-```r
-install.packages(c("data.table", "ggplot2", "scales"))
-```
-
-Hay dos formas equivalentes de trabajar el lab:
-
-**a) Script de R** (para ejecutar por bloques en clase):
+Necesita **R ≥ 4.1** y, opcionalmente, **Quarto** para los cuadernos. Los paquetes de
+todo el semestre se instalan una sola vez:
 
 ```r
-source("R/lab1-distribucion-ingreso.R")
+install.packages(c("data.table", "ggplot2", "scales", "fixest", "rdrobust"))
 ```
 
-> En **Positron / RStudio**: abre `R/lab1-distribucion-ingreso.R` y ejecútalo por
-> secciones (los bloques `# ===` separan cada parte) para ir mirando los datos en clase.
+> ⚠️ **Abra la carpeta del lab como directorio de trabajo**, no la raíz del repositorio.
+> Los scripts cargan los datos con rutas relativas (`datos/…`), así que si corre el
+> Lab 2 parado en la raíz no va a encontrar los archivos. En **Positron / RStudio**:
+> `File → Open Folder…` sobre `02_lab-mita-peru`, o bien `setwd("02_lab-mita-peru")`.
 
-**b) Cuaderno Quarto** (mismo contenido, con explicaciones y salida en HTML):
+Cada lab se puede trabajar de dos formas equivalentes:
+
+**a) Script de R** — para ejecutar por bloques en clase. Los separadores `# ===`
+marcan cada sección:
+
+```r
+source("R/lab2-rdd-mita.R")
+```
+
+**b) Cuaderno Quarto** — el mismo contenido con prosa, tablas y gráficas:
 
 ```bash
-quarto render lab1-distribucion-ingreso.qmd
+quarto render lab2-rdd-mita.qmd
 ```
 
-Abre `lab1-distribucion-ingreso.html` (ya incluido en el repo) para leer el lab con
-prosa, tablas y gráficas, sin necesidad de correr nada.
+El `.html` ya viene renderizado en cada carpeta, así que puede leer el lab completo
+sin correr nada.
 
-Ambos cargan `datos/geih_pobreza_2019_2021.rds` y corren en pocos segundos.
+---
+
+## Roles de la sesión
+
+En cada sesión rotan tres roles, y el lab es el momento en que los tres se encuentran:
+
+- **Replicador** — lidera el lab y reporta un hallazgo concreto de la corrida.
+- **Escéptico** — ataca el supuesto de identificación: ¿por qué *deberíamos* creer que
+  esto es causal? ¿Qué lo rompería?
+- **Comentarista** — conecta lo que salió en pantalla con el paper y con las lecturas
+  de la sesión.
 
 ---
 
 ## Los datos
 
-`datos/geih_pobreza_2019_2021.rds` es un **subconjunto de enseñanza** ya limpio:
-1.467.444 personas (2019 + 2021) y solo las variables que necesitamos. Ver el
-[**codebook**](datos/codebook.md) para la descripción de cada columna y la
-[**procedencia**](datos/SOURCE.md) de la fuente.
+Cada lab trae un **subconjunto de enseñanza** ya limpio en su carpeta `datos/`, junto
+con dos documentos:
 
-- También está `datos/geih_pobreza_2019_2021.csv.gz` por si quieres inspeccionar el
-  dato como texto plano (mismo contenido).
-- Para reconstruir el subset desde la microdata cruda del DANE, ver
-  [`R/00-construir-datos.R`](R/00-construir-datos.R) (no hace falta para la clase).
+- `datos/codebook.md` — qué significa cada columna.
+- `datos/SOURCE.md` — de dónde salieron los datos, con qué licencia y cómo se
+  reconstruye el subset desde la fuente original.
 
-**Fuente:** Departamento Administrativo Nacional de Estadística (DANE) —
-*Medición de Pobreza Monetaria y Desigualdad*, microdatos anonimizados de la GEIH
-([2019, cat. 684](https://microdatos.dane.gov.co/index.php/catalog/684) ·
-[2021, cat. 733](https://microdatos.dane.gov.co/index.php/catalog/733)).
-Uso académico con la cita obligatoria: **«Fuente: DANE, www.dane.gov.co»**.
+La microdata cruda **no** se versiona (vive en `datos/_crudos/`, ignorada por git):
+pesa demasiado y en varios casos su licencia no permite redistribuirla. El script
+`R/00-construir-datos.R` de cada lab documenta la transformación completa.
 
 ---
 
-## Lecturas de la sesión
-
-- **Sala-i-Martin, X. (2006).** "The World Distribution of Income: Falling Poverty
-  and… Convergence, Period." *Quarterly Journal of Economics*, 121(2), 351–397.
-- **World Bank (2020).** *Poverty and Shared Prosperity 2020: Reversals of Fortune.*
-  Washington, DC: World Bank.
-
----
-
-## Roles de la sesión (recordatorio)
-
-- **Replicador:** lidera este lab y reporta un hallazgo (p. ej., el cambio en la
-  brecha Q5/Q1).
-- **Escéptico:** ataca el supuesto — ¿por qué *no* podemos llamar a esto "el efecto
-  de la pandemia"? ¿Qué necesitaríamos para acercarnos a un efecto causal?
-- **Comentarista:** conecta el perfil del pobre en Colombia con la Figura O.5 del
-  Banco Mundial.
-
----
-
-*Material del curso Economía del Desarrollo (06230), Universidad Icesi. Datos: DANE.*
+*Material del curso Economía del Desarrollo (06230), Universidad Icesi.
+Cada lab cita su propia fuente de datos en `datos/SOURCE.md`.*

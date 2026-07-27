@@ -1,0 +1,15 @@
+# Microdata cruda del DANE (pesa cientos de MB; se baja desde el portal, no va al repo)
+datos/_crudos/
+*.zip
+
+# Artefactos de R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# Sistema
+.DS_Store
+
+# Dispositivo PDF por defecto de Rscript
+Rplots.pdf
