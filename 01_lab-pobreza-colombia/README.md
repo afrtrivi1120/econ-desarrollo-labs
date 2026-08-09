@@ -43,11 +43,14 @@ La pregunta de fondo: **¿cómo se ve la distribución del ingreso colombiano an
 
 ## Cómo correrlo
 
-Necesitas **R** (≥ 4.1) y estos paquetes:
+Necesitas **R** (≥ 4.1). Lo único que hay que instalar a mano es `pacman`:
 
 ```r
-install.packages(c("data.table", "ggplot2", "scales"))
+install.packages("pacman")
 ```
+
+El script arranca con `pacman::p_load(tidyverse, scales)`, que instala lo que falte y
+carga lo que ya esté.
 
 Hay dos formas equivalentes de trabajar el lab:
 
@@ -102,14 +105,12 @@ Uso académico con la cita obligatoria: **«Fuente: DANE, www.dane.gov.co»**.
 
 ---
 
-## Roles de la sesión (recordatorio)
+## Para discutir en clase
 
-- **Replicador:** lidera este lab y reporta un hallazgo (p. ej., el cambio en la
-  brecha Q5/Q1).
-- **Escéptico:** ataca el supuesto — ¿por qué *no* podemos llamar a esto "el efecto
-  de la pandemia"? ¿Qué necesitaríamos para acercarnos a un efecto causal?
-- **Comentarista:** conecta el perfil del pobre en Colombia con la Figura O.5 del
-  Banco Mundial.
+- ¿Por qué *no* podemos llamar a esto "el efecto de la pandemia"? ¿Qué necesitaríamos
+  para acercarnos a un efecto causal?
+- ¿La desigualdad (brecha Q5/Q1) subió o bajó? ¿Qué le falta a esa medida?
+- ¿El perfil del pobre en Colombia se parece al de la Figura O.5 del Banco Mundial?
 
 ---
 

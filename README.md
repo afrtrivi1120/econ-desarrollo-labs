@@ -8,8 +8,8 @@ reales, corremos el código por bloques y discutimos qué se puede y qué **no**
 concluir con ellos.
 
 El hilo que los une es la **inferencia causal aplicada**: cada lab agrega una
-herramienta más al kit, y cada uno tiene un supuesto de identificación que el
-**Escéptico** debe atacar.
+herramienta más al kit, y cada uno pone sobre la mesa el supuesto de identificación
+del que depende su respuesta.
 
 ---
 
@@ -28,12 +28,15 @@ herramienta más al kit, y cada uno tiene un supuesto de identificación que el
 
 ## Cómo correr un lab
 
-Necesita **R ≥ 4.1** y, opcionalmente, **Quarto** para los cuadernos. Los paquetes de
-todo el semestre se instalan una sola vez:
+Necesita **R ≥ 4.1** y, opcionalmente, **Quarto** para los cuadernos. Lo único que hay
+que instalar a mano, una sola vez, es `pacman`:
 
 ```r
-install.packages(c("data.table", "ggplot2", "scales", "fixest", "rdrobust"))
+install.packages("pacman")
 ```
+
+De ahí en adelante cada script arranca con `pacman::p_load(...)`, que instala lo que
+falte y carga lo que ya esté. No hay que acordarse de la lista de paquetes.
 
 > ⚠️ **Abra la carpeta del lab como directorio de trabajo**, no la raíz del repositorio.
 > Los scripts cargan los datos con rutas relativas (`datos/…`), así que si corre el
@@ -57,18 +60,6 @@ quarto render lab2-rdd-mita.qmd
 
 El `.html` ya viene renderizado en cada carpeta, así que puede leer el lab completo
 sin correr nada.
-
----
-
-## Roles de la sesión
-
-En cada sesión rotan tres roles, y el lab es el momento en que los tres se encuentran:
-
-- **Replicador** — lidera el lab y reporta un hallazgo concreto de la corrida.
-- **Escéptico** — ataca el supuesto de identificación: ¿por qué *deberíamos* creer que
-  esto es causal? ¿Qué lo rompería?
-- **Comentarista** — conecta lo que salió en pantalla con el paper y con las lecturas
-  de la sesión.
 
 ---
 

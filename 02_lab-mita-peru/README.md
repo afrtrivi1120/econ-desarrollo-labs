@@ -19,8 +19,7 @@ discontinua (RDD) geográfica**.
 > **suave** al cruzar el límite, y que lo único que **salta** es haber estado sujeto a
 > la mita. Ese supuesto no se puede probar; solo se puede atacar. Si la frontera
 > coincide con otra discontinuidad —un límite étnico, un piso ecológico, la frontera de
-> las haciendas— el diseño se cae. Esa es la munición del **Escéptico**, y la sección 6
-> le da tanto el ataque como la defensa.
+> las haciendas— el diseño se cae. La sección 6 pone ese supuesto a prueba.
 
 ---
 
@@ -55,11 +54,14 @@ en el Panel A los coeficientes **no** son estadísticamente significativos.
 
 ## Cómo correrlo
 
-Necesita **R** (≥ 4.1) y estos paquetes:
+Necesita **R** (≥ 4.1). Lo único que hay que instalar a mano es `pacman`:
 
 ```r
-install.packages(c("data.table", "ggplot2", "scales", "fixest", "rdrobust"))
+install.packages("pacman")
 ```
+
+El script arranca con `pacman::p_load(tidyverse, scales, fixest, rdrobust, broom)`, que
+instala lo que falte y carga lo que ya esté.
 
 Hay dos formas equivalentes de trabajar el lab:
 
@@ -122,14 +124,14 @@ ejercicio docente. Detalles en [`datos/SOURCE.md`](datos/SOURCE.md).
 
 ---
 
-## Roles de la sesión (recordatorio)
+## Para discutir en clase
 
-- **Replicador:** lidera este lab y reporta un hallazgo (p. ej., cuánto cambia el efecto
-  al pasar de la ventana de 100 km a la de 50 km).
-- **Escéptico:** ataca el supuesto de continuidad. ¿Qué otra cosa podría estar saltando
-  en esa misma línea? ¿El balance de 1572 lo descarta, o deja el flanco abierto?
-- **Comentarista:** conecta el mecanismo de Dell (haciendas → bienes públicos → caminos
-  → mercado) con el argumento institucional de AJR (2001) y del capítulo de Roland.
+- ¿Cuánto cambia el efecto al pasar de la ventana de 100 km a la de 50 km? ¿Eso
+  fortalece o debilita el resultado?
+- ¿Qué otra cosa podría estar saltando en esa misma línea? ¿El balance de 1572 lo
+  descarta, o deja el flanco abierto?
+- ¿Cómo se conecta el mecanismo de Dell (haciendas → bienes públicos → caminos →
+  mercado) con el argumento institucional de AJR (2001) y del capítulo de Roland?
 
 ---
 
