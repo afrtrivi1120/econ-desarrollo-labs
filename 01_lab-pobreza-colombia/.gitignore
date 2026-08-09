@@ -1,5 +1,9 @@
-# Microdata cruda del DANE (pesa cientos de MB; se baja desde el portal, no va al repo)
-datos/_crudos/
+# Microdata del DANE: los archivos COMPLETOS (137 columnas, cientos de MB) se bajan
+# del portal y no van al repo. Lo que sí se versiona es el EXTRACTO crudo en .csv.gz
+# —mismas filas y mismos códigos, solo las columnas que el lab usa—, que es de donde
+# arranca la sección 1. Ver datos/SOURCE.md.
+datos/_crudos/*
+!datos/_crudos/*.csv.gz
 *.zip
 
 # Artefactos de R

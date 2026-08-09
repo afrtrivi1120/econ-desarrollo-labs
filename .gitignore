@@ -1,6 +1,10 @@
 # Microdata y paquetes de réplica crudos (pesan cientos de MB; se bajan del
 # portal de la fuente, no van al repo). Cada lab tiene su propio datos/_crudos/.
-**/datos/_crudos/
+# Excepción: los EXTRACTOS en .csv.gz —mismas filas y códigos originales, solo las
+# columnas que el lab usa— sí se versionan, para que la limpieza se pueda correr al
+# clonar. Ver el SOURCE.md de cada lab.
+**/datos/_crudos/*
+!**/datos/_crudos/*.csv.gz
 *.zip
 *.dta
 
