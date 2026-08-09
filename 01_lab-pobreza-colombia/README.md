@@ -25,11 +25,16 @@ La pregunta de fondo: **¿cómo se ve la distribución del ingreso colombiano an
 
 | Sección | Qué hacemos | Gráfica |
 |---|---|---|
-| 1 | Mirar los datos y entender el **factor de expansión** | — |
-| 2 | **Ingreso por quintil** 2019 vs 2021 y la brecha Q5/Q1 | `figuras/2a-ingreso-por-quintil.png` |
-| 3 | **Tasa de pobreza** monetaria y extrema, antes/después | `figuras/3-pobreza-antes-despues.png` |
-| 4 | **Perfil del pobre** por edad y educación (estilo Banco Mundial) | `figuras/4a-…`, `figuras/4b-…` |
-| 5–6 | Guardar gráficas y **síntesis** para discutir | — |
+| 1 | **De la microdata cruda al subset**: qué trae cada archivo del DANE, qué significa cada variable y qué se transforma | — |
+| 2 | Mirar los datos y entender el **factor de expansión** | — |
+| 3 | **Ingreso por quintil** 2019 vs 2021 y la brecha Q5/Q1 | `figuras/2a-ingreso-por-quintil.png` |
+| 4 | **Tasa de pobreza** monetaria y extrema, antes/después | `figuras/3-pobreza-antes-despues.png` |
+| 5 | **Perfil del pobre** por edad y educación (estilo Banco Mundial) | `figuras/4a-…`, `figuras/4b-…` |
+| 6–7 | Guardar gráficas y **síntesis** para discutir | — |
+
+> La sección 1 es nueva: el lab ya no arranca de un archivo limpio caído del cielo. Se abre
+> la microdata del DANE tal como la publica —con nombres como `p6210` y respuestas en
+> código— y se muestra cada decisión de limpieza, porque cada una cambia los resultados.
 
 **Resultados que reproduce el código** (cifras oficiales DANE):
 
@@ -49,8 +54,9 @@ Necesitas **R** (≥ 4.1). Lo único que hay que instalar a mano es `pacman`:
 install.packages("pacman")
 ```
 
-El script arranca con `pacman::p_load(tidyverse, scales)`, que instala lo que falte y
-carga lo que ya esté.
+El script arranca con `pacman::p_load(tidyverse, scales, data.table, R.utils)`, que
+instala lo que falte y carga lo que ya esté. (`data.table` entra solo por `fread()`, que
+es lo que lee rápido los archivos crudos del DANE; `R.utils` le permite abrir los `.gz`.)
 
 Hay dos formas equivalentes de trabajar el lab:
 
@@ -78,15 +84,35 @@ Ambos cargan `datos/geih_pobreza_2019_2021.rds` y corren en pocos segundos.
 
 ## Los datos
 
-`datos/geih_pobreza_2019_2021.rds` es un **subconjunto de enseñanza** ya limpio:
-1.467.444 personas (2019 + 2021) y solo las variables que necesitamos. Ver el
-[**codebook**](datos/codebook.md) para la descripción de cada columna y la
-[**procedencia**](datos/SOURCE.md) de la fuente.
+La carpeta `datos/` tiene **tres capas**:
+
+| Qué | Para qué |
+|---|---|
+| `_crudos/*.csv.gz` | La **microdata del DANE** con sus nombres y códigos originales. Es donde arranca el lab. |
+| `geih_pobreza_2019_2021.rds` | El **subset ya construido** (1.467.444 personas). Sirve de respaldo si no están los crudos. |
+| `diccionario-dane/*.xml` | El **diccionario oficial** del DANE (formato DDI): de ahí salen, textualmente, las definiciones de cada variable. |
+
+Ver el [**codebook**](datos/codebook.md) para la descripción de cada columna —crudas y
+limpias— y la [**procedencia**](datos/SOURCE.md) para saber cómo se bajan y se recortan
+los archivos del portal.
+
+> ⚠️ Los archivos de `_crudos/` son un **extracto**: las mismas filas y los mismos
+> códigos que publica el DANE, pero solo con las columnas que el lab usa. Los archivos
+> completos traen 137 columnas y cientos de MB, y no caben en el repositorio. Como no se
+> quita ninguna fila, el extracto reproduce exactamente las cifras oficiales.
+
+La cadena de datos queda completa y reproducible en dos pasos:
+
+```
+CSV completos del DANE  ──[R/00-recortar-crudos.R]──▶  _crudos/*.csv.gz  ──[sección 1 del lab]──▶  .rds
+   474 MB, no van al repo                                12 MB, sí van                         subset limpio
+```
+
+`R/00-recortar-crudos.R` **no se corre en clase**: el extracto ya viene listo. Está para
+que el recorte no sea un paso a mano perdido en la terminal de alguien.
 
 - También está `datos/geih_pobreza_2019_2021.csv.gz` por si quieres inspeccionar el
-  dato como texto plano (mismo contenido).
-- Para reconstruir el subset desde la microdata cruda del DANE, ver
-  [`R/00-construir-datos.R`](R/00-construir-datos.R) (no hace falta para la clase).
+  subset como texto plano (mismo contenido que el `.rds`).
 
 **Fuente:** Departamento Administrativo Nacional de Estadística (DANE) —
 *Medición de Pobreza Monetaria y Desigualdad*, microdatos anonimizados de la GEIH

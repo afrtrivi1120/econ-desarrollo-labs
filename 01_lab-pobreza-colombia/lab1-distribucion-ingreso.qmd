@@ -47,16 +47,273 @@ Unidad 1.
 
 ```{r setup}
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load(tidyverse, scales)
-
-# Subset de enseñanza ya listo (~1,47 M personas, 2 años).
-geih <- read_rds("datos/geih_pobreza_2019_2021.rds") |>
-  as_tibble() |>
-  mutate(anio = factor(anio))   # el año es una etiqueta, no un número con el que operar
+pacman::p_load(tidyverse, scales, data.table, R.utils)
 ```
 
-El **factor de expansión** (`fex`) es clave: cada fila "representa" a `fex` personas
-del país, así que **toda cifra nacional se pondera por `fex`**.
+`data.table` entra por una sola función, `fread()`: los archivos del DANE traen
+**137 columnas** y millones de filas, y con `select = ...` leemos únicamente las que
+usamos. Es el único punto del lab donde gana sobre el `tidyverse`. (`R.utils` es lo que
+le permite abrir los `.csv.gz` sin descomprimirlos antes.)
+
+```{r rutas}
+rutas_crudos <- c(
+  hogares_2019  = "datos/_crudos/geih-2019-hogares.csv.gz",
+  personas_2019 = "datos/_crudos/geih-2019-personas.csv.gz",
+  hogares_2021  = "datos/_crudos/geih-2021-hogares.csv.gz",
+  personas_2021 = "datos/_crudos/geih-2021-personas.csv.gz"
+)
+
+hay_crudos <- all(file.exists(rutas_crudos))
+hay_crudos
+```
+
+::: {.callout-note}
+## Si `hay_crudos` sale `FALSE`
+Los bloques de la sección siguiente **se muestran pero no se ejecutan**, y el análisis
+arranca del subset ya construido. Baje los archivos del DANE siguiendo
+[`datos/SOURCE.md`](datos/SOURCE.md) para ver la limpieza corriendo de verdad.
+:::
+
+## De la microdata cruda al subset {#sec-limpieza}
+
+Los datos **no llegan limpios**. Esta sección muestra qué había en el archivo original y
+qué le hicimos, porque cada decisión de limpieza cambia los resultados.
+
+El DANE reparte la medición de pobreza en **dos archivos por año**:
+
+| Archivo | Unidad | Qué trae |
+|---|---|---|
+| **Hogares** | hogar | el ingreso, las líneas de pobreza y los indicadores |
+| **Personas** | persona | la demografía: edad, sexo, educación |
+
+Se unen por `directorio` + `secuencia_p`. Por eso son **cuatro** archivos y no dos: sin
+el de personas no hay edad ni educación; sin el de hogares no hay ingreso ni pobreza.
+
+### Leer los archivos crudos
+
+::: {.callout-warning}
+## Los dos años no vienen en el mismo formato
+**2019** usa separador `;` y decimal `,` (formato europeo). **2021** usa separador `,` y
+decimal `.`. Por eso los leemos en bloques separados: no es un descuido, es el dato real.
+:::
+
+```{r leer-2019}
+#| eval: !expr hay_crudos
+hogares_2019 <- fread(
+  rutas_crudos[["hogares_2019"]], sep = ";", dec = ",", encoding = "UTF-8",
+  select = c("directorio", "secuencia_p", "ingpcug", "lp", "pobre", "indigente")
+) |>
+  as_tibble() |>
+  rename_with(tolower)   # los encabezados del DANE no siempre vienen igual
+
+personas_2019 <- fread(
+  rutas_crudos[["personas_2019"]], sep = ";", dec = ",", encoding = "UTF-8",
+  select = c("directorio", "secuencia_p", "clase", "p6020", "p6040", "p6210", "fex_c")
+) |>
+  as_tibble() |>
+  rename_with(tolower)
+```
+
+```{r leer-2021}
+#| eval: !expr hay_crudos
+hogares_2021 <- fread(
+  rutas_crudos[["hogares_2021"]], sep = ",", dec = ".", encoding = "UTF-8",
+  select = c("directorio", "secuencia_p", "ingpcug", "lp", "pobre", "indigente")
+) |>
+  as_tibble() |>
+  rename_with(tolower)
+
+personas_2021 <- fread(
+  rutas_crudos[["personas_2021"]], sep = ",", dec = ".", encoding = "UTF-8",
+  select = c("directorio", "secuencia_p", "clase", "p6020", "p6040", "p6210", "fex_c")
+) |>
+  as_tibble() |>
+  rename_with(tolower)
+```
+
+### Mirar el dato crudo antes de tocarlo
+
+```{r mirar-crudo}
+#| eval: !expr hay_crudos
+glimpse(personas_2019)
+```
+
+Acá está el problema de frente: los nombres **no dicen nada** (`p6020`, `p6210`, `fex_c`)
+y las respuestas son **códigos numéricos**. Sin el diccionario del DANE, esto no se puede
+leer.
+
+### Qué significa cada variable
+
+Estas definiciones están tomadas **textualmente** del diccionario de datos oficial del
+DANE, que se versiona en [`datos/diccionario-dane/`](datos/diccionario-dane/). No están
+escritas de memoria.
+
+#### Las que vienen del archivo de **hogares**
+
+| Variable | Definición del DANE | Códigos |
+|---|---|---|
+| `directorio` | Llave vivienda | — |
+| `secuencia_p` | Llave hogar | — |
+| `ingpcug` | Ingreso per cápita de la unidad de gasto **con imputación de arriendo a propietarios y usufructuarios** | pesos corrientes/mes |
+| `lp` | Línea de pobreza: *"valor de la canasta básica de bienes que establece el límite de ingresos por debajo del cual un hogar es considerado en pobreza"* | pesos/mes |
+| `pobre` | Pobre=1 No pobre=0 | `0` No pobre · `1` Pobre |
+| `indigente` | Indigente=1 No indigente=0 | `0` No indigente · `1` Indigente |
+
+#### Las que vienen del archivo de **personas**
+
+| Variable | Definición del DANE | Códigos |
+|---|---|---|
+| `clase` | 1. Cabecera, 2. Resto (centros poblados y área rural dispersa) | `1` Cabecera · `2` Resto |
+| `p6020` | Sexo | `1` Hombre · `2` Mujer |
+| `p6040` | ¿Cuántos años cumplidos tiene? | años |
+| `p6210` | ¿Cuál es el nivel educativo más alto alcanzado…? | `1` Ninguno · `2` Preescolar · `3` Básica primaria · `4` Básica secundaria · `5` Media · `6` Superior · `9` No sabe/no informa |
+| `fex_c` | **Factor de expansión anualizado** | — |
+
+::: {.callout-important}
+## `fex_c` es la variable más importante del lab
+Cada fila **representa a `fex_c` personas del país**. Una encuesta no es un censo: sin
+ponderar, todas las cifras están mal. Por eso **toda cifra nacional de este lab va
+ponderada por `fex`**.
+
+Y ojo con `ingpcug`: no es el salario. Es el ingreso del hogar por persona, e **incluye
+un arriendo imputado** a quienes viven en vivienda propia. Sin esa imputación, un
+propietario sin ingresos monetarios parecería más pobre de lo que es.
+:::
+
+### Unir personas con su hogar
+
+`left_join` **desde personas**: queremos una fila por persona, y a cada una le pegamos el
+ingreso y la pobreza del hogar al que pertenece. Varias personas comparten hogar, así que
+el ingreso del hogar se repite en todas sus filas.
+
+```{r unir}
+#| eval: !expr hay_crudos
+geih_2019 <- personas_2019 |>
+  left_join(hogares_2019, by = c("directorio", "secuencia_p")) |>
+  mutate(anio = 2019)
+
+geih_2021 <- personas_2021 |>
+  left_join(hogares_2021, by = c("directorio", "secuencia_p")) |>
+  mutate(anio = 2021)
+
+geih_crudo <- bind_rows(geih_2019, geih_2021)
+```
+
+### Recodificar: de códigos a etiquetas
+
+De las diez variables que sobreviven, **solo tres se recodifican**. El resto se deja como
+viene o apenas se renombra.
+
+```{r recodificar}
+#| eval: !expr hay_crudos
+geih_crudo <- geih_crudo |>
+  mutate(
+    # Sexo: 1 = Hombre, 2 = Mujer.
+    sexo = factor(p6020, levels = c(1, 2), labels = c("Hombre", "Mujer")),
+
+    # Clase: 1 = Cabecera (urbano), 2 = Resto (centros poblados y rural disperso).
+    area = factor(clase, levels = c(1, 2), labels = c("Urbano", "Rural")),
+
+    # Educación: las SIETE categorías del DANE se colapsan a cuatro.
+    educ = case_when(
+      p6210 %in% c(1, 2) ~ "Sin educación",
+      p6210 == 3         ~ "Primaria",
+      p6210 %in% c(4, 5) ~ "Secundaria",
+      p6210 == 6         ~ "Superior",
+      .default = NA_character_
+    ),
+    educ = factor(educ, levels = c("Sin educación", "Primaria", "Secundaria", "Superior"))
+  )
+```
+
+::: {.callout-important}
+## La recodificación de `educ` es una decisión, no un hecho
+Siete categorías del DANE se vuelven cuatro:
+
+| `p6210` | Etiqueta del DANE | → `educ` |
+|---|---|---|
+| 1 | Ninguno | Sin educación |
+| 2 | Preescolar | Sin educación |
+| 3 | Básica primaria (1º–5º) | Primaria |
+| 4 | Básica secundaria (6º–9º) | Secundaria |
+| 5 | Media (10º–13º) | Secundaria |
+| 6 | Superior o universitaria | Superior |
+| 9 | No sabe, no informa | `NA` |
+
+Juntar *Ninguno* con *Preescolar* es defendible si lo que interesa es "no alcanzó
+primaria". Pero juntar *Básica secundaria* con *Media* **borra la diferencia entre haber
+llegado a noveno y haberse graduado de bachillerato**, que en el mercado laboral
+colombiano no es menor. Y mandar el `9` a `NA` supone que quien no informa se parece al
+promedio de los que sí informaron.
+
+Esas tres decisiones las tomó alguien —nosotros— y hay que poder defenderlas.
+:::
+
+### Quedarnos con lo que usamos
+
+`directorio` y `secuencia_p` ya cumplieron su función —unir los archivos— y se van.
+
+```{r seleccionar}
+#| eval: !expr hay_crudos
+geih <- geih_crudo |>
+  select(
+    anio,
+    fex = fex_c,        # factor de expansión anualizado
+    ingpcug,            # ingreso per cápita de la unidad de gasto
+    lp,                 # línea de pobreza
+    pobre,              # 1 = persona en pobreza monetaria
+    indigente,          # 1 = persona en pobreza extrema
+    edad = p6040,
+    sexo, educ, area
+  ) |>
+  filter(!is.na(ingpcug), !is.na(fex))   # sin ingreso o sin peso, la fila no sirve
+
+nrow(geih_crudo) - nrow(geih)   # cuántas filas se fueron en el filtro
+```
+
+Da **cero**: en estos dos años el módulo de pobreza del DANE viene completo, sin ingresos
+ni pesos faltantes. El filtro no sobra —es la red de seguridad que uno pone sin saber qué
+va a encontrar—, pero conviene saber que acá no quitó nada. Si en otro año quitara muchas
+filas, esa sería una noticia que habría que investigar antes de seguir.
+
+**Resumen de lo que pasó con cada variable:**
+
+| Qué se hizo | Variables |
+|---|---|
+| **Sin cambios** | `ingpcug`, `lp`, `pobre`, `indigente` |
+| **Solo renombradas** | `fex_c` → `fex`, `p6040` → `edad` |
+| **Recodificadas** | `p6020` → `sexo`, `clase` → `area`, `p6210` → `educ` |
+| **Descartadas** | `directorio`, `secuencia_p` (solo servían para unir) |
+| **Agregada** | `anio`, al apilar los dos años |
+
+### Verificación: ¿reproducimos las cifras oficiales?
+
+Este es el control de calidad. Si la limpieza se rompió en algún punto, acá se nota.
+
+```{r verificar}
+#| eval: !expr hay_crudos
+geih |>
+  group_by(anio) |>
+  summarise(
+    pobreza  = round(weighted.mean(pobre, fex) * 100, 1),
+    extrema  = round(weighted.mean(indigente, fex) * 100, 1),
+    personas_millones = round(sum(fex) / 1e6, 1)
+  )
+```
+
+Las cifras oficiales del DANE son **35,7 %** y **39,3 %** de pobreza monetaria, y
+**9,6 %** y **12,2 %** de pobreza extrema. Si la tabla de arriba coincide, la limpieza
+está bien hecha.
+
+```{r respaldo}
+#| eval: !expr (!hay_crudos)
+# Sin los archivos crudos, arrancamos del subset ya construido.
+geih <- read_rds("datos/geih_pobreza_2019_2021.rds") |> as_tibble()
+```
+
+```{r anio-factor}
+geih <- geih |> mutate(anio = factor(anio))   # el año es etiqueta, no número
+```
 
 ## Una mirada a los datos
 

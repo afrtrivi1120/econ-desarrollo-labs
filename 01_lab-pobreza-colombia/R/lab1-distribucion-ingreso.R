@@ -7,6 +7,9 @@
 #   (1) Sala-i-Martin (2006): mirar la DISTRIBUCIÓN del ingreso, no solo el promedio.
 #   (2) Banco Mundial (2020): ver QUIÉN es pobre (edad, género, educación).
 #
+# El lab arranca en la MICRODATA CRUDA del DANE y llega hasta las gráficas, para
+# que se vea de dónde sale cada variable y qué se le hizo.
+#
 # OJO: esto es DESCRIPTIVO (una foto 2019 vs 2021), no causal. No hay
 # contrafactual: entre 2019 y 2021 cambió la pandemia, pero también muchas
 # otras cosas.
@@ -17,17 +20,163 @@
 # =============================================================================
 # pacman instala lo que falte y carga lo que ya esté: una sola línea para todo.
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load(tidyverse, scales)
-
-# Cargamos el subset de enseñanza (ya viene listo; ~1,47 M personas, 2 años).
-# Usamos .rds: carga al instante y sin dependencias extra.
-# (En datos/ también está el .csv.gz por si quiere inspeccionarlo como texto.)
-geih <- read_rds("datos/geih_pobreza_2019_2021.rds") |>
-  as_tibble() |>
-  mutate(anio = factor(anio))   # el año es una etiqueta, no un número con el que operar
+pacman::p_load(tidyverse, scales, data.table, R.utils)
+# data.table entra solo por fread(): los archivos del DANE traen 137 columnas y
+# millones de filas. Con select = ... leemos únicamente las que usamos, y eso es
+# varias veces más rápido. Después pasamos a tibble y seguimos con dplyr.
+# (R.utils es lo que le permite a fread abrir los .csv.gz sin descomprimirlos.)
 
 # =============================================================================
-# 1. UNA MIRADA A LOS DATOS
+# 1. DE LA MICRODATA CRUDA AL SUBSET DE TRABAJO
+# =============================================================================
+# El DANE reparte la medición de pobreza en DOS archivos por año:
+#   - HOGARES  -> el ingreso, las líneas de pobreza y los indicadores.
+#   - PERSONAS -> la demografía: edad, sexo, educación.
+# Se unen por directorio + secuencia_p (la llave de vivienda y la de hogar).
+# Por eso son cuatro archivos y no dos.
+
+rutas_crudos <- c(
+  hogares_2019  = "datos/_crudos/geih-2019-hogares.csv.gz",
+  personas_2019 = "datos/_crudos/geih-2019-personas.csv.gz",
+  hogares_2021  = "datos/_crudos/geih-2021-hogares.csv.gz",
+  personas_2021 = "datos/_crudos/geih-2021-personas.csv.gz"
+)
+
+hay_crudos <- all(file.exists(rutas_crudos))
+
+if (hay_crudos) {
+
+  # --- 1.1 Leer el año 2019 --------------------------------------------------
+  # OJO: 2019 viene en formato europeo, con separador ";" y decimal ",".
+  hogares_2019 <- fread(
+    rutas_crudos[["hogares_2019"]], sep = ";", dec = ",", encoding = "UTF-8",
+    select = c("directorio", "secuencia_p", "ingpcug", "lp", "pobre", "indigente")
+  ) |>
+    as_tibble() |>
+    rename_with(tolower)   # los encabezados del DANE no siempre vienen igual
+
+  personas_2019 <- fread(
+    rutas_crudos[["personas_2019"]], sep = ";", dec = ",", encoding = "UTF-8",
+    select = c("directorio", "secuencia_p", "clase", "p6020", "p6040", "p6210", "fex_c")
+  ) |>
+    as_tibble() |>
+    rename_with(tolower)
+
+  # --- 1.2 Leer el año 2021 --------------------------------------------------
+  # 2021 viene con separador "," y decimal ".". Por eso los dos años se leen en
+  # bloques separados: no es el mismo formato.
+  hogares_2021 <- fread(
+    rutas_crudos[["hogares_2021"]], sep = ",", dec = ".", encoding = "UTF-8",
+    select = c("directorio", "secuencia_p", "ingpcug", "lp", "pobre", "indigente")
+  ) |>
+    as_tibble() |>
+    rename_with(tolower)
+
+  personas_2021 <- fread(
+    rutas_crudos[["personas_2021"]], sep = ",", dec = ".", encoding = "UTF-8",
+    select = c("directorio", "secuencia_p", "clase", "p6020", "p6040", "p6210", "fex_c")
+  ) |>
+    as_tibble() |>
+    rename_with(tolower)
+
+  # --- 1.3 Mirar el dato crudo ANTES de tocarlo ------------------------------
+  # Acá se ve el problema: los nombres no dicen nada (p6020, p6210, fex_c) y las
+  # respuestas son códigos numéricos. Sin el diccionario del DANE no se entiende.
+  glimpse(personas_2019)
+  glimpse(hogares_2019)
+
+  # ¿Qué códigos trae la educación? Siete categorías, incluido el 9 = no informa.
+  personas_2019 |> count(p6210)
+
+  # --- 1.4 Unir personas con su hogar ---------------------------------------
+  # left_join DESDE personas: queremos una fila por persona, y a cada una le
+  # pegamos el ingreso y la pobreza del hogar al que pertenece.
+  geih_2019 <- personas_2019 |>
+    left_join(hogares_2019, by = c("directorio", "secuencia_p")) |>
+    mutate(anio = 2019)
+
+  geih_2021 <- personas_2021 |>
+    left_join(hogares_2021, by = c("directorio", "secuencia_p")) |>
+    mutate(anio = 2021)
+
+  # --- 1.5 Apilar los dos años ----------------------------------------------
+  geih_crudo <- bind_rows(geih_2019, geih_2021)
+
+  # --- 1.6 Recodificar: de códigos del DANE a etiquetas legibles -------------
+  # Tres variables se recodifican. Las demás se dejan tal cual.
+  geih_crudo <- geih_crudo |>
+    mutate(
+      # Sexo: 1 = Hombre, 2 = Mujer.
+      sexo = factor(p6020, levels = c(1, 2), labels = c("Hombre", "Mujer")),
+
+      # Clase: 1 = Cabecera (urbano), 2 = Resto (centros poblados y rural disperso).
+      area = factor(clase, levels = c(1, 2), labels = c("Urbano", "Rural")),
+
+      # Educación: las SIETE categorías del DANE se colapsan a cuatro.
+      #   1 Ninguno · 2 Preescolar · 3 Básica primaria · 4 Básica secundaria
+      #   5 Media · 6 Superior o universitaria · 9 No sabe / no informa
+      educ = case_when(
+        p6210 %in% c(1, 2) ~ "Sin educación",
+        p6210 == 3         ~ "Primaria",
+        p6210 %in% c(4, 5) ~ "Secundaria",
+        p6210 == 6         ~ "Superior",
+        .default = NA_character_
+      ),
+      educ = factor(educ, levels = c("Sin educación", "Primaria", "Secundaria", "Superior"))
+    )
+
+  # --- 1.7 Quedarnos con lo que usamos y limpiar filas -----------------------
+  # directorio y secuencia_p ya cumplieron su función (unir): se van.
+  geih <- geih_crudo |>
+    select(
+      anio,
+      fex = fex_c,        # factor de expansión anualizado
+      ingpcug,            # ingreso per cápita de la unidad de gasto
+      lp,                 # línea de pobreza
+      pobre,              # 1 = persona en pobreza monetaria
+      indigente,          # 1 = persona en pobreza extrema
+      edad = p6040,
+      sexo, educ, area
+    ) |>
+    filter(!is.na(ingpcug), !is.na(fex))   # sin ingreso o sin peso no sirve
+
+  cat(sprintf("\nFilas antes del filtro: %d | después: %d | se fueron: %d\n",
+              nrow(geih_crudo), nrow(geih), nrow(geih_crudo) - nrow(geih)))
+
+  # --- 1.8 VERIFICACIÓN: ¿reproducimos las cifras oficiales del DANE? --------
+  # Si esto no cuadra, algo se rompió en la limpieza. Es el control de calidad.
+  geih |>
+    group_by(anio) |>
+    summarise(
+      pobreza  = round(weighted.mean(pobre, fex) * 100, 1),
+      extrema  = round(weighted.mean(indigente, fex) * 100, 1),
+      personas_millones = round(sum(fex) / 1e6, 1)
+    ) |>
+    print()
+
+  cat("Oficial DANE: pobreza 2019=35.7%, 2021=39.3% | extrema 2019=9.6%, 2021=12.2%\n")
+
+  # El subset ya viene guardado en datos/. NO lo reescribimos en cada corrida:
+  # es un archivo versionado y no queremos que la clase entera lo modifique.
+  # Para regenerarlo a propósito, descomente estas dos líneas:
+  # write_rds(geih, "datos/geih_pobreza_2019_2021.rds")
+  # write_csv(geih, "datos/geih_pobreza_2019_2021.csv.gz")
+
+} else {
+
+  # Respaldo: sin los crudos no se puede mostrar la limpieza, pero el análisis sí
+  # corre con el subset ya construido.
+  message("OJO: no están los archivos de datos/_crudos/. Se salta la sección 1 ",
+          "y se carga el subset ya construido. Ver datos/SOURCE.md para bajarlos.")
+  geih <- read_rds("datos/geih_pobreza_2019_2021.rds") |> as_tibble()
+
+}
+
+# De acá en adelante el análisis es el mismo, vengan los datos de donde vengan.
+geih <- geih |> mutate(anio = factor(anio))   # el año es etiqueta, no número
+
+# =============================================================================
+# 2. UNA MIRADA A LOS DATOS
 # =============================================================================
 dim(geih)        # filas (personas) x columnas
 head(geih)       # primeras filas
@@ -42,7 +191,7 @@ geih |>
   summarise(personas_millones = round(sum(fex) / 1e6, 1))
 
 # =============================================================================
-# 2. INGRESO POR QUINTIL  (lección de Sala-i-Martin: mirar la distribución)
+# 3. INGRESO POR QUINTIL  (lección de Sala-i-Martin: mirar la distribución)
 # =============================================================================
 # Un quintil ponderado parte a la población en 5 grupos de igual tamaño (20 %
 # cada uno). Lo armamos en tres pasos que se pueden leer de corrido:
@@ -121,7 +270,7 @@ brecha <- quintiles |>
 print(brecha)
 
 # =============================================================================
-# 3. POBREZA 2019 vs 2021  (el titular del ejercicio)
+# 4. POBREZA 2019 vs 2021  (el titular del ejercicio)
 # =============================================================================
 # Pobre = persona cuyo ingreso per cápita del hogar cae bajo la línea oficial.
 # Como pobre e indigente son 0/1, su promedio ponderado ES la tasa de pobreza.
@@ -162,7 +311,7 @@ g3 <- ggplot(pobreza_larga, aes(anio, pct, fill = anio)) +
 print(g3)
 
 # =============================================================================
-# 4. ¿QUIÉN ES POBRE?  Perfil del pobre  (lección del Banco Mundial, Figura O.5)
+# 5. ¿QUIÉN ES POBRE?  Perfil del pobre  (lección del Banco Mundial, Figura O.5)
 # =============================================================================
 # Mostramos la COMPOSICIÓN de la población pobre: de cada 100 pobres, ¿cuántos
 # hay en cada grupo? Es distinto de la TASA de pobreza (eso lo vemos al final).
@@ -178,7 +327,7 @@ geih <- geih |>
 # Nos quedamos solo con las personas pobres: el resto del bloque es sobre ellas.
 pobres <- geih |> filter(pobre == 1)
 
-# --- 4a. Perfil por edad ------------------------------------------------------
+# --- 5a. Perfil por edad ------------------------------------------------------
 # count(wt = fex) suma los factores de expansión: cuenta personas del país,
 # no filas de la encuesta.
 perfil_edad <- pobres |>
@@ -190,7 +339,7 @@ perfil_edad <- pobres |>
 
 print(perfil_edad)
 
-# --- 4b. Perfil por sexo ------------------------------------------------------
+# --- 5b. Perfil por sexo ------------------------------------------------------
 # El mismo patrón de cuatro pasos, cambiando la variable de agrupación.
 perfil_sexo <- pobres |>
   filter(!is.na(sexo)) |>
@@ -201,7 +350,7 @@ perfil_sexo <- pobres |>
 
 print(perfil_sexo)
 
-# --- 4c. Perfil por nivel educativo ------------------------------------------
+# --- 5c. Perfil por nivel educativo ------------------------------------------
 # Acá filtramos a 15+ años: la educación de un niño de 6 años no dice nada.
 perfil_educ <- pobres |>
   filter(edad >= 15, !is.na(educ)) |>
@@ -246,7 +395,7 @@ tasa_por_educ <- geih |>
 print(tasa_por_educ)
 
 # =============================================================================
-# 5. GUARDAR LAS GRÁFICAS (opcional)
+# 6. GUARDAR LAS GRÁFICAS (opcional)
 # =============================================================================
 dir.create("figuras", showWarnings = FALSE)
 ggsave("figuras/2a-ingreso-por-quintil.png",   g2a, width = 8, height = 5, dpi = 150)
@@ -255,7 +404,7 @@ ggsave("figuras/4a-perfil-pobre-edad.png",     g4a, width = 8, height = 5, dpi =
 ggsave("figuras/4b-perfil-pobre-educacion.png", g4b, width = 8, height = 5, dpi = 150)
 
 # =============================================================================
-# 6. SÍNTESIS (para discutir en clase)
+# 7. SÍNTESIS (para discutir en clase)
 # =============================================================================
 # - La pobreza monetaria subió de 35,7% a 39,3% entre 2019 y 2021.
 # - El golpe no fue parejo: mirar qué quintil perdió más y cómo cambió la brecha Q5/Q1.
@@ -265,3 +414,7 @@ ggsave("figuras/4b-perfil-pobre-educacion.png", g4b, width = 8, height = 5, dpi 
 #   No directamente: es una foto antes/después sin contrafactual. Para acercarnos
 #   a un efecto causal necesitaríamos un grupo de comparación o una fuente de
 #   variación exógena. Acá solo describimos. (Esa es la frontera de la Unidad 1.)
+#
+# Y SOBRE LOS DATOS: la sección 1 mostró que "los datos" no llegan limpios. Alguien
+#   decidió que Básica secundaria y Media son la misma categoría, y que el 9 del
+#   DANE es NA. Esas decisiones cambian los resultados y hay que poder defenderlas.

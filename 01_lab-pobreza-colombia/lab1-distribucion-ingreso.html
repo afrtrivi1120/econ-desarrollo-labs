@@ -2210,16 +2210,26 @@ vertical-align: -.125em;
   <ul>
   <li><a href="#de-qué-se-trata" id="toc-de-qué-se-trata" class="nav-link active" data-scroll-target="#de-qué-se-trata"><span class="header-section-number">1</span> De qué se trata</a></li>
   <li><a href="#preparación" id="toc-preparación" class="nav-link" data-scroll-target="#preparación"><span class="header-section-number">2</span> Preparación</a></li>
-  <li><a href="#una-mirada-a-los-datos" id="toc-una-mirada-a-los-datos" class="nav-link" data-scroll-target="#una-mirada-a-los-datos"><span class="header-section-number">3</span> Una mirada a los datos</a></li>
-  <li><a href="#sec-quintiles" id="toc-sec-quintiles" class="nav-link" data-scroll-target="#sec-quintiles"><span class="header-section-number">4</span> Ingreso por quintil</a></li>
-  <li><a href="#sec-pobreza" id="toc-sec-pobreza" class="nav-link" data-scroll-target="#sec-pobreza"><span class="header-section-number">5</span> Pobreza 2019 vs 2021</a></li>
-  <li><a href="#sec-perfil" id="toc-sec-perfil" class="nav-link" data-scroll-target="#sec-perfil"><span class="header-section-number">6</span> ¿Quién es pobre? El perfil del pobre</a>
+  <li><a href="#sec-limpieza" id="toc-sec-limpieza" class="nav-link" data-scroll-target="#sec-limpieza"><span class="header-section-number">3</span> De la microdata cruda al subset</a>
   <ul class="collapse">
-  <li><a href="#perfil-por-edad" id="toc-perfil-por-edad" class="nav-link" data-scroll-target="#perfil-por-edad"><span class="header-section-number">6.1</span> Perfil por edad</a></li>
-  <li><a href="#perfil-por-sexo" id="toc-perfil-por-sexo" class="nav-link" data-scroll-target="#perfil-por-sexo"><span class="header-section-number">6.2</span> Perfil por sexo</a></li>
-  <li><a href="#perfil-por-nivel-educativo" id="toc-perfil-por-nivel-educativo" class="nav-link" data-scroll-target="#perfil-por-nivel-educativo"><span class="header-section-number">6.3</span> Perfil por nivel educativo</a></li>
+  <li><a href="#leer-los-archivos-crudos" id="toc-leer-los-archivos-crudos" class="nav-link" data-scroll-target="#leer-los-archivos-crudos"><span class="header-section-number">3.1</span> Leer los archivos crudos</a></li>
+  <li><a href="#mirar-el-dato-crudo-antes-de-tocarlo" id="toc-mirar-el-dato-crudo-antes-de-tocarlo" class="nav-link" data-scroll-target="#mirar-el-dato-crudo-antes-de-tocarlo"><span class="header-section-number">3.2</span> Mirar el dato crudo antes de tocarlo</a></li>
+  <li><a href="#qué-significa-cada-variable" id="toc-qué-significa-cada-variable" class="nav-link" data-scroll-target="#qué-significa-cada-variable"><span class="header-section-number">3.3</span> Qué significa cada variable</a></li>
+  <li><a href="#unir-personas-con-su-hogar" id="toc-unir-personas-con-su-hogar" class="nav-link" data-scroll-target="#unir-personas-con-su-hogar"><span class="header-section-number">3.4</span> Unir personas con su hogar</a></li>
+  <li><a href="#recodificar-de-códigos-a-etiquetas" id="toc-recodificar-de-códigos-a-etiquetas" class="nav-link" data-scroll-target="#recodificar-de-códigos-a-etiquetas"><span class="header-section-number">3.5</span> Recodificar: de códigos a etiquetas</a></li>
+  <li><a href="#quedarnos-con-lo-que-usamos" id="toc-quedarnos-con-lo-que-usamos" class="nav-link" data-scroll-target="#quedarnos-con-lo-que-usamos"><span class="header-section-number">3.6</span> Quedarnos con lo que usamos</a></li>
+  <li><a href="#verificación-reproducimos-las-cifras-oficiales" id="toc-verificación-reproducimos-las-cifras-oficiales" class="nav-link" data-scroll-target="#verificación-reproducimos-las-cifras-oficiales"><span class="header-section-number">3.7</span> Verificación: ¿reproducimos las cifras oficiales?</a></li>
   </ul></li>
-  <li><a href="#síntesis-y-discusión" id="toc-síntesis-y-discusión" class="nav-link" data-scroll-target="#síntesis-y-discusión"><span class="header-section-number">7</span> Síntesis y discusión</a></li>
+  <li><a href="#una-mirada-a-los-datos" id="toc-una-mirada-a-los-datos" class="nav-link" data-scroll-target="#una-mirada-a-los-datos"><span class="header-section-number">4</span> Una mirada a los datos</a></li>
+  <li><a href="#sec-quintiles" id="toc-sec-quintiles" class="nav-link" data-scroll-target="#sec-quintiles"><span class="header-section-number">5</span> Ingreso por quintil</a></li>
+  <li><a href="#sec-pobreza" id="toc-sec-pobreza" class="nav-link" data-scroll-target="#sec-pobreza"><span class="header-section-number">6</span> Pobreza 2019 vs 2021</a></li>
+  <li><a href="#sec-perfil" id="toc-sec-perfil" class="nav-link" data-scroll-target="#sec-perfil"><span class="header-section-number">7</span> ¿Quién es pobre? El perfil del pobre</a>
+  <ul class="collapse">
+  <li><a href="#perfil-por-edad" id="toc-perfil-por-edad" class="nav-link" data-scroll-target="#perfil-por-edad"><span class="header-section-number">7.1</span> Perfil por edad</a></li>
+  <li><a href="#perfil-por-sexo" id="toc-perfil-por-sexo" class="nav-link" data-scroll-target="#perfil-por-sexo"><span class="header-section-number">7.2</span> Perfil por sexo</a></li>
+  <li><a href="#perfil-por-nivel-educativo" id="toc-perfil-por-nivel-educativo" class="nav-link" data-scroll-target="#perfil-por-nivel-educativo"><span class="header-section-number">7.3</span> Perfil por nivel educativo</a></li>
+  </ul></li>
+  <li><a href="#síntesis-y-discusión" id="toc-síntesis-y-discusión" class="nav-link" data-scroll-target="#síntesis-y-discusión"><span class="header-section-number">8</span> Síntesis y discusión</a></li>
   </ul>
 </nav>
 </div>
@@ -2284,23 +2294,460 @@ vertical-align: -.125em;
 <p><code>pacman</code> instala lo que falte y carga lo que ya esté: una sola línea para todo.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">&quot;pacman&quot;</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;pacman&quot;</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, scales)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Subset de enseñanza ya listo (~1,47 M personas, 2 años).</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>geih <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">&quot;datos/geih_pobreza_2019_2021.rds&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">anio =</span> <span class="fu">factor</span>(anio))   <span class="co"># el año es una etiqueta, no un número con el que operar</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, scales, data.table, R.utils)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>El <strong>factor de expansión</strong> (<code>fex</code>) es clave: cada fila “representa” a <code>fex</code> personas del país, así que <strong>toda cifra nacional se pondera por <code>fex</code></strong>.</p>
-</section>
-<section id="una-mirada-a-los-datos" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="una-mirada-a-los-datos"><span class="header-section-number">3</span> Una mirada a los datos</h2>
+<p><code>data.table</code> entra por una sola función, <code>fread()</code>: los archivos del DANE traen <strong>137 columnas</strong> y millones de filas, y con <code>select = ...</code> leemos únicamente las que usamos. Es el único punto del lab donde gana sobre el <code>tidyverse</code>. (<code>R.utils</code> es lo que le permite abrir los <code>.csv.gz</code> sin descomprimirlos antes.)</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(geih)        <span class="co"># filas (personas) x columnas</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rutas_crudos <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">hogares_2019  =</span> <span class="st">&quot;datos/_crudos/geih-2019-hogares.csv.gz&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">personas_2019 =</span> <span class="st">&quot;datos/_crudos/geih-2019-personas.csv.gz&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">hogares_2021  =</span> <span class="st">&quot;datos/_crudos/geih-2021-hogares.csv.gz&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">personas_2021 =</span> <span class="st">&quot;datos/_crudos/geih-2021-personas.csv.gz&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>hay_crudos <span class="ot">&lt;-</span> <span class="fu">all</span>(<span class="fu">file.exists</span>(rutas_crudos))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>hay_crudos</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Si <code>hay_crudos</code> sale <code>FALSE</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los bloques de la sección siguiente <strong>se muestran pero no se ejecutan</strong>, y el análisis arranca del subset ya construido. Baje los archivos del DANE siguiendo <a href="datos/SOURCE.md"><code>datos/SOURCE.md</code></a> para ver la limpieza corriendo de verdad.</p>
+</div>
+</div>
+</section>
+<section id="sec-limpieza" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-limpieza"><span class="header-section-number">3</span> De la microdata cruda al subset</h2>
+<p>Los datos <strong>no llegan limpios</strong>. Esta sección muestra qué había en el archivo original y qué le hicimos, porque cada decisión de limpieza cambia los resultados.</p>
+<p>El DANE reparte la medición de pobreza en <strong>dos archivos por año</strong>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Archivo</th>
+<th>Unidad</th>
+<th>Qué trae</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Hogares</strong></td>
+<td>hogar</td>
+<td>el ingreso, las líneas de pobreza y los indicadores</td>
+</tr>
+<tr class="even">
+<td><strong>Personas</strong></td>
+<td>persona</td>
+<td>la demografía: edad, sexo, educación</td>
+</tr>
+</tbody>
+</table>
+<p>Se unen por <code>directorio</code> + <code>secuencia_p</code>. Por eso son <strong>cuatro</strong> archivos y no dos: sin el de personas no hay edad ni educación; sin el de hogares no hay ingreso ni pobreza.</p>
+<section id="leer-los-archivos-crudos" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="leer-los-archivos-crudos"><span class="header-section-number">3.1</span> Leer los archivos crudos</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Los dos años no vienen en el mismo formato
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>2019</strong> usa separador <code>;</code> y decimal <code>,</code> (formato europeo). <strong>2021</strong> usa separador <code>,</code> y decimal <code>.</code>. Por eso los leemos en bloques separados: no es un descuido, es el dato real.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hogares_2019 <span class="ot">&lt;-</span> <span class="fu">fread</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  rutas_crudos[[<span class="st">&quot;hogares_2019&quot;</span>]], <span class="at">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="at">dec =</span> <span class="st">&quot;,&quot;</span>, <span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">select =</span> <span class="fu">c</span>(<span class="st">&quot;directorio&quot;</span>, <span class="st">&quot;secuencia_p&quot;</span>, <span class="st">&quot;ingpcug&quot;</span>, <span class="st">&quot;lp&quot;</span>, <span class="st">&quot;pobre&quot;</span>, <span class="st">&quot;indigente&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(tolower)   <span class="co"># los encabezados del DANE no siempre vienen igual</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>personas_2019 <span class="ot">&lt;-</span> <span class="fu">fread</span>(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  rutas_crudos[[<span class="st">&quot;personas_2019&quot;</span>]], <span class="at">sep =</span> <span class="st">&quot;;&quot;</span>, <span class="at">dec =</span> <span class="st">&quot;,&quot;</span>, <span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">select =</span> <span class="fu">c</span>(<span class="st">&quot;directorio&quot;</span>, <span class="st">&quot;secuencia_p&quot;</span>, <span class="st">&quot;clase&quot;</span>, <span class="st">&quot;p6020&quot;</span>, <span class="st">&quot;p6040&quot;</span>, <span class="st">&quot;p6210&quot;</span>, <span class="st">&quot;fex_c&quot;</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(tolower)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hogares_2021 <span class="ot">&lt;-</span> <span class="fu">fread</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  rutas_crudos[[<span class="st">&quot;hogares_2021&quot;</span>]], <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="at">dec =</span> <span class="st">&quot;.&quot;</span>, <span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">select =</span> <span class="fu">c</span>(<span class="st">&quot;directorio&quot;</span>, <span class="st">&quot;secuencia_p&quot;</span>, <span class="st">&quot;ingpcug&quot;</span>, <span class="st">&quot;lp&quot;</span>, <span class="st">&quot;pobre&quot;</span>, <span class="st">&quot;indigente&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(tolower)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>personas_2021 <span class="ot">&lt;-</span> <span class="fu">fread</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  rutas_crudos[[<span class="st">&quot;personas_2021&quot;</span>]], <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="at">dec =</span> <span class="st">&quot;.&quot;</span>, <span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">select =</span> <span class="fu">c</span>(<span class="st">&quot;directorio&quot;</span>, <span class="st">&quot;secuencia_p&quot;</span>, <span class="st">&quot;clase&quot;</span>, <span class="st">&quot;p6020&quot;</span>, <span class="st">&quot;p6040&quot;</span>, <span class="st">&quot;p6210&quot;</span>, <span class="st">&quot;fex_c&quot;</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(tolower)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="mirar-el-dato-crudo-antes-de-tocarlo" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="mirar-el-dato-crudo-antes-de-tocarlo"><span class="header-section-number">3.2</span> Mirar el dato crudo antes de tocarlo</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(personas_2019)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 756,063
+Columns: 7
+$ directorio  &lt;int&gt; 4804535, 4804535, 4804535, 4804536, 4804536, 4804537, 4804…
+$ secuencia_p &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ clase       &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ p6020       &lt;int&gt; 2, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 1…
+$ p6040       &lt;int&gt; 70, 38, 23, 21, 4, 13, 62, 24, 58, 25, 5, 24, 16, 45, 62, …
+$ p6210       &lt;int&gt; 3, 3, 5, 5, 2, 4, 3, 6, 3, 6, 2, 5, 4, 3, 3, 6, 3, 6, 6, 3…
+$ fex_c       &lt;dbl&gt; 77.55219, 77.55219, 77.55219, 91.43426, 91.43426, 68.94146…</code></pre>
+</div>
+</div>
+<p>Acá está el problema de frente: los nombres <strong>no dicen nada</strong> (<code>p6020</code>, <code>p6210</code>, <code>fex_c</code>) y las respuestas son <strong>códigos numéricos</strong>. Sin el diccionario del DANE, esto no se puede leer.</p>
+</section>
+<section id="qué-significa-cada-variable" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="qué-significa-cada-variable"><span class="header-section-number">3.3</span> Qué significa cada variable</h3>
+<p>Estas definiciones están tomadas <strong>textualmente</strong> del diccionario de datos oficial del DANE, que se versiona en <a href="datos/diccionario-dane/"><code>datos/diccionario-dane/</code></a>. No están escritas de memoria.</p>
+<section id="las-que-vienen-del-archivo-de-hogares" class="level4" data-number="3.3.1">
+<h4 data-number="3.3.1" class="anchored" data-anchor-id="las-que-vienen-del-archivo-de-hogares"><span class="header-section-number">3.3.1</span> Las que vienen del archivo de <strong>hogares</strong></h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Definición del DANE</th>
+<th>Códigos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>directorio</code></td>
+<td>Llave vivienda</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td><code>secuencia_p</code></td>
+<td>Llave hogar</td>
+<td>—</td>
+</tr>
+<tr class="odd">
+<td><code>ingpcug</code></td>
+<td>Ingreso per cápita de la unidad de gasto <strong>con imputación de arriendo a propietarios y usufructuarios</strong></td>
+<td>pesos corrientes/mes</td>
+</tr>
+<tr class="even">
+<td><code>lp</code></td>
+<td>Línea de pobreza: <em>“valor de la canasta básica de bienes que establece el límite de ingresos por debajo del cual un hogar es considerado en pobreza”</em></td>
+<td>pesos/mes</td>
+</tr>
+<tr class="odd">
+<td><code>pobre</code></td>
+<td>Pobre=1 No pobre=0</td>
+<td><code>0</code> No pobre · <code>1</code> Pobre</td>
+</tr>
+<tr class="even">
+<td><code>indigente</code></td>
+<td>Indigente=1 No indigente=0</td>
+<td><code>0</code> No indigente · <code>1</code> Indigente</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="las-que-vienen-del-archivo-de-personas" class="level4" data-number="3.3.2">
+<h4 data-number="3.3.2" class="anchored" data-anchor-id="las-que-vienen-del-archivo-de-personas"><span class="header-section-number">3.3.2</span> Las que vienen del archivo de <strong>personas</strong></h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Definición del DANE</th>
+<th>Códigos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>clase</code></td>
+<td>1. Cabecera, 2. Resto (centros poblados y área rural dispersa)</td>
+<td><code>1</code> Cabecera · <code>2</code> Resto</td>
+</tr>
+<tr class="even">
+<td><code>p6020</code></td>
+<td>Sexo</td>
+<td><code>1</code> Hombre · <code>2</code> Mujer</td>
+</tr>
+<tr class="odd">
+<td><code>p6040</code></td>
+<td>¿Cuántos años cumplidos tiene?</td>
+<td>años</td>
+</tr>
+<tr class="even">
+<td><code>p6210</code></td>
+<td>¿Cuál es el nivel educativo más alto alcanzado…?</td>
+<td><code>1</code> Ninguno · <code>2</code> Preescolar · <code>3</code> Básica primaria · <code>4</code> Básica secundaria · <code>5</code> Media · <code>6</code> Superior · <code>9</code> No sabe/no informa</td>
+</tr>
+<tr class="odd">
+<td><code>fex_c</code></td>
+<td><strong>Factor de expansión anualizado</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span><code>fex_c</code> es la variable más importante del lab
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cada fila <strong>representa a <code>fex_c</code> personas del país</strong>. Una encuesta no es un censo: sin ponderar, todas las cifras están mal. Por eso <strong>toda cifra nacional de este lab va ponderada por <code>fex</code></strong>.</p>
+<p>Y ojo con <code>ingpcug</code>: no es el salario. Es el ingreso del hogar por persona, e <strong>incluye un arriendo imputado</strong> a quienes viven en vivienda propia. Sin esa imputación, un propietario sin ingresos monetarios parecería más pobre de lo que es.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="unir-personas-con-su-hogar" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="unir-personas-con-su-hogar"><span class="header-section-number">3.4</span> Unir personas con su hogar</h3>
+<p><code>left_join</code> <strong>desde personas</strong>: queremos una fila por persona, y a cada una le pegamos el ingreso y la pobreza del hogar al que pertenece. Varias personas comparten hogar, así que el ingreso del hogar se repite en todas sus filas.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>geih_2019 <span class="ot">&lt;-</span> personas_2019 <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hogares_2019, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;directorio&quot;</span>, <span class="st">&quot;secuencia_p&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">anio =</span> <span class="dv">2019</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>geih_2021 <span class="ot">&lt;-</span> personas_2021 <span class="sc">|&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hogares_2021, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;directorio&quot;</span>, <span class="st">&quot;secuencia_p&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">anio =</span> <span class="dv">2021</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>geih_crudo <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(geih_2019, geih_2021)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="recodificar-de-códigos-a-etiquetas" class="level3" data-number="3.5">
+<h3 data-number="3.5" class="anchored" data-anchor-id="recodificar-de-códigos-a-etiquetas"><span class="header-section-number">3.5</span> Recodificar: de códigos a etiquetas</h3>
+<p>De las diez variables que sobreviven, <strong>solo tres se recodifican</strong>. El resto se deja como viene o apenas se renombra.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>geih_crudo <span class="ot">&lt;-</span> geih_crudo <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sexo: 1 = Hombre, 2 = Mujer.</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sexo =</span> <span class="fu">factor</span>(p6020, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Hombre&quot;</span>, <span class="st">&quot;Mujer&quot;</span>)),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Clase: 1 = Cabecera (urbano), 2 = Resto (centros poblados y rural disperso).</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">area =</span> <span class="fu">factor</span>(clase, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Urbano&quot;</span>, <span class="st">&quot;Rural&quot;</span>)),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Educación: las SIETE categorías del DANE se colapsan a cuatro.</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">educ =</span> <span class="fu">case_when</span>(</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>      p6210 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>) <span class="sc">~</span> <span class="st">&quot;Sin educación&quot;</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>      p6210 <span class="sc">==</span> <span class="dv">3</span>         <span class="sc">~</span> <span class="st">&quot;Primaria&quot;</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>      p6210 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>) <span class="sc">~</span> <span class="st">&quot;Secundaria&quot;</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>      p6210 <span class="sc">==</span> <span class="dv">6</span>         <span class="sc">~</span> <span class="st">&quot;Superior&quot;</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> <span class="cn">NA_character_</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">educ =</span> <span class="fu">factor</span>(educ, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Sin educación&quot;</span>, <span class="st">&quot;Primaria&quot;</span>, <span class="st">&quot;Secundaria&quot;</span>, <span class="st">&quot;Superior&quot;</span>))</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>La recodificación de <code>educ</code> es una decisión, no un hecho
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Siete categorías del DANE se vuelven cuatro:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><code>p6210</code></th>
+<th>Etiqueta del DANE</th>
+<th>→ <code>educ</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Ninguno</td>
+<td>Sin educación</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Preescolar</td>
+<td>Sin educación</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Básica primaria (1º–5º)</td>
+<td>Primaria</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Básica secundaria (6º–9º)</td>
+<td>Secundaria</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Media (10º–13º)</td>
+<td>Secundaria</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Superior o universitaria</td>
+<td>Superior</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>No sabe, no informa</td>
+<td><code>NA</code></td>
+</tr>
+</tbody>
+</table>
+<p>Juntar <em>Ninguno</em> con <em>Preescolar</em> es defendible si lo que interesa es “no alcanzó primaria”. Pero juntar <em>Básica secundaria</em> con <em>Media</em> <strong>borra la diferencia entre haber llegado a noveno y haberse graduado de bachillerato</strong>, que en el mercado laboral colombiano no es menor. Y mandar el <code>9</code> a <code>NA</code> supone que quien no informa se parece al promedio de los que sí informaron.</p>
+<p>Esas tres decisiones las tomó alguien —nosotros— y hay que poder defenderlas.</p>
+</div>
+</div>
+</section>
+<section id="quedarnos-con-lo-que-usamos" class="level3" data-number="3.6">
+<h3 data-number="3.6" class="anchored" data-anchor-id="quedarnos-con-lo-que-usamos"><span class="header-section-number">3.6</span> Quedarnos con lo que usamos</h3>
+<p><code>directorio</code> y <code>secuencia_p</code> ya cumplieron su función —unir los archivos— y se van.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>geih <span class="ot">&lt;-</span> geih_crudo <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    anio,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">fex =</span> fex_c,        <span class="co"># factor de expansión anualizado</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    ingpcug,            <span class="co"># ingreso per cápita de la unidad de gasto</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    lp,                 <span class="co"># línea de pobreza</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    pobre,              <span class="co"># 1 = persona en pobreza monetaria</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    indigente,          <span class="co"># 1 = persona en pobreza extrema</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">edad =</span> p6040,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    sexo, educ, area</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(ingpcug), <span class="sc">!</span><span class="fu">is.na</span>(fex))   <span class="co"># sin ingreso o sin peso, la fila no sirve</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(geih_crudo) <span class="sc">-</span> <span class="fu">nrow</span>(geih)   <span class="co"># cuántas filas se fueron en el filtro</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<p>Da <strong>cero</strong>: en estos dos años el módulo de pobreza del DANE viene completo, sin ingresos ni pesos faltantes. El filtro no sobra —es la red de seguridad que uno pone sin saber qué va a encontrar—, pero conviene saber que acá no quitó nada. Si en otro año quitara muchas filas, esa sería una noticia que habría que investigar antes de seguir.</p>
+<p><strong>Resumen de lo que pasó con cada variable:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Qué se hizo</th>
+<th>Variables</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Sin cambios</strong></td>
+<td><code>ingpcug</code>, <code>lp</code>, <code>pobre</code>, <code>indigente</code></td>
+</tr>
+<tr class="even">
+<td><strong>Solo renombradas</strong></td>
+<td><code>fex_c</code> → <code>fex</code>, <code>p6040</code> → <code>edad</code></td>
+</tr>
+<tr class="odd">
+<td><strong>Recodificadas</strong></td>
+<td><code>p6020</code> → <code>sexo</code>, <code>clase</code> → <code>area</code>, <code>p6210</code> → <code>educ</code></td>
+</tr>
+<tr class="even">
+<td><strong>Descartadas</strong></td>
+<td><code>directorio</code>, <code>secuencia_p</code> (solo servían para unir)</td>
+</tr>
+<tr class="odd">
+<td><strong>Agregada</strong></td>
+<td><code>anio</code>, al apilar los dos años</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="verificación-reproducimos-las-cifras-oficiales" class="level3" data-number="3.7">
+<h3 data-number="3.7" class="anchored" data-anchor-id="verificación-reproducimos-las-cifras-oficiales"><span class="header-section-number">3.7</span> Verificación: ¿reproducimos las cifras oficiales?</h3>
+<p>Este es el control de calidad. Si la limpieza se rompió en algún punto, acá se nota.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>geih <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">pobreza  =</span> <span class="fu">round</span>(<span class="fu">weighted.mean</span>(pobre, fex) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">extrema  =</span> <span class="fu">round</span>(<span class="fu">weighted.mean</span>(indigente, fex) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">personas_millones =</span> <span class="fu">round</span>(<span class="fu">sum</span>(fex) <span class="sc">/</span> <span class="fl">1e6</span>, <span class="dv">1</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">anio</th>
+<th style="text-align: right;">pobreza</th>
+<th style="text-align: right;">extrema</th>
+<th style="text-align: right;">personas_millones</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2019</td>
+<td style="text-align: right;">35.7</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">48.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2021</td>
+<td style="text-align: right;">39.3</td>
+<td style="text-align: right;">12.2</td>
+<td style="text-align: right;">49.9</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Las cifras oficiales del DANE son <strong>35,7 %</strong> y <strong>39,3 %</strong> de pobreza monetaria, y <strong>9,6 %</strong> y <strong>12,2 %</strong> de pobreza extrema. Si la tabla de arriba coincide, la limpieza está bien hecha.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sin los archivos crudos, arrancamos del subset ya construido.</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>geih <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">&quot;datos/geih_pobreza_2019_2021.rds&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>geih <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">anio =</span> <span class="fu">factor</span>(anio))   <span class="co"># el año es etiqueta, no número</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="una-mirada-a-los-datos" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="una-mirada-a-los-datos"><span class="header-section-number">4</span> Una mirada a los datos</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(geih)        <span class="co"># filas (personas) x columnas</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1467444      10</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(geih)       <span class="co"># primeras filas</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(geih)       <span class="co"># primeras filas</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -2409,7 +2856,7 @@ vertical-align: -.125em;
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(geih)    <span class="co"># tipo de cada variable</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(geih)    <span class="co"># tipo de cada variable</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1,467,444
 Columns: 10
@@ -2427,9 +2874,9 @@ $ area      &lt;fct&gt; Urbano, Urbano, Urbano, Urbano, Urbano, Urbano, Urbano, 
 </div>
 <p>¿A cuántos colombianos representa cada año?</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>geih <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">personas_millones =</span> <span class="fu">round</span>(<span class="fu">sum</span>(fex) <span class="sc">/</span> <span class="fl">1e6</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>geih <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">personas_millones =</span> <span class="fu">round</span>(<span class="fu">sum</span>(fex) <span class="sc">/</span> <span class="fl">1e6</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -2454,8 +2901,8 @@ $ area      &lt;fct&gt; Urbano, Urbano, Urbano, Urbano, Urbano, Urbano, Urbano, 
 </div>
 </div>
 </section>
-<section id="sec-quintiles" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="sec-quintiles"><span class="header-section-number">4</span> Ingreso por quintil</h2>
+<section id="sec-quintiles" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="sec-quintiles"><span class="header-section-number">5</span> Ingreso por quintil</h2>
 <blockquote class="blockquote">
 <p><strong>Lección de Sala-i-Martin:</strong> mirar la <em>distribución</em>, no solo la media.</p>
 </blockquote>
@@ -2466,27 +2913,27 @@ $ area      &lt;fct&gt; Urbano, Urbano, Urbano, Urbano, Urbano, Urbano, Urbano, 
 <li>cortamos ese acumulado en 20 %, 40 %, 60 % y 80 %.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>geih <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span>                       <span class="co"># los quintiles se arman DENTRO de cada año</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(ingpcug, <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">poblacion_acumulada =</span> <span class="fu">cumsum</span>(fex) <span class="sc">/</span> <span class="fu">sum</span>(fex),</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">quintil =</span> <span class="fu">cut</span>(</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      poblacion_acumulada,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="cn">Inf</span>),</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Q1&quot;</span>, <span class="st">&quot;Q2&quot;</span>, <span class="st">&quot;Q3&quot;</span>, <span class="st">&quot;Q4&quot;</span>, <span class="st">&quot;Q5&quot;</span>)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>geih <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span>                       <span class="co"># los quintiles se arman DENTRO de cada año</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(ingpcug, <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">poblacion_acumulada =</span> <span class="fu">cumsum</span>(fex) <span class="sc">/</span> <span class="fu">sum</span>(fex),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">quintil =</span> <span class="fu">cut</span>(</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>      poblacion_acumulada,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="cn">Inf</span>),</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Q1&quot;</span>, <span class="st">&quot;Q2&quot;</span>, <span class="st">&quot;Q3&quot;</span>, <span class="st">&quot;Q4&quot;</span>, <span class="st">&quot;Q5&quot;</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Revisión rápida: los cinco grupos deben pesar ~20 % de la población cada uno.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>geih <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio, quintil) <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">personas =</span> <span class="fu">sum</span>(fex), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">peso_pct =</span> <span class="fu">round</span>(personas <span class="sc">/</span> <span class="fu">sum</span>(personas) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>geih <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio, quintil) <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">personas =</span> <span class="fu">sum</span>(fex), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">peso_pct =</span> <span class="fu">round</span>(personas <span class="sc">/</span> <span class="fu">sum</span>(personas) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -2578,18 +3025,18 @@ $ area      &lt;fct&gt; Urbano, Urbano, Urbano, Urbano, Urbano, Urbano, Urbano, 
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>quintiles <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio, quintil) <span class="sc">|&gt;</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">ingreso_medio =</span> <span class="fu">weighted.mean</span>(ingpcug, fex),</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">ingreso_total =</span> <span class="fu">sum</span>(ingpcug <span class="sc">*</span> fex),</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">participacion =</span> ingreso_total <span class="sc">/</span> <span class="fu">sum</span>(ingreso_total)) <span class="sc">|&gt;</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>quintiles</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>quintiles <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio, quintil) <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">ingreso_medio =</span> <span class="fu">weighted.mean</span>(ingpcug, fex),</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">ingreso_total =</span> <span class="fu">sum</span>(ingpcug <span class="sc">*</span> fex),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">participacion =</span> ingreso_total <span class="sc">/</span> <span class="fu">sum</span>(ingreso_total)) <span class="sc">|&gt;</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>quintiles</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -2679,12 +3126,12 @@ $ area      &lt;fct&gt; Urbano, Urbano, Urbano, Urbano, Urbano, Urbano, Urbano, 
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(quintiles, <span class="fu">aes</span>(quintil, ingreso_medio, <span class="at">fill =</span> anio)) <span class="sc">+</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_dollar</span>(<span class="at">prefix =</span> <span class="st">&quot;$&quot;</span>, <span class="at">big.mark =</span> <span class="st">&quot;.&quot;</span>, <span class="at">decimal.mark =</span> <span class="st">&quot;,&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Quintil de ingreso (Q1 = más pobre)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Ingreso mensual&quot;</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">&quot;Año&quot;</span>, <span class="at">caption =</span> <span class="st">&quot;Fuente: DANE, GEIH (pobreza monetaria).&quot;</span>) <span class="sc">+</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(quintiles, <span class="fu">aes</span>(quintil, ingreso_medio, <span class="at">fill =</span> anio)) <span class="sc">+</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_dollar</span>(<span class="at">prefix =</span> <span class="st">&quot;$&quot;</span>, <span class="at">big.mark =</span> <span class="st">&quot;.&quot;</span>, <span class="at">decimal.mark =</span> <span class="st">&quot;,&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Quintil de ingreso (Q1 = más pobre)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Ingreso mensual&quot;</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">&quot;Año&quot;</span>, <span class="at">caption =</span> <span class="st">&quot;Fuente: DANE, GEIH (pobreza monetaria).&quot;</span>) <span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-quintil-ingreso" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -2699,12 +3146,12 @@ Figura 1: Ingreso per cápita promedio por quintil, 2019 vs 2021.
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(quintiles, <span class="fu">aes</span>(quintil, participacion, <span class="at">fill =</span> anio)) <span class="sc">+</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_percent</span>()) <span class="sc">+</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Quintil de ingreso&quot;</span>, <span class="at">y =</span> <span class="st">&quot;% del ingreso nacional&quot;</span>,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">&quot;Año&quot;</span>, <span class="at">caption =</span> <span class="st">&quot;Fuente: DANE, GEIH (pobreza monetaria).&quot;</span>) <span class="sc">+</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(quintiles, <span class="fu">aes</span>(quintil, participacion, <span class="at">fill =</span> anio)) <span class="sc">+</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_percent</span>()) <span class="sc">+</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Quintil de ingreso&quot;</span>, <span class="at">y =</span> <span class="st">&quot;% del ingreso nacional&quot;</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">&quot;Año&quot;</span>, <span class="at">caption =</span> <span class="st">&quot;Fuente: DANE, GEIH (pobreza monetaria).&quot;</span>) <span class="sc">+</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-quintil-part" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -2720,13 +3167,13 @@ Figura 2: Participación en el ingreso total por quintil. El Q5 concentra la ma
 </div>
 <p>La <strong>razón Q5/Q1</strong> es una medida simple de desigualdad: ¿cuántas veces gana el quintil más rico frente al más pobre? Pasamos los quintiles de filas a columnas para poder dividir Q5 entre Q1.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>brecha <span class="ot">&lt;-</span> quintiles <span class="sc">|&gt;</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(anio, quintil, ingreso_medio) <span class="sc">|&gt;</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> quintil, <span class="at">values_from =</span> ingreso_medio) <span class="sc">|&gt;</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">brecha_Q5_Q1 =</span> <span class="fu">round</span>(Q5 <span class="sc">/</span> Q1, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(anio, brecha_Q5_Q1)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>brecha</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>brecha <span class="ot">&lt;-</span> quintiles <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(anio, quintil, ingreso_medio) <span class="sc">|&gt;</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> quintil, <span class="at">values_from =</span> ingreso_medio) <span class="sc">|&gt;</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">brecha_Q5_Q1 =</span> <span class="fu">round</span>(Q5 <span class="sc">/</span> Q1, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(anio, brecha_Q5_Q1)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>brecha</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -2751,18 +3198,18 @@ Figura 2: Participación en el ingreso total por quintil. El Q5 concentra la ma
 </div>
 </div>
 </section>
-<section id="sec-pobreza" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="sec-pobreza"><span class="header-section-number">5</span> Pobreza 2019 vs 2021</h2>
+<section id="sec-pobreza" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="sec-pobreza"><span class="header-section-number">6</span> Pobreza 2019 vs 2021</h2>
 <p>Una persona es <strong>pobre</strong> si el ingreso per cápita de su hogar cae bajo la <strong>línea de pobreza</strong> oficial del DANE (específica de cada año). Como <code>pobre</code> e <code>indigente</code> son variables 0/1, su promedio ponderado <strong>es</strong> la tasa de pobreza.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pobreza <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">pobreza_pct         =</span> <span class="fu">round</span>(<span class="fu">weighted.mean</span>(pobre, fex) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>),</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">pobreza_extrema_pct =</span> <span class="fu">round</span>(<span class="fu">weighted.mean</span>(indigente, fex) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>pobreza</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pobreza <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">pobreza_pct         =</span> <span class="fu">round</span>(<span class="fu">weighted.mean</span>(pobre, fex) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>),</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">pobreza_extrema_pct =</span> <span class="fu">round</span>(<span class="fu">weighted.mean</span>(indigente, fex) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>pobreza</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -2791,19 +3238,19 @@ Figura 2: Participación en el ingreso total por quintil. El Q5 concentra la ma
 </div>
 <p>Para graficar los dos indicadores juntos los pasamos a <strong>formato largo</strong>: una fila por año y por indicador.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pobreza_larga <span class="ot">&lt;-</span> pobreza <span class="sc">|&gt;</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(pobreza_pct, pobreza_extrema_pct),</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;indicador&quot;</span>,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;pct&quot;</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">indicador =</span> <span class="fu">factor</span>(</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    indicador,</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;pobreza_pct&quot;</span>, <span class="st">&quot;pobreza_extrema_pct&quot;</span>),</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Pobreza monetaria&quot;</span>, <span class="st">&quot;Pobreza extrema&quot;</span>)</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>pobreza_larga</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>pobreza_larga <span class="ot">&lt;-</span> pobreza <span class="sc">|&gt;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(pobreza_pct, pobreza_extrema_pct),</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;indicador&quot;</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;pct&quot;</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">indicador =</span> <span class="fu">factor</span>(</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    indicador,</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;pobreza_pct&quot;</span>, <span class="st">&quot;pobreza_extrema_pct&quot;</span>),</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Pobreza monetaria&quot;</span>, <span class="st">&quot;Pobreza extrema&quot;</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>pobreza_larga</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -2841,14 +3288,14 @@ Figura 2: Participación en el ingreso total por quintil. El Q5 concentra la ma
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pobreza_larga, <span class="fu">aes</span>(anio, pct, <span class="at">fill =</span> anio)) <span class="sc">+</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(pct, <span class="st">&quot;%&quot;</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.3</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> indicador, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;% de la población&quot;</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">&quot;Fuente: DANE, GEIH (pobreza monetaria).&quot;</span>) <span class="sc">+</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pobreza_larga, <span class="fu">aes</span>(anio, pct, <span class="at">fill =</span> anio)) <span class="sc">+</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(pct, <span class="st">&quot;%&quot;</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.3</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> indicador, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;% de la población&quot;</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">&quot;Fuente: DANE, GEIH (pobreza monetaria).&quot;</span>) <span class="sc">+</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-pobreza" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -2864,36 +3311,36 @@ Figura 3: Tasa de pobreza monetaria y extrema, antes/después de la pandemia.
 </div>
 <p>La pobreza monetaria pasó de <strong>35,7 %</strong> a <strong>39,3 %</strong>, y la extrema de <strong>9,6 %</strong> a <strong>12,2 %</strong>: la foto de 2021 muestra más personas bajo la línea.</p>
 </section>
-<section id="sec-perfil" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="sec-perfil"><span class="header-section-number">6</span> ¿Quién es pobre? El perfil del pobre</h2>
+<section id="sec-perfil" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="sec-perfil"><span class="header-section-number">7</span> ¿Quién es pobre? El perfil del pobre</h2>
 <blockquote class="blockquote">
 <p><strong>Lección del Banco Mundial (Figura O.5):</strong> el pobre tiene un rostro —es joven y de baja escolaridad—. Veámoslo en Colombia.</p>
 </blockquote>
 <p>Mostramos la <strong>composición</strong> de la población pobre: de cada 100 pobres, ¿cuántos hay en cada grupo? Es distinto de la <strong>tasa</strong> de pobreza (eso lo vemos al final).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grupos de edad estilo Banco Mundial.</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>geih <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">grupo_edad =</span> <span class="fu">cut</span>(</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    edad,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">14</span>, <span class="dv">24</span>, <span class="dv">34</span>, <span class="dv">44</span>, <span class="dv">54</span>, <span class="dv">64</span>, <span class="cn">Inf</span>),</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;0-14&quot;</span>, <span class="st">&quot;15-24&quot;</span>, <span class="st">&quot;25-34&quot;</span>, <span class="st">&quot;35-44&quot;</span>, <span class="st">&quot;45-54&quot;</span>, <span class="st">&quot;55-64&quot;</span>, <span class="st">&quot;65+&quot;</span>)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Nos quedamos solo con las personas pobres: el resto de la sección es sobre ellas.</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>pobres <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span> <span class="fu">filter</span>(pobre <span class="sc">==</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grupos de edad estilo Banco Mundial.</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>geih <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">grupo_edad =</span> <span class="fu">cut</span>(</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    edad,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">14</span>, <span class="dv">24</span>, <span class="dv">34</span>, <span class="dv">44</span>, <span class="dv">54</span>, <span class="dv">64</span>, <span class="cn">Inf</span>),</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;0-14&quot;</span>, <span class="st">&quot;15-24&quot;</span>, <span class="st">&quot;25-34&quot;</span>, <span class="st">&quot;35-44&quot;</span>, <span class="st">&quot;45-54&quot;</span>, <span class="st">&quot;55-64&quot;</span>, <span class="st">&quot;65+&quot;</span>)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Nos quedamos solo con las personas pobres: el resto de la sección es sobre ellas.</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>pobres <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span> <span class="fu">filter</span>(pobre <span class="sc">==</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="perfil-por-edad" class="level3" data-number="6.1">
-<h3 data-number="6.1" class="anchored" data-anchor-id="perfil-por-edad"><span class="header-section-number">6.1</span> Perfil por edad</h3>
+<section id="perfil-por-edad" class="level3" data-number="7.1">
+<h3 data-number="7.1" class="anchored" data-anchor-id="perfil-por-edad"><span class="header-section-number">7.1</span> Perfil por edad</h3>
 <p><code>count(wt = fex)</code> suma los factores de expansión: cuenta <strong>personas del país</strong>, no filas de la encuesta.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>perfil_edad <span class="ot">&lt;-</span> pobres <span class="sc">|&gt;</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(grupo_edad)) <span class="sc">|&gt;</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(anio, grupo_edad, <span class="at">wt =</span> fex, <span class="at">name =</span> <span class="st">&quot;personas&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> personas <span class="sc">/</span> <span class="fu">sum</span>(personas) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">|&gt;</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>perfil_edad</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>perfil_edad <span class="ot">&lt;-</span> pobres <span class="sc">|&gt;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(grupo_edad)) <span class="sc">|&gt;</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(anio, grupo_edad, <span class="at">wt =</span> fex, <span class="at">name =</span> <span class="st">&quot;personas&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> personas <span class="sc">/</span> <span class="fu">sum</span>(personas) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">|&gt;</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>perfil_edad</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -2996,18 +3443,18 @@ Figura 3: Tasa de pobreza monetaria y extrema, antes/después de la pandemia.
 </div>
 </div>
 </section>
-<section id="perfil-por-sexo" class="level3" data-number="6.2">
-<h3 data-number="6.2" class="anchored" data-anchor-id="perfil-por-sexo"><span class="header-section-number">6.2</span> Perfil por sexo</h3>
+<section id="perfil-por-sexo" class="level3" data-number="7.2">
+<h3 data-number="7.2" class="anchored" data-anchor-id="perfil-por-sexo"><span class="header-section-number">7.2</span> Perfil por sexo</h3>
 <p>El mismo patrón de cuatro pasos, cambiando la variable de agrupación.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>perfil_sexo <span class="ot">&lt;-</span> pobres <span class="sc">|&gt;</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(sexo)) <span class="sc">|&gt;</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(anio, sexo, <span class="at">wt =</span> fex, <span class="at">name =</span> <span class="st">&quot;personas&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> personas <span class="sc">/</span> <span class="fu">sum</span>(personas) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>perfil_sexo</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>perfil_sexo <span class="ot">&lt;-</span> pobres <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(sexo)) <span class="sc">|&gt;</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(anio, sexo, <span class="at">wt =</span> fex, <span class="at">name =</span> <span class="st">&quot;personas&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> personas <span class="sc">/</span> <span class="fu">sum</span>(personas) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>perfil_sexo</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -3050,18 +3497,18 @@ Figura 3: Tasa de pobreza monetaria y extrema, antes/después de la pandemia.
 </div>
 </div>
 </section>
-<section id="perfil-por-nivel-educativo" class="level3" data-number="6.3">
-<h3 data-number="6.3" class="anchored" data-anchor-id="perfil-por-nivel-educativo"><span class="header-section-number">6.3</span> Perfil por nivel educativo</h3>
+<section id="perfil-por-nivel-educativo" class="level3" data-number="7.3">
+<h3 data-number="7.3" class="anchored" data-anchor-id="perfil-por-nivel-educativo"><span class="header-section-number">7.3</span> Perfil por nivel educativo</h3>
 <p>Acá filtramos a <strong>15+ años</strong>: la educación de un niño de 6 años no dice nada.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>perfil_educ <span class="ot">&lt;-</span> pobres <span class="sc">|&gt;</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(edad <span class="sc">&gt;=</span> <span class="dv">15</span>, <span class="sc">!</span><span class="fu">is.na</span>(educ)) <span class="sc">|&gt;</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(anio, educ, <span class="at">wt =</span> fex, <span class="at">name =</span> <span class="st">&quot;personas&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> personas <span class="sc">/</span> <span class="fu">sum</span>(personas) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>perfil_educ</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>perfil_educ <span class="ot">&lt;-</span> pobres <span class="sc">|&gt;</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(edad <span class="sc">&gt;=</span> <span class="dv">15</span>, <span class="sc">!</span><span class="fu">is.na</span>(educ)) <span class="sc">|&gt;</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(anio, educ, <span class="at">wt =</span> fex, <span class="at">name =</span> <span class="st">&quot;personas&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio) <span class="sc">|&gt;</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> personas <span class="sc">/</span> <span class="fu">sum</span>(personas) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">|&gt;</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>perfil_educ</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -3128,12 +3575,12 @@ Figura 3: Tasa de pobreza monetaria y extrema, antes/después de la pandemia.
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(perfil_edad, <span class="fu">aes</span>(grupo_edad, pct, <span class="at">fill =</span> anio)) <span class="sc">+</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_percent</span>(<span class="at">scale =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Grupo de edad&quot;</span>, <span class="at">y =</span> <span class="st">&quot;% de los pobres&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;Año&quot;</span>,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">&quot;Fuente: DANE, GEIH (pobreza monetaria).&quot;</span>) <span class="sc">+</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(perfil_edad, <span class="fu">aes</span>(grupo_edad, pct, <span class="at">fill =</span> anio)) <span class="sc">+</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_percent</span>(<span class="at">scale =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Grupo de edad&quot;</span>, <span class="at">y =</span> <span class="st">&quot;% de los pobres&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;Año&quot;</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">&quot;Fuente: DANE, GEIH (pobreza monetaria).&quot;</span>) <span class="sc">+</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-perfil-edad" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -3148,12 +3595,12 @@ Figura 4: Composición de los pobres por grupo de edad.
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(perfil_educ, <span class="fu">aes</span>(educ, pct, <span class="at">fill =</span> anio)) <span class="sc">+</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_percent</span>(<span class="at">scale =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Máximo nivel educativo&quot;</span>, <span class="at">y =</span> <span class="st">&quot;% de los pobres&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;Año&quot;</span>,</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">&quot;Fuente: DANE, GEIH (pobreza monetaria).&quot;</span>) <span class="sc">+</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(perfil_educ, <span class="fu">aes</span>(educ, pct, <span class="at">fill =</span> anio)) <span class="sc">+</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_percent</span>(<span class="at">scale =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Máximo nivel educativo&quot;</span>, <span class="at">y =</span> <span class="st">&quot;% de los pobres&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;Año&quot;</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">&quot;Fuente: DANE, GEIH (pobreza monetaria).&quot;</span>) <span class="sc">+</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div id="fig-perfil-educ" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -3169,14 +3616,14 @@ Figura 5: Composición de los pobres por nivel educativo (15+ años).
 </div>
 <p>Como complemento, la <strong>tasa</strong> de pobreza por nivel educativo. La composición dice cuántos pobres hay en cada grupo; la tasa dice qué grupo tiene más <strong>riesgo</strong> de serlo.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>tasa_por_educ <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(edad <span class="sc">&gt;=</span> <span class="dv">15</span>, <span class="sc">!</span><span class="fu">is.na</span>(educ)) <span class="sc">|&gt;</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio, educ) <span class="sc">|&gt;</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">tasa_pobreza =</span> <span class="fu">round</span>(<span class="fu">weighted.mean</span>(pobre, fex) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>),</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(educ, anio)</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>tasa_por_educ</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>tasa_por_educ <span class="ot">&lt;-</span> geih <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(edad <span class="sc">&gt;=</span> <span class="dv">15</span>, <span class="sc">!</span><span class="fu">is.na</span>(educ)) <span class="sc">|&gt;</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(anio, educ) <span class="sc">|&gt;</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">tasa_pobreza =</span> <span class="fu">round</span>(<span class="fu">weighted.mean</span>(pobre, fex) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>),</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(educ, anio)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>tasa_por_educ</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -3235,12 +3682,12 @@ Figura 5: Composición de los pobres por nivel educativo (15+ años).
 </div>
 </section>
 </section>
-<section id="síntesis-y-discusión" class="level2" data-number="7">
-<h2 data-number="7" class="anchored" data-anchor-id="síntesis-y-discusión"><span class="header-section-number">7</span> Síntesis y discusión</h2>
+<section id="síntesis-y-discusión" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="síntesis-y-discusión"><span class="header-section-number">8</span> Síntesis y discusión</h2>
 <ul>
 <li>La pobreza monetaria <strong>subió de 35,7 % a 39,3 %</strong> entre 2019 y 2021.</li>
-<li>El golpe no fue parejo: revise qué quintil cambió más y cómo se movió la brecha Q5/Q1 (<a href="#sec-quintiles" class="quarto-xref">Sección 4</a>).</li>
-<li>El rostro del pobre sigue siendo <strong>joven y de baja escolaridad</strong> (<a href="#sec-perfil" class="quarto-xref">Sección 6</a>), igual que en el informe del Banco Mundial.</li>
+<li>El golpe no fue parejo: revise qué quintil cambió más y cómo se movió la brecha Q5/Q1 (<a href="#sec-quintiles" class="quarto-xref">Sección 5</a>).</li>
+<li>El rostro del pobre sigue siendo <strong>joven y de baja escolaridad</strong> (<a href="#sec-perfil" class="quarto-xref">Sección 7</a>), igual que en el informe del Banco Mundial.</li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
