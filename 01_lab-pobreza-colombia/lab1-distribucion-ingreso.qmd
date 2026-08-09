@@ -38,19 +38,21 @@ Es una **foto** antes/después. Entre 2019 y 2021 cambió la pandemia, pero tamb
 muchas otras cosas (precios, política social, migración…). No hay grupo de
 comparación ni contrafactual, así que **no podemos atribuir los cambios a la
 pandemia**. Esa frontera —de la descripción a la causalidad— es el hilo de la
-Unidad 1, y es justo lo que debe atacar el **Escéptico**.
+Unidad 1.
 :::
 
 ## Preparación
 
-```{r setup}
-library(data.table)   # manejo de datos
-library(ggplot2)      # gráficas
-library(scales)       # formato de ejes ($ y %)
+`pacman` instala lo que falte y carga lo que ya esté: una sola línea para todo.
 
-# Subset de enseñanza ya listo (~1.47 M personas, 2 años).
-geih <- as.data.table(readRDS("datos/geih_pobreza_2019_2021.rds"))
-geih[, anio := factor(anio)]
+```{r setup}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, scales)
+
+# Subset de enseñanza ya listo (~1,47 M personas, 2 años).
+geih <- read_rds("datos/geih_pobreza_2019_2021.rds") |>
+  as_tibble() |>
+  mutate(anio = factor(anio))   # el año es una etiqueta, no un número con el que operar
 ```
 
 El **factor de expansión** (`fex`) es clave: cada fila "representa" a `fex` personas
@@ -59,41 +61,79 @@ del país, así que **toda cifra nacional se pondera por `fex`**.
 ## Una mirada a los datos
 
 ```{r mirada}
-dim(geih)             # filas (personas) x columnas
-head(geih)            # primeras filas
+dim(geih)        # filas (personas) x columnas
+head(geih)       # primeras filas
+```
 
-# ¿A cuántos colombianos representa cada año?
-geih[, .(personas_millones = round(sum(fex) / 1e6, 1)), by = anio]
+```{r mirada-glimpse}
+glimpse(geih)    # tipo de cada variable
+```
+
+¿A cuántos colombianos representa cada año?
+
+```{r poblacion}
+geih |>
+  group_by(anio) |>
+  summarise(personas_millones = round(sum(fex) / 1e6, 1))
 ```
 
 ## Ingreso por quintil {#sec-quintiles}
 
 > **Lección de Sala-i-Martin:** mirar la *distribución*, no solo la media.
 
-Un **quintil ponderado** ordena a las personas por ingreso y las parte en 5 grupos de
-igual tamaño poblacional (20 % cada uno).
+Un **quintil ponderado** parte a la población en 5 grupos de igual tamaño (20 % cada
+uno). Lo armamos en tres pasos que se pueden leer de corrido:
+
+1. ordenamos a las personas de la más pobre a la más rica,
+2. acumulamos su peso poblacional,
+3. cortamos ese acumulado en 20 %, 40 %, 60 % y 80 %.
 
 ```{r quintiles}
-quintil_ponderado <- function(x, w) {
-  o  <- order(x)
-  cw <- cumsum(w[o]) / sum(w)                 # proporción de población acumulada
-  q  <- cut(cw, breaks = c(-Inf, .2, .4, .6, .8, Inf), labels = paste0("Q", 1:5))
-  out <- character(length(x)); out[o] <- as.character(q)
-  factor(out, levels = paste0("Q", 1:5))
-}
+geih <- geih |>
+  group_by(anio) |>                       # los quintiles se arman DENTRO de cada año
+  arrange(ingpcug, .by_group = TRUE) |>
+  mutate(
+    poblacion_acumulada = cumsum(fex) / sum(fex),
+    quintil = cut(
+      poblacion_acumulada,
+      breaks = c(-Inf, 0.2, 0.4, 0.6, 0.8, Inf),
+      labels = c("Q1", "Q2", "Q3", "Q4", "Q5")
+    )
+  ) |>
+  ungroup()
+```
 
-# Quintil DENTRO de cada año.
-geih[, quintil := quintil_ponderado(ingpcug, fex), by = anio]
+Revisión rápida: los cinco grupos deben pesar ~20 % de la población cada uno.
 
-# Ingreso promedio y participación en el ingreso total, por quintil y año.
-# OJO: ingreso en pesos CORRIENTES (sin deflactar): los cocientes (razón Q5/Q1,
-# participaciones) son comparables entre años; los niveles, con cautela.
-quintiles <- geih[, .(
-  ingreso_medio = weighted.mean(ingpcug, fex),
-  ingreso_total = sum(ingpcug * fex)
-), by = .(anio, quintil)]
-quintiles[, participacion := ingreso_total / sum(ingreso_total), by = anio]
-quintiles[order(anio, quintil)]
+```{r quintiles-check}
+geih |>
+  group_by(anio, quintil) |>
+  summarise(personas = sum(fex), .groups = "drop") |>
+  group_by(anio) |>
+  mutate(peso_pct = round(personas / sum(personas) * 100, 1)) |>
+  ungroup()
+```
+
+::: {.callout-note}
+## Ojo con los pesos corrientes
+El ingreso está en pesos **corrientes** de cada año (sin descontar inflación), así que
+la comparación de *niveles* 2019 vs 2021 mezcla algo de inflación. La razón Q5/Q1 y las
+participaciones sí son comparables: son cocientes.
+:::
+
+```{r tabla-quintiles}
+quintiles <- geih |>
+  group_by(anio, quintil) |>
+  summarise(
+    ingreso_medio = weighted.mean(ingpcug, fex),
+    ingreso_total = sum(ingpcug * fex),
+    .groups = "drop"
+  ) |>
+  group_by(anio) |>
+  mutate(participacion = ingreso_total / sum(ingreso_total)) |>
+  ungroup()
+
+quintiles
 ```
 
 ```{r g-quintil-ingreso}
@@ -119,41 +159,66 @@ ggplot(quintiles, aes(quintil, participacion, fill = anio)) +
 ```
 
 La **razón Q5/Q1** es una medida simple de desigualdad: ¿cuántas veces gana el quintil
-más rico frente al más pobre?
+más rico frente al más pobre? Pasamos los quintiles de filas a columnas para poder
+dividir Q5 entre Q1.
 
 ```{r razon-q5q1}
-razon <- dcast(quintiles, anio ~ quintil, value.var = "ingreso_medio")
-razon[, brecha_Q5_Q1 := round(Q5 / Q1, 1)]
-razon[, .(anio, brecha_Q5_Q1)]
+brecha <- quintiles |>
+  select(anio, quintil, ingreso_medio) |>
+  pivot_wider(names_from = quintil, values_from = ingreso_medio) |>
+  mutate(brecha_Q5_Q1 = round(Q5 / Q1, 1)) |>
+  select(anio, brecha_Q5_Q1)
+
+brecha
 ```
 
 ## Pobreza 2019 vs 2021 {#sec-pobreza}
 
 Una persona es **pobre** si el ingreso per cápita de su hogar cae bajo la **línea de
-pobreza** oficial del DANE (específica de cada año).
+pobreza** oficial del DANE (específica de cada año). Como `pobre` e `indigente` son
+variables 0/1, su promedio ponderado **es** la tasa de pobreza.
 
 ```{r pobreza}
-pobreza <- geih[, .(
-  pobreza_pct         = round(weighted.mean(pobre, fex) * 100, 1),
-  pobreza_extrema_pct = round(weighted.mean(indigente, fex) * 100, 1)
-), by = anio][order(anio)]
+pobreza <- geih |>
+  group_by(anio) |>
+  summarise(
+    pobreza_pct         = round(weighted.mean(pobre, fex) * 100, 1),
+    pobreza_extrema_pct = round(weighted.mean(indigente, fex) * 100, 1)
+  )
+
 pobreza
+```
+
+Para graficar los dos indicadores juntos los pasamos a **formato largo**: una fila por
+año y por indicador.
+
+```{r pobreza-larga}
+pobreza_larga <- pobreza |>
+  pivot_longer(
+    cols = c(pobreza_pct, pobreza_extrema_pct),
+    names_to = "indicador",
+    values_to = "pct"
+  ) |>
+  mutate(indicador = factor(
+    indicador,
+    levels = c("pobreza_pct", "pobreza_extrema_pct"),
+    labels = c("Pobreza monetaria", "Pobreza extrema")
+  ))
+
+pobreza_larga
 ```
 
 ```{r g-pobreza}
 #| label: fig-pobreza
 #| fig-cap: "Tasa de pobreza monetaria y extrema, antes/después de la pandemia."
-pob_long <- melt(pobreza, id.vars = "anio",
-                 variable.name = "indicador", value.name = "pct")
-pob_long[, indicador := factor(indicador,
-         labels = c("Pobreza monetaria", "Pobreza extrema"))]
-ggplot(pob_long, aes(anio, pct, fill = anio)) +
-  geom_col(width = .6) +
+ggplot(pobreza_larga, aes(anio, pct, fill = anio)) +
+  geom_col(width = 0.6) +
   geom_text(aes(label = paste0(pct, "%")), vjust = -0.3, size = 4) +
   facet_wrap(~ indicador, scales = "free_y") +
   labs(x = NULL, y = "% de la población",
        caption = "Fuente: DANE, GEIH (pobreza monetaria).") +
-  theme_minimal(base_size = 13) + theme(legend.position = "none")
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "none")
 ```
 
 La pobreza monetaria pasó de **35,7 %** a **39,3 %**, y la extrema de **9,6 %** a
@@ -165,31 +230,71 @@ La pobreza monetaria pasó de **35,7 %** a **39,3 %**, y la extrema de **9,6 %**
 > baja escolaridad—. Veámoslo en Colombia.
 
 Mostramos la **composición** de la población pobre: de cada 100 pobres, ¿cuántos hay
-en cada grupo?
+en cada grupo? Es distinto de la **tasa** de pobreza (eso lo vemos al final).
 
-```{r perfil-setup}
+```{r grupos-edad}
 # Grupos de edad estilo Banco Mundial.
-geih[, grupo_edad := cut(edad,
-     breaks = c(-Inf, 14, 24, 34, 44, 54, 64, Inf),
-     labels = c("0-14","15-24","25-34","35-44","45-54","55-64","65+"))]
+geih <- geih |>
+  mutate(grupo_edad = cut(
+    edad,
+    breaks = c(-Inf, 14, 24, 34, 44, 54, 64, Inf),
+    labels = c("0-14", "15-24", "25-34", "35-44", "45-54", "55-64", "65+")
+  ))
 
-# Composición (%) de los POBRES según una variable de grupo.
-perfil_pobres <- function(dat, var) {
-  d <- dat[pobre == 1 & !is.na(get(var))]
-  d <- d[, .(p = sum(fex)), by = c("anio", var)]
-  d[, pct := p / sum(p) * 100, by = anio]
-  setnames(d, var, "categoria")
-  d[, dimension := var][]
-}
+# Nos quedamos solo con las personas pobres: el resto de la sección es sobre ellas.
+pobres <- geih |> filter(pobre == 1)
+```
 
-perf_edad <- perfil_pobres(geih, "grupo_edad")
-perf_educ <- perfil_pobres(geih[edad >= 15], "educ")  # educación: adultos 15+
+### Perfil por edad
+
+`count(wt = fex)` suma los factores de expansión: cuenta **personas del país**, no
+filas de la encuesta.
+
+```{r perfil-edad}
+perfil_edad <- pobres |>
+  filter(!is.na(grupo_edad)) |>
+  count(anio, grupo_edad, wt = fex, name = "personas") |>
+  group_by(anio) |>
+  mutate(pct = personas / sum(personas) * 100) |>
+  ungroup()
+
+perfil_edad
+```
+
+### Perfil por sexo
+
+El mismo patrón de cuatro pasos, cambiando la variable de agrupación.
+
+```{r perfil-sexo}
+perfil_sexo <- pobres |>
+  filter(!is.na(sexo)) |>
+  count(anio, sexo, wt = fex, name = "personas") |>
+  group_by(anio) |>
+  mutate(pct = personas / sum(personas) * 100) |>
+  ungroup()
+
+perfil_sexo
+```
+
+### Perfil por nivel educativo
+
+Acá filtramos a **15+ años**: la educación de un niño de 6 años no dice nada.
+
+```{r perfil-educ}
+perfil_educ <- pobres |>
+  filter(edad >= 15, !is.na(educ)) |>
+  count(anio, educ, wt = fex, name = "personas") |>
+  group_by(anio) |>
+  mutate(pct = personas / sum(personas) * 100) |>
+  ungroup()
+
+perfil_educ
 ```
 
 ```{r g-perfil-edad}
 #| label: fig-perfil-edad
 #| fig-cap: "Composición de los pobres por grupo de edad."
-ggplot(perf_edad, aes(categoria, pct, fill = anio)) +
+ggplot(perfil_edad, aes(grupo_edad, pct, fill = anio)) +
   geom_col(position = "dodge") +
   scale_y_continuous(labels = label_percent(scale = 1)) +
   labs(x = "Grupo de edad", y = "% de los pobres", fill = "Año",
@@ -200,7 +305,7 @@ ggplot(perf_edad, aes(categoria, pct, fill = anio)) +
 ```{r g-perfil-educ}
 #| label: fig-perfil-educ
 #| fig-cap: "Composición de los pobres por nivel educativo (15+ años)."
-ggplot(perf_educ, aes(categoria, pct, fill = anio)) +
+ggplot(perfil_educ, aes(educ, pct, fill = anio)) +
   geom_col(position = "dodge") +
   scale_y_continuous(labels = label_percent(scale = 1)) +
   labs(x = "Máximo nivel educativo", y = "% de los pobres", fill = "Año",
@@ -208,13 +313,18 @@ ggplot(perf_educ, aes(categoria, pct, fill = anio)) +
   theme_minimal(base_size = 13)
 ```
 
-Como complemento, la **tasa** de pobreza por nivel educativo (¿qué grupo tiene más
-riesgo de ser pobre?):
+Como complemento, la **tasa** de pobreza por nivel educativo. La composición dice
+cuántos pobres hay en cada grupo; la tasa dice qué grupo tiene más **riesgo** de serlo.
 
 ```{r tasa-educ}
-geih[edad >= 15 & !is.na(educ),
-  .(tasa_pobreza = round(weighted.mean(pobre, fex) * 100, 1)),
-  by = .(anio, educ)][order(educ, anio)]
+tasa_por_educ <- geih |>
+  filter(edad >= 15, !is.na(educ)) |>
+  group_by(anio, educ) |>
+  summarise(tasa_pobreza = round(weighted.mean(pobre, fex) * 100, 1),
+            .groups = "drop") |>
+  arrange(educ, anio)
+
+tasa_por_educ
 ```
 
 ## Síntesis y discusión
@@ -227,9 +337,9 @@ geih[edad >= 15 & !is.na(educ),
 
 ::: {.callout-note}
 ## Para discutir en clase
-1. **Escéptico:** ¿por qué *no* podemos llamar a esto "el efecto de la pandemia"?
-   ¿Qué necesitaríamos —un grupo de comparación, una fuente de variación exógena— para
-   acercarnos a un efecto causal?
+1. ¿Por qué *no* podemos llamar a esto "el efecto de la pandemia"? ¿Qué necesitaríamos
+   —un grupo de comparación, una fuente de variación exógena— para acercarnos a un
+   efecto causal?
 2. ¿La desigualdad (brecha Q5/Q1) subió o bajó? ¿Qué le falta a esa medida?
 3. Comparando con la Figura O.5 del Banco Mundial, ¿el perfil del pobre colombiano se
    parece al patrón global?
