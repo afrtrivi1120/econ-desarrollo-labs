@@ -21,10 +21,15 @@
 # pacman instala lo que falte y carga lo que ya esté: una sola línea para todo.
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse, scales, data.table, R.utils)
-# data.table entra solo por fread(): los archivos del DANE traen 137 columnas y
-# millones de filas. Con select = ... leemos únicamente las que usamos, y eso es
-# varias veces más rápido. Después pasamos a tibble y seguimos con dplyr.
-# (R.utils es lo que le permite a fread abrir los .csv.gz sin descomprimirlos.)
+# data.table entra solo por fread(), que lee rápido y maneja bien el decimal con
+# coma de los archivos de 2019. R.utils es lo que le permite abrir los .csv.gz.
+# Después pasamos a tibble y seguimos con dplyr.
+#
+# OJO con el select = de abajo: el extracto de datos/_crudos/ ya viene con esas
+# columnas y nada más, así que NO está filtrando. Queda escrito a propósito, como
+# contrato de qué usa el lab: si mañana el archivo trae una columna de más, esto
+# sigue leyendo lo mismo. El recorte de verdad —de las 137 columnas del archivo
+# de personas del DANE a estas siete— lo hace R/00-recortar-crudos.R.
 
 # =============================================================================
 # 1. DE LA MICRODATA CRUDA AL SUBSET DE TRABAJO
@@ -85,8 +90,13 @@ if (hay_crudos) {
   glimpse(personas_2019)
   glimpse(hogares_2019)
 
-  # ¿Qué códigos trae la educación? Siete categorías, incluido el 9 = no informa.
+  # ¿Qué códigos trae la educación? Siete categorías (1 a 6, más el 9 = no informa)
+  # y una fila que el diccionario no anuncia: NA, con 30.467 personas.
   personas_2019 |> count(p6210)
+
+  # ¿Quiénes son esos NA? Niños de 0, 1 y 2 años: al DANE no le pregunta el nivel
+  # educativo a menores de tres. No es dato faltante, es diseño del cuestionario.
+  personas_2019 |> filter(is.na(p6210)) |> count(p6040)
 
   # --- 1.4 Unir personas con su hogar ---------------------------------------
   # left_join DESDE personas: queremos una fila por persona, y a cada una le
@@ -158,9 +168,8 @@ if (hay_crudos) {
 
   # El subset ya viene guardado en datos/. NO lo reescribimos en cada corrida:
   # es un archivo versionado y no queremos que la clase entera lo modifique.
-  # Para regenerarlo a propósito, descomente estas dos líneas:
+  # Para regenerarlo a propósito, descomente esta línea:
   # write_rds(geih, "datos/geih_pobreza_2019_2021.rds")
-  # write_csv(geih, "datos/geih_pobreza_2019_2021.csv.gz")
 
 } else {
 

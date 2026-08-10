@@ -24,7 +24,8 @@
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse, data.table, R.utils)
 
-# Las columnas que el lab usa. Todo lo demás de los 137 campos se descarta.
+# Las columnas que el lab usa. El archivo de personas del DANE trae 137 columnas y el
+# de hogares 25 (2019) o 22 (2021); todo lo demás se descarta.
 columnas_personas <- c("directorio", "secuencia_p", "clase",
                        "p6020", "p6040", "p6210", "fex_c")
 columnas_hogares  <- c("directorio", "secuencia_p",

@@ -1,4 +1,4 @@
-# Microdata del DANE: los archivos COMPLETOS (137 columnas, cientos de MB) se bajan
+# Microdata del DANE: los archivos COMPLETOS (hasta 137 columnas, cientos de MB) se bajan
 # del portal y no van al repo. Lo que sí se versiona es el EXTRACTO crudo en .csv.gz
 # —mismas filas y mismos códigos, solo las columnas que el lab usa—, que es de donde
 # arranca la sección 1. Ver datos/SOURCE.md.

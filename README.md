@@ -65,8 +65,7 @@ sin correr nada.
 
 ## Los datos
 
-Cada lab trae un **subconjunto de enseñanza** ya limpio en su carpeta `datos/`, junto
-con dos documentos:
+Cada lab trae sus datos en la carpeta `datos/`, junto con dos documentos:
 
 - `datos/codebook.md` — qué significa cada columna.
 - `datos/SOURCE.md` — de dónde salieron los datos, con qué licencia y cómo se
@@ -81,6 +80,8 @@ Dónde vive la transformación cambia según el lab:
 
 - **Lab 1** — la limpieza es *parte del lab*: su primera sección va de la microdata del
   DANE al subset de trabajo, explicando qué significa cada variable y qué se transforma.
+  Aparte, `R/00-recortar-crudos.R` documenta el paso previo: cómo se pasa de los archivos
+  completos del portal al extracto que sí cabe en el repo.
 - **Lab 2** — la transformación está documentada aparte, en `R/00-construir-datos.R`.
 
 ---

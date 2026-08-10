@@ -50,10 +50,20 @@ if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse, scales, data.table, R.utils)
 ```
 
-`data.table` entra por una sola función, `fread()`: los archivos del DANE traen
-**137 columnas** y millones de filas, y con `select = ...` leemos únicamente las que
-usamos. Es el único punto del lab donde gana sobre el `tidyverse`. (`R.utils` es lo que
-le permite abrir los `.csv.gz` sin descomprimirlos antes.)
+`data.table` entra por una sola función, `fread()`, que lee rápido y maneja bien el
+decimal con coma de los archivos de 2019. (`R.utils` es lo que le permite abrir los
+`.csv.gz` sin descomprimirlos antes.)
+
+::: {.callout-note}
+## Un detalle honesto sobre el `select = ` que viene abajo
+El extracto de `datos/_crudos/` **ya trae solo esas columnas**, así que el `select` no
+está filtrando nada. Queda escrito a propósito, como **contrato** de qué usa el lab: si
+mañana el archivo llegara con una columna de más, esto seguiría leyendo lo mismo.
+
+El recorte de verdad —de las **137 columnas** del archivo de personas del DANE a estas
+siete— lo hace [`R/00-recortar-crudos.R`](R/00-recortar-crudos.R), que se corre una sola
+vez y no en clase.
+:::
 
 ```{r rutas}
 rutas_crudos <- c(
@@ -141,6 +151,40 @@ glimpse(personas_2019)
 Acá está el problema de frente: los nombres **no dicen nada** (`p6020`, `p6210`, `fex_c`)
 y las respuestas son **códigos numéricos**. Sin el diccionario del DANE, esto no se puede
 leer.
+
+El archivo de hogares es más corto, pero es donde vive el ingreso:
+
+```{r mirar-crudo-hogares}
+#| eval: !expr hay_crudos
+glimpse(hogares_2019)
+```
+
+Y así se ven los códigos de educación en el dato, antes de que los toquemos:
+
+```{r codigos-educacion}
+#| eval: !expr hay_crudos
+personas_2019 |> count(p6210)
+```
+
+**Siete categorías** —de `1` Ninguno a `6` Superior, más el `9` de "no sabe, no
+informa"— y una fila que el diccionario no anuncia: **`NA`, con 30.467 personas**.
+
+Vale la pena mirar quiénes son, porque no es lo mismo un dato perdido que un dato que
+nunca se preguntó:
+
+```{r blancos-educacion}
+#| eval: !expr hay_crudos
+personas_2019 |>
+  filter(is.na(p6210)) |>
+  count(p6040)
+```
+
+Son **niños de 0, 1 y 2 años**: al DANE no le pregunta el nivel educativo a menores de
+tres. No es un problema de calidad del dato, es el diseño del cuestionario. Y el `9`
+—el verdadero "no informa"— son apenas 68 personas.
+
+Guarde esta tabla: más abajo colapsamos las siete categorías a cuatro, y conviene tener
+presente cuánta gente hay en cada una antes de agruparlas.
 
 ### Qué significa cada variable
 

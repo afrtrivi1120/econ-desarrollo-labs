@@ -6,10 +6,13 @@
 Monetaria y Desigualdad*, microdatos anonimizados de la Gran Encuesta Integrada de
 Hogares (GEIH).
 
-| Año | Catálogo DANE | Ficha | Archivos usados |
-|---|---|---|---|
-| 2019 | 684 | https://microdatos.dane.gov.co/index.php/catalog/684 | `Personasd.csv`, `Hogaresd.csv` |
-| 2021 | 733 | https://microdatos.dane.gov.co/index.php/catalog/733 | `Personas.csv`, `Hogares.csv` |
+| Año | Catálogo DANE | Ficha | En el portal | Al descomprimir |
+|---|---|---|---|---|
+| 2019 | 684 | https://microdatos.dane.gov.co/index.php/catalog/684 | *Personas*, *Hogares* | `Personasd2019.csv`, `Hogaresd2019.csv` |
+| 2021 | 733 | https://microdatos.dane.gov.co/index.php/catalog/733 | *Personas*, *Hogares* | `Personas2021.csv`, `Hogares2021.csv` |
+
+> Los nombres de la última columna son los que hay que dejar en `datos/_crudos/`:
+> `R/00-recortar-crudos.R` los exige tal cual y se detiene si no los encuentra.
 
 Los archivos de **Hogares** traen el ingreso (`ingpcug`), las líneas (`lp`, `li`) y
 los indicadores de pobreza (`pobre`, `indigente`); los de **Personas** traen la
@@ -28,7 +31,8 @@ cada año en su propio bloque.
 
 ## Qué hay en `_crudos/` y por qué
 
-El DANE publica los archivos completos, con **137 columnas** y cientos de MB por año.
+El DANE publica los archivos completos: **137 columnas** el de personas y 25 (2019) o
+22 (2021) el de hogares, con cientos de MB por año.
 Eso no cabe en un repositorio de git (GitHub rechaza archivos de más de 100 MB).
 
 Lo que se versiona acá es un **extracto crudo**: los mismos cuatro archivos, con
@@ -38,7 +42,9 @@ Lo que se versiona acá es un **extracto crudo**: los mismos cuatro archivos, co
 - el **separador y el decimal originales** de cada año,
 - y **todas las filas**,
 
-pero solo con las **13 columnas que el lab usa**. Al no quitar ninguna fila, el extracto
+pero solo con los campos que el lab usa: **11 variables distintas** repartidas en 13
+campos, porque `directorio` y `secuencia_p` están en los dos archivos. Al no quitar
+ninguna fila, el extracto
 reproduce exactamente las cifras oficiales del DANE.
 
 ```
@@ -57,7 +63,7 @@ paso hay que hacerlo con un navegador: no se puede automatizar. El resto sí est
    [733](https://microdatos.dane.gov.co/index.php/catalog/733)) y abra **Obtener
    microdatos**.
 2. Descargue y descomprima **Personas** y **Hogares**, y deje los cuatro CSV en
-   `datos/_crudos/` con los nombres que trae el portal:
+   `datos/_crudos/` con estos nombres exactos (son los que traen los ZIP al abrirlos):
 
    ```
    datos/_crudos/Personasd2019.csv    datos/_crudos/Hogaresd2019.csv
@@ -74,11 +80,11 @@ paso hay que hacerlo con un navegador: no se puede automatizar. El resto sí est
    source("R/00-recortar-crudos.R")
    ```
 
-   Lee los cuatro archivos completos, se queda con las 13 columnas que el lab usa y
+   Lee los cuatro archivos completos, se queda con los campos que el lab usa y
    escribe los `.csv.gz` **conservando el separador y el decimal de cada año**. No quita
    ninguna fila.
 
-4. Corra el lab. El bloque de **verificación** de su sección 1 le dice si quedó bien: si
+4. Corra el lab. Su bloque de **verificación** le dice si quedó bien: si
    las cifras no dan 35,7 % y 39,3 %, algo se perdió en el camino.
 
 ### La cadena completa
@@ -111,7 +117,7 @@ el DDI es la documentación autorizada.
 La limpieza está **dentro del lab**, en la sección *De la microdata cruda al subset*
 (`lab1-distribucion-ingreso.qmd` y `R/lab1-distribucion-ingreso.R`): unión
 Personas↔Hogares, recodificación a etiquetas legibles y filtrado de filas sin ingreso o
-sin peso. Resultado: `geih_pobreza_2019_2021.rds` (y `.csv.gz`), **1.467.444 personas**
+sin peso. Resultado: `geih_pobreza_2019_2021.rds`, **1.467.444 personas**
 (756.063 de 2019 y 711.381 de 2021).
 
 > En estos dos años el filtro **no elimina ninguna fila**: el módulo de pobreza del DANE
@@ -122,8 +128,8 @@ sin peso. Resultado: `geih_pobreza_2019_2021.rds` (y `.csv.gz`), **1.467.444 per
 estudiante es la que realmente produjo el archivo.
 
 > El lab **no reescribe** ese archivo en cada corrida —es un artefacto versionado—. Para
-> regenerarlo a propósito hay que descomentar las dos líneas de `write_*` al final de la
-> sección 1.
+> regenerarlo a propósito hay que descomentar la línea de `write_rds()` al final de la
+> sección de limpieza del script.
 
 ## Verificación
 

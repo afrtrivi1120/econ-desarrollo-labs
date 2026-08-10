@@ -32,10 +32,13 @@ sin el de personas no hay edad ni educación, y sin el de hogares no hay ingreso
 | `secuencia_p` | Llave hogar | — |
 | `ingpcug` | Ingreso per cápita de la unidad de gasto **con imputación de arriendo a propietarios y usufructuarios** | pesos corrientes/mes |
 | `lp` | Línea de pobreza. *"Valor de la canasta básica de bienes que establece el límite de ingresos por debajo del cual un hogar es considerado en pobreza."* | pesos/mes |
-| `li` | Línea de indigencia. *"Valor de la canasta básica de alimentos que establece el límite de ingresos por debajo del cual un hogar es considerado en pobreza extrema."* | pesos/mes |
 | `pobre` | Pobre=1 No pobre=0 | `0` = No pobre · `1` = Pobre |
 | `indigente` | Indigente=1 No indigente=0 | `0` = No indigente · `1` = Indigente |
-| `fex_c` | Factor de expansión anualizado | — |
+
+> El archivo original del DANE trae además `li` (línea de indigencia) y su propio `fex_c`,
+> pero el extracto **no los incluye**: el lab no usa la línea de indigencia —le basta la
+> bandera `indigente`— y el factor de expansión lo toma del archivo de personas, que es la
+> unidad de análisis.
 
 ### Variables del archivo de **personas**
 
@@ -54,7 +57,8 @@ sin el de personas no hay edad ni educación, y sin el de hogares no hay ingreso
 > [`diccionario-dane/`](diccionario-dane/) (formato DDI). No se escribieron de memoria.
 
 **Ojo con lo que el archivo crudo NO dice.** El DANE publica los archivos completos con
-**137 columnas**; en `_crudos/` solo están las que el lab usa. Ver
+**137 columnas** el de personas y 25 (2019) o 22 (2021) el de hogares; en `_crudos/`
+solo están las que el lab usa. Ver
 [`SOURCE.md`](SOURCE.md) para saber cómo reconstruir el extracto desde el portal.
 
 ---
