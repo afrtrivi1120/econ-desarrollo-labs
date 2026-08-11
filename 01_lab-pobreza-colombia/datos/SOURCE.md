@@ -11,8 +11,9 @@ Hogares (GEIH).
 | 2019 | 684 | https://microdatos.dane.gov.co/index.php/catalog/684 | *Personas*, *Hogares* | `Personasd2019.csv`, `Hogaresd2019.csv` |
 | 2021 | 733 | https://microdatos.dane.gov.co/index.php/catalog/733 | *Personas*, *Hogares* | `Personas2021.csv`, `Hogares2021.csv` |
 
-> Los nombres de la última columna son los que hay que dejar en `datos/_crudos/`:
-> `R/00-recortar-crudos.R` los exige tal cual y se detiene si no los encuentra.
+> Los nombres de la última columna son los que traen los ZIP del portal al
+> abrirlos, y son los que hay que dejar en `datos/_crudos/` si va a rehacer el
+> extracto.
 
 Los archivos de **Hogares** traen el ingreso (`ingpcug`), las líneas (`lp`, `li`) y
 los indicadores de pobreza (`pobre`, `indigente`); los de **Personas** traen la
@@ -24,8 +25,7 @@ demografía (`p6040` edad, `p6020` sexo, `p6210` educación) y el factor de expa
 - **2019:** CSV con delimitador `;`, decimal `,` (formato europeo), UTF-8.
 - **2021:** CSV con delimitador `,`, decimal `.`.
 
-Esa diferencia **no es un descuido**: es como los publica el DANE, y por eso el lab lee
-cada año en su propio bloque.
+Así es como los publica el DANE, y por eso el lab lee cada año en su propio bloque.
 
 ---
 
@@ -44,8 +44,7 @@ Lo que se versiona acá es un **extracto crudo**: los mismos cuatro archivos, co
 
 pero solo con los campos que el lab usa: **11 variables distintas** repartidas en 13
 campos, porque `directorio` y `secuencia_p` están en los dos archivos. Al no quitar
-ninguna fila, el extracto
-reproduce exactamente las cifras oficiales del DANE.
+ninguna fila, el extracto reproduce exactamente las cifras oficiales del DANE.
 
 ```
 _crudos/geih-2019-personas.csv.gz   directorio;secuencia_p;clase;p6020;p6040;p6210;fex_c
@@ -74,15 +73,24 @@ paso hay que hacerlo con un navegador: no se puede automatizar. El resto sí est
    > `ingpcug` con ajuste a la nueva PET y `fex_c` con empalme de mercado laboral y
    > CNPV 2018, y da cifras distintas de las oficiales de 2021.
 
-3. Corra el recorte:
+3. Haga el recorte: de cada archivo completo quédese **solo con estas columnas** y
+   guárdelo comprimido con el nombre que espera el lab.
 
-   ```r
-   source("R/00-recortar-crudos.R")
-   ```
+   | Archivo completo | Columnas que se conservan | Sale como |
+   |---|---|---|
+   | `Personasd2019.csv` | `directorio`, `secuencia_p`, `clase`, `p6020`, `p6040`, `p6210`, `fex_c` | `geih-2019-personas.csv.gz` |
+   | `Hogaresd2019.csv` | `directorio`, `secuencia_p`, `ingpcug`, `lp`, `pobre`, `indigente` | `geih-2019-hogares.csv.gz` |
+   | `Personas2021.csv` | las mismas siete de personas | `geih-2021-personas.csv.gz` |
+   | `Hogares2021.csv` | las mismas seis de hogares | `geih-2021-hogares.csv.gz` |
 
-   Lee los cuatro archivos completos, se queda con los campos que el lab usa y
-   escribe los `.csv.gz` **conservando el separador y el decimal de cada año**. No quita
-   ninguna fila.
+   Dos reglas que no se pueden saltar:
+
+   - **Conserve el separador y el decimal de cada año**, tanto al leer como al
+     escribir: `;` y `,` en 2019, `,` y `.` en 2021 (los archivos de 2019 además
+     traen BOM, así que léalos como UTF-8). El extracto debe verse como se ve la
+     fuente.
+   - **No quite ninguna fila.** El recorte es de columnas, nunca de filas: es lo
+     que hace que el extracto siga reproduciendo las cifras oficiales.
 
 4. Corra el lab. Su bloque de **verificación** le dice si quedó bien: si
    las cifras no dan 35,7 % y 39,3 %, algo se perdió en el camino.
@@ -90,8 +98,8 @@ paso hay que hacerlo con un navegador: no se puede automatizar. El resto sí est
 ### La cadena completa
 
 ```
-CSV completos del DANE  ──[R/00-recortar-crudos.R]──▶  _crudos/*.csv.gz  ──[sección 1 del lab]──▶  .rds
-   474 MB, no van al repo                                12 MB, sí van                         subset limpio
+CSV completos del DANE  ──[recorte de columnas]──▶  _crudos/*.csv.gz  ──[el lab]──▶  .rds
+   474 MB, no van al repo         (paso 3)            12 MB, sí van                subset limpio
 ```
 
 ---
@@ -128,8 +136,8 @@ sin peso. Resultado: `geih_pobreza_2019_2021.rds`, **1.467.444 personas**
 estudiante es la que realmente produjo el archivo.
 
 > El lab **no reescribe** ese archivo en cada corrida —es un artefacto versionado—. Para
-> regenerarlo a propósito hay que descomentar la línea de `write_rds()` al final de la
-> sección de limpieza del script.
+> regenerarlo a propósito hay que descomentar la línea de `write_rds()` al final de
+> *Una transformación del microdato*.
 
 ## Verificación
 

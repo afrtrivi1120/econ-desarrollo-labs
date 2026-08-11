@@ -35,8 +35,9 @@ que instalar a mano, una sola vez, es `pacman`:
 install.packages("pacman")
 ```
 
-De ahí en adelante cada script arranca con `pacman::p_load(...)`, que instala lo que
-falte y carga lo que ya esté. No hay que acordarse de la lista de paquetes.
+De ahí en adelante cada script arranca con `pacman::p_load(...)`, que revisa qué
+paquetes están instalados, instala los que falten y los carga. No hay que acordarse de
+la lista de paquetes.
 
 > ⚠️ **Abra la carpeta del lab como directorio de trabajo**, no la raíz del repositorio.
 > Los scripts cargan los datos con rutas relativas (`datos/…`), así que si corre el
@@ -78,10 +79,11 @@ fuente, pero solo con las columnas que el lab usa.
 
 Dónde vive la transformación cambia según el lab:
 
-- **Lab 1** — la limpieza es *parte del lab*: su primera sección va de la microdata del
-  DANE al subset de trabajo, explicando qué significa cada variable y qué se transforma.
-  Aparte, `R/00-recortar-crudos.R` documenta el paso previo: cómo se pasa de los archivos
-  completos del portal al extracto que sí cabe en el repo.
+- **Lab 1** — la limpieza es *parte del lab*: su primera sección, *Una transformación del
+  microdato*, va de la microdata del DANE al subset de trabajo, explicando qué significa
+  cada variable y qué se transforma. El paso previo —cómo se pasa de los archivos
+  completos del portal al extracto que sí cabe en el repo— está documentado en
+  `datos/SOURCE.md`.
 - **Lab 2** — la transformación está documentada aparte, en `R/00-construir-datos.R`.
 
 ---

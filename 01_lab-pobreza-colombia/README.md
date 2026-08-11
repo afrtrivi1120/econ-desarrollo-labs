@@ -32,9 +32,9 @@ La pregunta de fondo: **¿cómo se ve la distribución del ingreso colombiano an
 | **¿Quién es pobre?** | Perfil por edad y educación (estilo Banco Mundial) | `figuras/4a-…`, `figuras/4b-…` |
 | **Síntesis** | Guardar gráficas y cerrar para discutir | — |
 
-> La primera sección es nueva: el lab ya no arranca de un archivo limpio caído del cielo. Se abre
-> la microdata del DANE tal como la publica —con nombres como `p6210` y respuestas en
-> código— y se muestra cada decisión de limpieza, porque cada una cambia los resultados.
+> El lab no arranca de un archivo limpio caído del cielo. La primera sección abre la
+> microdata del DANE tal como la publica —con nombres como `p6210` y respuestas en
+> código— y muestra, paso a paso, qué se le hace para llegar al subset de trabajo.
 
 **Resultados que reproduce el código** (cifras oficiales DANE):
 
@@ -55,10 +55,11 @@ Necesitas **R** (≥ 4.1). Lo único que hay que instalar a mano es `pacman`:
 install.packages("pacman")
 ```
 
-Los dos scripts de `R/` arrancan con `pacman::p_load(...)`, que instala lo que falte y
-carga lo que ya esté: el lab carga `tidyverse, scales, data.table, R.utils` y
-`00-recortar-crudos.R` los mismos menos `scales`. (`data.table` entra por `fread()`, que
-lee rápido y maneja el decimal con coma de 2019; `R.utils` le permite abrir los `.gz`.)
+El script de `R/` arranca con `pacman::p_load(...)`: `p_load()` revisa qué paquetes ya
+están instalados, instala los que falten y los carga, todo en una llamada. El lab usa
+`tidyverse, scales, data.table, R.utils`. (De `data.table` entra solo `fread()`, que lee
+rápido y deja fijar a mano el separador y el decimal, que no son los mismos en 2019 que
+en 2021; `R.utils` le permite abrir los `.gz`.)
 
 Hay dos formas equivalentes de trabajar el lab:
 
@@ -81,8 +82,9 @@ Abre `lab1-distribucion-ingreso.html` (ya incluido en el repo) para leer el lab 
 prosa, tablas y gráficas, sin necesidad de correr nada.
 
 Ambos arrancan en `datos/_crudos/` y corren en pocos segundos. Si esos archivos no
-están, el lab lo avisa y sigue con `datos/geih_pobreza_2019_2021.rds`, el subset ya
-construido, para que la clase no se caiga.
+están, el lab se salta la sección de limpieza y sigue con
+`datos/geih_pobreza_2019_2021.rds`, el subset ya construido, para que la clase no se
+caiga.
 
 ---
 
@@ -103,18 +105,19 @@ los archivos del portal.
 > ⚠️ Los archivos de `_crudos/` son un **extracto**: las mismas filas y los mismos
 > códigos que publica el DANE, pero solo con las columnas que el lab usa. Los archivos
 > completos traen cientos de MB —137 columnas el de personas— y no caben en el
-> repositorio. Como no se
-> quita ninguna fila, el extracto reproduce exactamente las cifras oficiales.
+> repositorio. Como no se quita ninguna fila, el extracto reproduce exactamente las
+> cifras oficiales.
 
 La cadena de datos queda completa y reproducible en dos pasos:
 
 ```
-CSV completos del DANE  ──[R/00-recortar-crudos.R]──▶  _crudos/*.csv.gz  ──[sección 1 del lab]──▶  .rds
-   474 MB, no van al repo                                12 MB, sí van                         subset limpio
+CSV completos del DANE  ──[recorte de columnas]──▶  _crudos/*.csv.gz  ──[el lab]──▶  .rds
+   474 MB, no van al repo                             12 MB, sí van                subset limpio
 ```
 
-`R/00-recortar-crudos.R` **no se corre en clase**: el extracto ya viene listo. Está para
-que el recorte no sea un paso a mano perdido en la terminal de alguien.
+El primer paso no se corre en clase: el extracto ya viene listo en el repo.
+[`datos/SOURCE.md`](datos/SOURCE.md) explica cómo rehacerlo desde el portal del DANE si
+alguna vez hace falta.
 
 **Fuente:** Departamento Administrativo Nacional de Estadística (DANE) —
 *Medición de Pobreza Monetaria y Desigualdad*, microdatos anonimizados de la GEIH
