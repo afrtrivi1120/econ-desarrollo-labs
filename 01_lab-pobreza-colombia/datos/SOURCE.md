@@ -114,7 +114,7 @@ el DDI es la documentación autorizada.
 
 ## Transformación
 
-La limpieza está **dentro del lab**, en la sección *De la microdata cruda al subset*
+La limpieza está **dentro del lab**, en la sección *Una transformación del microdato*
 (`lab1-distribucion-ingreso.qmd` y `R/lab1-distribucion-ingreso.R`): unión
 Personas↔Hogares, recodificación a etiquetas legibles y filtrado de filas sin ingreso o
 sin peso. Resultado: `geih_pobreza_2019_2021.rds`, **1.467.444 personas**

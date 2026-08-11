@@ -1,6 +1,6 @@
 # Lab 2 — La mita minera del Perú: una frontera que todavía se nota
 
-**Economía del Desarrollo (06230) · Universidad Icesi · Departamento de Economía**
+**Economía del Desarrollo (06230) · Universidad ICESI · Departamento de Economía**
 
 Entre **1573 y 1812**, la Corona española obligó a los pueblos que caían **dentro** de
 un área definida por decreto a enviar **la séptima parte de sus hombres adultos** a las
@@ -135,5 +135,5 @@ ejercicio docente. Detalles en [`datos/SOURCE.md`](datos/SOURCE.md).
 
 ---
 
-*Material del curso Economía del Desarrollo (06230), Universidad Icesi.
+*Material del curso Economía del Desarrollo (06230), Universidad ICESI.
 Datos: paquete de réplica de Dell (2010); muestra de hogares vía MIT OpenCourseWare.*

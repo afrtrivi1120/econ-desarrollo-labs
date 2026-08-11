@@ -1,6 +1,6 @@
 # =============================================================================
 # 00-recortar-crudos.R
-# De los archivos COMPLETOS del DANE al EXTRACTO que se versiona en el repo.
+# De los archivos COMPLETOS del DANE al EXTRACTO que se encuentra en el repo.
 #
 # Esto NO se corre en clase: el extracto ya viene en datos/_crudos/*.csv.gz.
 # Se corre una sola vez (o cuando cambien las columnas que usa el lab), y existe

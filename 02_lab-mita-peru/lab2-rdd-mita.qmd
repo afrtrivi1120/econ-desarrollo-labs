@@ -1,7 +1,7 @@
 ---
 title: "Lab 2 — La mita minera del Perú"
 subtitle: "Una frontera que todavía se nota (réplica de Dell, 2010)"
-author: "Economía del Desarrollo (06230) · Universidad Icesi"
+author: "Economía del Desarrollo (06230) · Universidad ICESI"
 lang: es
 date: today
 format:

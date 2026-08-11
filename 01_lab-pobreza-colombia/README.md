@@ -1,6 +1,6 @@
 # Lab 1 — La distribución del ingreso en Colombia: una foto antes y después de la pandemia
 
-**Economía del Desarrollo (06230) · Universidad Icesi · Departamento de Economía**
+**Economía del Desarrollo (06230) · Universidad ICESI · Departamento de Economía**
 
 Este laboratorio usa las encuestas de hogares de Colombia (**GEIH–DANE**) de **2019** y
 **2021** para mirar, con datos reales, dos cosas que vimos en las lecturas de la sesión:
@@ -25,7 +25,7 @@ La pregunta de fondo: **¿cómo se ve la distribución del ingreso colombiano an
 
 | Sección | Qué hacemos | Gráfica |
 |---|---|---|
-| **De la microdata cruda al subset** | Qué trae cada archivo del DANE, qué significa cada variable y qué se transforma | — |
+| **Una transformación del microdato** | Qué trae cada archivo del DANE, qué significa cada variable y qué se transforma | — |
 | **Una mirada a los datos** | Entender el **factor de expansión** | — |
 | **Ingreso por quintil** | 2019 vs 2021 y la brecha Q5/Q1 | `figuras/2a-ingreso-por-quintil.png` |
 | **Pobreza 2019 vs 2021** | Tasa monetaria y extrema, antes/después | `figuras/3-pobreza-antes-despues.png` |
@@ -142,4 +142,4 @@ Uso académico con la cita obligatoria: **«Fuente: DANE, www.dane.gov.co»**.
 
 ---
 
-*Material del curso Economía del Desarrollo (06230), Universidad Icesi. Datos: DANE.*
+*Material del curso Economía del Desarrollo (06230), Universidad ICESI. Datos: DANE.*

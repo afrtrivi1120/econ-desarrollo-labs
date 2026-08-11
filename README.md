@@ -1,6 +1,6 @@
 # Laboratorios de R — Economía del Desarrollo
 
-**Economía del Desarrollo (06230) · Universidad Icesi · Departamento de Economía**
+**Economía del Desarrollo (06230) · Universidad ICESI · Departamento de Economía**
 
 Este repositorio reúne **todos los laboratorios del semestre**. Cada lab es una
 **réplica guiada** de uno de los papers que discutimos en clase: abrimos los datos
@@ -86,5 +86,5 @@ Dónde vive la transformación cambia según el lab:
 
 ---
 
-*Material del curso Economía del Desarrollo (06230), Universidad Icesi.
+*Material del curso Economía del Desarrollo (06230), Universidad ICESI.
 Cada lab cita su propia fuente de datos en `datos/SOURCE.md`.*

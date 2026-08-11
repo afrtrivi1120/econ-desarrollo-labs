@@ -1,6 +1,6 @@
 # =============================================================================
 # LAB 2 — La mita minera del Perú: una frontera que todavía se nota
-# Economía del Desarrollo (06230) · Universidad Icesi
+# Economía del Desarrollo (06230) · Universidad ICESI
 #
 # Datos: paquete de réplica de Dell, M. (2010), "The Persistent Effects of
 #        Peru's Mining Mita", Econometrica 78(6), 1863-1903.

@@ -1,6 +1,6 @@
 # =============================================================================
 # LAB 1 — La distribución del ingreso en Colombia: foto antes/después de la pandemia
-# Economía del Desarrollo (06230) · Universidad Icesi
+# Economía del Desarrollo (06230) · Universidad ICESI
 #
 # Datos: GEIH — Medición de Pobreza Monetaria y Desigualdad, DANE (2019 y 2021).
 # Idea: replicar, con datos de Colombia, las dos lecturas de la sesión —
@@ -18,21 +18,20 @@
 # =============================================================================
 # 0. PREPARACIÓN
 # =============================================================================
-# pacman instala lo que falte y carga lo que ya esté: una sola línea para todo.
+# pacman es un gestor de paquetes para R. Su función p_load() revisa qué está
+# instalado, instala lo que falte y lo carga, todo en una sola llamada: así el
+# lab arranca igual en cualquier computador.
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse, scales, data.table, R.utils)
-# data.table entra solo por fread(), que lee rápido y maneja bien el decimal con
-# coma de los archivos de 2019. R.utils es lo que le permite abrir los .csv.gz.
+# data.table es un paquete para tablas grandes: lo mismo que un data.frame pero
+# más rápido y con menos memoria. Lo usamos solo por fread(), que lee los
+# archivos del DANE mucho más rápido que read.csv() y deja fijar a mano el
+# separador y el decimal —que no son los mismos en 2019 que en 2021—. R.utils es
+# lo que le permite abrir los .csv.gz sin descomprimirlos antes.
 # Después pasamos a tibble y seguimos con dplyr.
-#
-# OJO con el select = de abajo: el extracto de datos/_crudos/ ya viene con esas
-# columnas y nada más, así que NO está filtrando. Queda escrito a propósito, como
-# contrato de qué usa el lab: si mañana el archivo trae una columna de más, esto
-# sigue leyendo lo mismo. El recorte de verdad —de las 137 columnas del archivo
-# de personas del DANE a estas siete— lo hace R/00-recortar-crudos.R.
 
 # =============================================================================
-# 1. DE LA MICRODATA CRUDA AL SUBSET DE TRABAJO
+# 1. UNA TRANSFORMACIÓN DEL MICRODATO
 # =============================================================================
 # El DANE reparte la medición de pobreza en DOS archivos por año:
 #   - HOGARES  -> el ingreso, las líneas de pobreza y los indicadores.

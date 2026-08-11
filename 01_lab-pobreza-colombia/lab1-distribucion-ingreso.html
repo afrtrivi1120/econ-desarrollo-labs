@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Economía del Desarrollo (06230) · Universidad Icesi">
+<meta name="author" content="Economía del Desarrollo (06230) · Universidad ICESI">
 
 <title>Lab 1 — La distribución del ingreso en Colombia</title>
 <style>
@@ -2210,7 +2210,7 @@ vertical-align: -.125em;
   <ul>
   <li><a href="#de-qué-se-trata" id="toc-de-qué-se-trata" class="nav-link active" data-scroll-target="#de-qué-se-trata"><span class="header-section-number">1</span> De qué se trata</a></li>
   <li><a href="#preparación" id="toc-preparación" class="nav-link" data-scroll-target="#preparación"><span class="header-section-number">2</span> Preparación</a></li>
-  <li><a href="#sec-limpieza" id="toc-sec-limpieza" class="nav-link" data-scroll-target="#sec-limpieza"><span class="header-section-number">3</span> De la microdata cruda al subset</a>
+  <li><a href="#sec-limpieza" id="toc-sec-limpieza" class="nav-link" data-scroll-target="#sec-limpieza"><span class="header-section-number">3</span> Una transformación del microdato</a>
   <ul class="collapse">
   <li><a href="#leer-los-archivos-crudos" id="toc-leer-los-archivos-crudos" class="nav-link" data-scroll-target="#leer-los-archivos-crudos"><span class="header-section-number">3.1</span> Leer los archivos crudos</a></li>
   <li><a href="#mirar-el-dato-crudo-antes-de-tocarlo" id="toc-mirar-el-dato-crudo-antes-de-tocarlo" class="nav-link" data-scroll-target="#mirar-el-dato-crudo-antes-de-tocarlo"><span class="header-section-number">3.2</span> Mirar el dato crudo antes de tocarlo</a></li>
@@ -2248,14 +2248,14 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Autor/a</div>
     <div class="quarto-title-meta-contents">
-             <p>Economía del Desarrollo (06230) · Universidad Icesi </p>
+             <p>Economía del Desarrollo (06230) · Universidad ICESI </p>
           </div>
   </div>
     
     <div>
     <div class="quarto-title-meta-heading">Fecha de publicación</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">9 de agosto de 2026</p>
+      <p class="date">11 de agosto de 2026</p>
     </div>
   </div>
   
@@ -2291,26 +2291,12 @@ vertical-align: -.125em;
 </section>
 <section id="preparación" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="preparación"><span class="header-section-number">2</span> Preparación</h2>
-<p><code>pacman</code> instala lo que falte y carga lo que ya esté: una sola línea para todo.</p>
+<p><code>pacman</code> es un gestor de paquetes para R. Su función <code>p_load()</code> hace tres cosas en una sola llamada: revisa qué paquetes ya están instalados, instala los que falten y los carga en la sesión. Lo usamos para que el lab arranque igual en cualquier computador, sin que nadie tenga que ir corriendo <code>install.packages()</code> paquete por paquete.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">&quot;pacman&quot;</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;pacman&quot;</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, scales, data.table, R.utils)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p><code>data.table</code> entra por una sola función, <code>fread()</code>, que lee rápido y maneja bien el decimal con coma de los archivos de 2019. (<code>R.utils</code> es lo que le permite abrir los <code>.csv.gz</code> sin descomprimirlos antes.)</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>Un detalle honesto sobre el <code>select =</code> que viene abajo
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>El extracto de <code>datos/_crudos/</code> <strong>ya trae solo esas columnas</strong>, así que el <code>select</code> no está filtrando nada. Queda escrito a propósito, como <strong>contrato</strong> de qué usa el lab: si mañana el archivo llegara con una columna de más, esto seguiría leyendo lo mismo.</p>
-<p>El recorte de verdad —de las <strong>137 columnas</strong> del archivo de personas del DANE a estas siete— lo hace <a href="R/00-recortar-crudos.R"><code>R/00-recortar-crudos.R</code></a>, que se corre una sola vez y no en clase.</p>
-</div>
-</div>
+<p><code>data.table</code> es un paquete de R pensado para tablas grandes: hace las mismas operaciones que un <code>data.frame</code> pero mucho más rápido y con menos memoria. Aquí lo usamos por una sola de sus funciones, <code>fread()</code>. La elegimos porque lee los archivos del DANE en una fracción de lo que tarda <code>read.csv()</code>, y sobre todo porque deja fijar a mano el separador y el símbolo decimal —que no son los mismos en 2019 que en 2021—. (<code>R.utils</code> es lo que le permite abrir los <code>.csv.gz</code> sin descomprimirlos antes.)</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rutas_crudos <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">hogares_2019  =</span> <span class="st">&quot;datos/_crudos/geih-2019-hogares.csv.gz&quot;</span>,</span>
@@ -2325,23 +2311,9 @@ vertical-align: -.125em;
 <pre><code>[1] TRUE</code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>Si <code>hay_crudos</code> sale <code>FALSE</code>
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Los bloques de la sección siguiente <strong>se muestran pero no se ejecutan</strong>, y el análisis arranca del subset ya construido. Baje los archivos del DANE siguiendo <a href="datos/SOURCE.md"><code>datos/SOURCE.md</code></a> para ver la limpieza corriendo de verdad.</p>
-</div>
-</div>
 </section>
 <section id="sec-limpieza" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="sec-limpieza"><span class="header-section-number">3</span> De la microdata cruda al subset</h2>
-<p>Los datos <strong>no llegan limpios</strong>. Esta sección muestra qué había en el archivo original y qué le hicimos, porque cada decisión de limpieza cambia los resultados.</p>
+<h2 data-number="3" class="anchored" data-anchor-id="sec-limpieza"><span class="header-section-number">3</span> Una transformación del microdato</h2>
 <p>El DANE reparte la medición de pobreza en <strong>dos archivos por año</strong>:</p>
 <table class="caption-top table">
 <colgroup>
@@ -2382,7 +2354,7 @@ vertical-align: -.125em;
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>2019</strong> usa separador <code>;</code> y decimal <code>,</code> (formato europeo). <strong>2021</strong> usa separador <code>,</code> y decimal <code>.</code>. Por eso los leemos en bloques separados: no es un descuido, es el dato real.</p>
+<p><strong>2019</strong> usa separador <code>;</code> y decimal <code>,</code> (formato europeo). <strong>2021</strong> usa separador <code>,</code> y decimal <code>.</code>. Por eso los leemos en bloques separados.</p>
 </div>
 </div>
 <div class="cell">
@@ -2535,7 +2507,7 @@ $ indigente   &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 </section>
 <section id="qué-significa-cada-variable" class="level3" data-number="3.3">
 <h3 data-number="3.3" class="anchored" data-anchor-id="qué-significa-cada-variable"><span class="header-section-number">3.3</span> Qué significa cada variable</h3>
-<p>Estas definiciones están tomadas <strong>textualmente</strong> del diccionario de datos oficial del DANE, que se versiona en <a href="datos/diccionario-dane/"><code>datos/diccionario-dane/</code></a>. No están escritas de memoria.</p>
+<p>Estas definiciones están tomadas <strong>textualmente</strong> del diccionario de datos oficial del DANE, que se encuentra en <a href="datos/diccionario-dane/"><code>datos/diccionario-dane/</code></a>. No están escritas de memoria.</p>
 <section id="las-que-vienen-del-archivo-de-hogares" class="level4" data-number="3.3.1">
 <h4 data-number="3.3.1" class="anchored" data-anchor-id="las-que-vienen-del-archivo-de-hogares"><span class="header-section-number">3.3.1</span> Las que vienen del archivo de <strong>hogares</strong></h4>
 <table class="caption-top table">
@@ -2634,7 +2606,7 @@ $ indigente   &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Importante</span><code>fex_c</code> es la variable más importante del lab
+<span class="screen-reader-only">Importante</span>Factores de expansión
 </div>
 </div>
 <div class="callout-body-container callout-body">

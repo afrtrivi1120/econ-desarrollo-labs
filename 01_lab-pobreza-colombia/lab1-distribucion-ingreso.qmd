@@ -1,7 +1,7 @@
 ---
 title: "Lab 1 — La distribución del ingreso en Colombia"
 subtitle: "Una foto antes y después de la pandemia (GEIH–DANE, 2019 vs 2021)"
-author: "Economía del Desarrollo (06230) · Universidad Icesi"
+author: "Economía del Desarrollo (06230) · Universidad ICESI"
 lang: es
 date: today
 format:
@@ -43,27 +43,22 @@ Unidad 1.
 
 ## Preparación
 
-`pacman` instala lo que falte y carga lo que ya esté: una sola línea para todo.
+`pacman` es un gestor de paquetes para R. Su función `p_load()` hace tres cosas en una
+sola llamada: revisa qué paquetes ya están instalados, instala los que falten y los carga
+en la sesión. Lo usamos para que el lab arranque igual en cualquier computador, sin que
+nadie tenga que ir corriendo `install.packages()` paquete por paquete.
 
 ```{r setup}
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse, scales, data.table, R.utils)
 ```
 
-`data.table` entra por una sola función, `fread()`, que lee rápido y maneja bien el
-decimal con coma de los archivos de 2019. (`R.utils` es lo que le permite abrir los
-`.csv.gz` sin descomprimirlos antes.)
-
-::: {.callout-note}
-## Un detalle honesto sobre el `select = ` que viene abajo
-El extracto de `datos/_crudos/` **ya trae solo esas columnas**, así que el `select` no
-está filtrando nada. Queda escrito a propósito, como **contrato** de qué usa el lab: si
-mañana el archivo llegara con una columna de más, esto seguiría leyendo lo mismo.
-
-El recorte de verdad —de las **137 columnas** del archivo de personas del DANE a estas
-siete— lo hace [`R/00-recortar-crudos.R`](R/00-recortar-crudos.R), que se corre una sola
-vez y no en clase.
-:::
+`data.table` es un paquete de R pensado para tablas grandes: hace las mismas operaciones
+que un `data.frame` pero mucho más rápido y con menos memoria. Aquí lo usamos por una
+sola de sus funciones, `fread()`. La elegimos porque lee los archivos del DANE en una
+fracción de lo que tarda `read.csv()`, y sobre todo porque deja fijar a mano el separador
+y el símbolo decimal —que no son los mismos en 2019 que en 2021—. (`R.utils` es lo que le
+permite abrir los `.csv.gz` sin descomprimirlos antes.)
 
 ```{r rutas}
 rutas_crudos <- c(
@@ -77,17 +72,7 @@ hay_crudos <- all(file.exists(rutas_crudos))
 hay_crudos
 ```
 
-::: {.callout-note}
-## Si `hay_crudos` sale `FALSE`
-Los bloques de la sección siguiente **se muestran pero no se ejecutan**, y el análisis
-arranca del subset ya construido. Baje los archivos del DANE siguiendo
-[`datos/SOURCE.md`](datos/SOURCE.md) para ver la limpieza corriendo de verdad.
-:::
-
-## De la microdata cruda al subset {#sec-limpieza}
-
-Los datos **no llegan limpios**. Esta sección muestra qué había en el archivo original y
-qué le hicimos, porque cada decisión de limpieza cambia los resultados.
+## Una transformación del microdato {#sec-limpieza}
 
 El DANE reparte la medición de pobreza en **dos archivos por año**:
 
@@ -104,7 +89,7 @@ el de personas no hay edad ni educación; sin el de hogares no hay ingreso ni po
 ::: {.callout-warning}
 ## Los dos años no vienen en el mismo formato
 **2019** usa separador `;` y decimal `,` (formato europeo). **2021** usa separador `,` y
-decimal `.`. Por eso los leemos en bloques separados: no es un descuido, es el dato real.
+decimal `.`. Por eso los leemos en bloques separados.
 :::
 
 ```{r leer-2019}
@@ -189,7 +174,7 @@ presente cuánta gente hay en cada una antes de agruparlas.
 ### Qué significa cada variable
 
 Estas definiciones están tomadas **textualmente** del diccionario de datos oficial del
-DANE, que se versiona en [`datos/diccionario-dane/`](datos/diccionario-dane/). No están
+DANE, que se encuentra en [`datos/diccionario-dane/`](datos/diccionario-dane/). No están
 escritas de memoria.
 
 #### Las que vienen del archivo de **hogares**
@@ -214,7 +199,7 @@ escritas de memoria.
 | `fex_c` | **Factor de expansión anualizado** | — |
 
 ::: {.callout-important}
-## `fex_c` es la variable más importante del lab
+## Factores de expansión
 Cada fila **representa a `fex_c` personas del país**. Una encuesta no es un censo: sin
 ponderar, todas las cifras están mal. Por eso **toda cifra nacional de este lab va
 ponderada por `fex`**.

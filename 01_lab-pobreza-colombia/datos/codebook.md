@@ -53,7 +53,7 @@ sin el de personas no hay edad ni educación, y sin el de hogares no hay ingreso
 | `fex_c` | Factor de expansión anualizado | — |
 
 > Las definiciones y los códigos de estas dos tablas están tomados **textualmente** del
-> diccionario de datos oficial del DANE, que se versiona en
+> diccionario de datos oficial del DANE, que se encuentra en
 > [`diccionario-dane/`](diccionario-dane/) (formato DDI). No se escribieron de memoria.
 
 **Ojo con lo que el archivo crudo NO dice.** El DANE publica los archivos completos con
