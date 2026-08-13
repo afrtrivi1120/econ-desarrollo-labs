@@ -495,16 +495,6 @@ El resultado es desconcertante: la mita se abolió en 1812 y su huella sigue ah�
 La mita no dejó una herida directa que se transmitiera de padres a hijos. **Empujó a la
 región por un camino institucional distinto, y ese camino se reprodujo solo.**
 
-::: {.callout-note}
-## Lo que acá no se replica
-Las variables de haciendas, caminos, educación y participación en el mercado están en
-los archivos `files1-3.zip` del paquete original de Dell, que no pudimos descargar
-(ver [`datos/SOURCE.md`](datos/SOURCE.md)). Lo que sí replicamos es el efecto sobre el
-consumo y las pruebas de balance.
-
-Decir *"no tengo ese dato"* en vez de inventarlo también es parte del oficio.
-:::
-
 ## Síntesis y discusión
 
 - Los hogares de distritos sujetos a la mita consumen **cerca de 25 % menos** que sus
@@ -527,8 +517,6 @@ Decir *"no tengo ese dato"* en vez de inventarlo también es parte del oficio.
    malintencionado con esa libertad?
 4. El ancho de banda automático de `rdrobust` dio una cifra absurda. ¿Qué dice eso sobre
    usar herramientas estadísticas sin mirar de dónde vienen los datos?
-5. Si tuviera acceso a los archivos de haciendas y caminos, ¿qué gráfica haría para
-   convencer a alguien de que ese es el canal, y no otro?
 :::
 
 ---

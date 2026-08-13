@@ -374,8 +374,7 @@ print(g4)
 # 7. ¿POR QUÉ PERSISTE?  El mecanismo que propone Dell
 # =============================================================================
 # El resultado es raro: la mita se abolió en 1812 y su efecto sigue ahí en 2001.
-# ¿Por cuál canal viaja doscientos años? El argumento de Dell (Tablas VI a IX
-# del paper, que NO están en este subset de enseñanza):
+# ¿Por cuál canal viaja doscientos años? El argumento de Dell, en cuatro pasos:
 #
 #   1. HACIENDAS. Fuera de la mita se formaron grandes haciendas; dentro, la
 #      Corona lo impidió para no competir por la mano de obra. Resultado: hoy
@@ -391,12 +390,6 @@ print(g4)
 #
 # Es decir: la mita no dejó una herida directa, sino que EMPUJÓ A LA REGIÓN POR
 # UN CAMINO INSTITUCIONAL DISTINTO, y ese camino se reprodujo solo.
-#
-# NOTA DE HONESTIDAD: este bloque NO se replica acá. Las variables de haciendas,
-# caminos, educación y participación en el mercado están en los archivos
-# `files1-3.zip` del paquete original (ver datos/SOURCE.md), que no pudimos
-# descargar. Lo que sí replicamos es el efecto sobre el consumo y las pruebas de
-# balance. Decir "no tengo el dato" es parte del oficio.
 
 # =============================================================================
 # 8. GUARDAR LAS GRÁFICAS Y LOS NÚMEROS TITULARES
