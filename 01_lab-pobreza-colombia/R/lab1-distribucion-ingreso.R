@@ -3,6 +3,8 @@
 # Economía del Desarrollo (06230) · Universidad ICESI
 #
 # Datos: GEIH — Medición de Pobreza Monetaria y Desigualdad, DANE (2019 y 2021).
+#   2019, cat. 684: https://microdatos.dane.gov.co/index.php/catalog/684
+#   2021, cat. 733: https://microdatos.dane.gov.co/index.php/catalog/733
 # Idea: replicar, con datos de Colombia, las dos lecturas de la sesión —
 #   (1) Sala-i-Martin (2006): mirar la DISTRIBUCIÓN del ingreso, no solo el promedio.
 #   (2) Banco Mundial (2020): ver QUIÉN es pobre (edad, género, educación).
@@ -33,7 +35,9 @@ pacman::p_load(tidyverse, scales, data.table, R.utils)
 # =============================================================================
 # 1. UNA TRANSFORMACIÓN DEL MICRODATO
 # =============================================================================
-# El DANE reparte la medición de pobreza en DOS archivos por año:
+# Los microdatos son públicos y se bajan del portal del DANE, una ficha por año
+# (cat. 684 para 2019, cat. 733 para 2021; las URLs están arriba). Ahí el DANE
+# reparte la medición de pobreza en DOS archivos por año:
 #   - HOGARES  -> el ingreso, las líneas de pobreza y los indicadores.
 #   - PERSONAS -> la demografía: edad, sexo, educación.
 # Se unen por directorio + secuencia_p (la llave de vivienda y la de hogar).

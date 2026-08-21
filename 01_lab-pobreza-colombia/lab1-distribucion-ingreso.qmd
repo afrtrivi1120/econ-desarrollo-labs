@@ -21,8 +21,10 @@ execute:
 
 ## De qué se trata
 
-Vamos a usar las encuestas de hogares de Colombia (**GEIH–DANE**) de **2019** y
-**2021** para mirar, con datos reales, dos cosas que vimos en las lecturas:
+Vamos a usar las encuestas de hogares de Colombia (**GEIH–DANE**) de
+[**2019**](https://microdatos.dane.gov.co/index.php/catalog/684) y
+[**2021**](https://microdatos.dane.gov.co/index.php/catalog/733) para mirar, con datos
+reales, dos cosas que vimos en las lecturas:
 
 1. **La distribución del ingreso** —no solo el promedio—, en la línea de
    **Sala-i-Martin (2006)**: el promedio esconde quién gana qué.
@@ -74,7 +76,10 @@ hay_crudos
 
 ## Una transformación del microdato {#sec-limpieza}
 
-El DANE reparte la medición de pobreza en **dos archivos por año**:
+Los microdatos son públicos y se bajan del portal del DANE, una ficha por año
+([2019, cat. 684](https://microdatos.dane.gov.co/index.php/catalog/684) ·
+[2021, cat. 733](https://microdatos.dane.gov.co/index.php/catalog/733)). Ahí el DANE
+reparte la medición de pobreza en **dos archivos por año**:
 
 | Archivo | Unidad | Qué trae |
 |---|---|---|
