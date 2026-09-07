@@ -1,0 +1,11 @@
+{
+  "any_adoption_complex": 0.2523,
+  "any_adoption_complex_se": 0.0928,
+  "any_adoption_simple": 0.1547,
+  "any_adoption_geo": 0.1066,
+  "benchmark_mean": 0.4200,
+  "p_simple_igual_complex": 0.2996,
+  "p_aleatorizacion_complex": 0.0095,
+  "n_aldeas": 200,
+  "n_distritos": 3
+}

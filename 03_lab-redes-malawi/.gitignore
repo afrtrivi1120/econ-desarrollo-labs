@@ -1,0 +1,19 @@
+# Paquete de réplica crudo de Beaman et al. (openICPSR; licencia por auditar,
+# no se redistribuye). Solo entra al repo el subset de enseñanza derivado.
+datos/_crudos/
+*.zip
+*.dta
+
+# Artefactos de R y Quarto
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+.quarto/
+lab3-rct-redes_files/
+
+# Sistema
+.DS_Store
+
+# Dispositivo PDF por defecto de Rscript
+Rplots.pdf
