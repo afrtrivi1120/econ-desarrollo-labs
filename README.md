@@ -19,7 +19,7 @@ del que depende su respuesta.
 |---|---|---|---|---|
 | [**1**](01_lab-pobreza-colombia/) | 1 | Distribución del ingreso y pobreza en Colombia | Medición y descripción | Sala-i-Martin (2006) · Banco Mundial (2020) · datos GEIH–DANE |
 | [**2**](02_lab-mita-peru/) | 2 | La *mita* minera del Perú y sus efectos persistentes | Regresión discontinua (RDD) geográfica | Dell (2010), *Econometrica* |
-| 3 | 5–6 | Capital humano, tierra y trabajo | Panel con efectos fijos | *(en preparación)* |
+| [**3**](03_lab-redes-malawi/) | 3 | Transformación agrícola y adopción de tecnología | Experimento aleatorizado (RCT) | Beaman, BenYishay, Magruder y Mobarak (2021), *AER* |
 | 4 | 7–8 | Titulación y seguridad de la tenencia | Diferencias en diferencias (DiD) | *(en preparación)* |
 | 5 | 9–10 | Crédito, riesgo y seguros | Experimentos aleatorizados (RCT) | *(en preparación)* |
 | 6 | 11–12 | Migración e informalidad | Estructural vs. forma reducida | *(en preparación)* |
@@ -84,7 +84,9 @@ Dónde vive la transformación cambia según el lab:
   cada variable y qué se transforma. El paso previo —cómo se pasa de los archivos
   completos del portal al extracto que sí cabe en el repo— está documentado en
   `datos/SOURCE.md`.
-- **Lab 2** — la transformación está documentada aparte, en `R/00-construir-datos.R`.
+- **Labs 2 y 3** — la transformación está documentada aparte, en
+  `R/00-construir-datos.R`, y no hace falta correrla para la clase: los subsets ya
+  vienen construidos en `datos/`.
 
 ---
 
