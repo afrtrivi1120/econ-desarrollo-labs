@@ -35,6 +35,13 @@ aldeas <- read_rds("datos/beaman_redes_aldeas.rds") |>
 socios <- read_rds("datos/beaman_redes_socios.rds") |>
   as_tibble()
 
+# Para el balance fino (Tabla A5) y el mecanismo (Tabla 3).
+censo <- read_rds("datos/beaman_redes_censo.rds") |>
+  as_tibble()
+
+conversaciones <- read_rds("datos/beaman_redes_conversaciones.rds") |>
+  as_tibble()
+
 # Paleta de los cuatro brazos: el azul del control y el naranja del tratamiento
 # titular son los mismos del Lab 2; los dos intermedios quedan en tonos suaves.
 colores_brazo <- c("Benchmark" = "#2c7fb8", "Geo"    = "#a6bddb",
@@ -174,6 +181,39 @@ print(balance, n = 12)
 # encuentra una diferencia incómoda: las fincas de las aldeas Benchmark son más
 # grandes. Los autores reportan que controlar por eso no cambia nada. Nuestro
 # subset es a nivel de aldea, así que ese chequeo hay que leerlo en el paper.
+
+# --- 3a. El balance FINO: 12 variables a nivel de agricultor (Tabla A5) -------
+# El balance de arriba usa 4 variables de aldea. El paper hace el suyo con 12 del
+# censo de redes, a nivel de agricultor, y es ahí donde aparece lo interesante.
+variables_censo <- c("vivienda_pc", "activos_pc", "ganado_pc", "fert_basal",
+                     "fert_cobertura", "adultos", "ninos", "tam_finca",
+                     "tierra_propia", "rendimiento", "presta_ganyu", "usa_ganyu")
+
+balance_censo <- map_dfr(variables_censo, function(v) {
+  m <- feols(as.formula(paste(v, "~ complex + simple + geo +",
+                              "hoyos_base + fertilizante_base + compost_base | distrito")),
+             data = censo, cluster = ~aldea, notes = FALSE)
+  tibble(variable = v,
+         p_conjunta = wald(m, "complex|simple|geo", print = FALSE)$p,
+         n = nobs(m))
+}) |>
+  arrange(p_conjunta)
+
+print(as.data.frame(balance_censo), digits = 3)
+# esperado: exactamente 2 de 12 por debajo de 0,10 -> vivienda_pc (0,057) y
+# tam_finca (0,071). Es el resultado que reporta el paper en su Tabla A5.
+
+cat(sprintf("\nVariables desbalanceadas al 10%%: %d de %d\n",
+            sum(balance_censo$p_conjunta < 0.10), nrow(balance_censo)))
+
+# CÓMO SE LEE ESTO, que es lo que importa. Con 12 pruebas al 10%, lo ESPERADO por
+# puro azar es que 1,2 salgan "significativas". Salieron 2. Eso no rompe el
+# experimento: es lo que un sorteo honesto produce.
+#
+# Lo que sí hay que hacer es DECIRLO. Los autores lo reportan, señalan que el
+# tamaño de finca es el caso más incómodo y muestran que controlar por él no
+# cambia ningún resultado. Un balance sin ninguna diferencia sería más
+# sospechoso que este.
 
 # Dividimos coef/ee para obtener el estadístico t: así variables medidas en
 # unidades distintas quedan comparables en un mismo eje. Misma receta del Lab 2.
@@ -415,7 +455,88 @@ bind_rows(
   select(muestra, coef = estimate, ee = std.error, n)
 
 # =============================================================================
-# 7. SIMPLE CONTRA COMPLEJO  (lo que el titular no dice)
+# 7. ¿POR QUÉ FUNCIONÓ?  El mecanismo  (Tabla 3 y Figura 2 del paper)
+# =============================================================================
+# Hasta acá sabemos QUE el targeting funcionó. Falta el POR QUÉ, y son dos
+# preguntas distintas: ¿el canal fue hablar? y ¿por qué haría falta targetear?
+
+# --- 7a. ¿De verdad hablaron? (Tabla 3) --------------------------------------
+# A cada vecino se le preguntó por unos socios concretos: unos capacitados y
+# otros SOMBRA. Y acá está lo elegante: como solo se pregunta por socios —los que
+# el algoritmo habría elegido— cuál de ellos resultó capacitado es ALEATORIO.
+# Es un segundo experimento adentro del primero.
+tabla3 <- map_dfr(1:3, function(y) {
+  m <- feols(hablaron ~ capacitado + socio_simple + socio_complejo + socio_geo +
+               compost_base + fertilizante_base + hoyos_base + tam_aldea + I(tam_aldea^2) | distrito,
+             data = filter(conversaciones, anio == y), cluster = ~aldea, notes = FALSE)
+  muestra <- filter(conversaciones, anio == y)
+  tibble(anio = y,
+         efecto_capacitado = coef(m)[["capacitado"]],
+         ee                = se(m)[["capacitado"]],
+         con_capacitado    = mean(muestra$hablaron[muestra$capacitado == 1]),
+         con_sombra        = mean(muestra$hablaron[muestra$capacitado == 0]),
+         n                 = nobs(m))
+})
+
+print(as.data.frame(tabla3), digits = 3)
+# esperado (Tabla 3): 0,037 (0,008) | 0,050 (0,008) | 0,064 (0,009)
+#   y las medias 0,179/0,141 | 0,181/0,130 | 0,190/0,127; n = 15.115/16.704/11.607
+
+# El canal existe, y es MODESTO: capacitar a alguien sube unos 5 puntos la
+# probabilidad de que un vecino reporte haber hablado con él de siembra en hoyos.
+# Sube con los años, de 3,7 a 6,4 puntos. Ese hilo delgado es todo lo que empuja
+# la difusión — y por eso importa tanto de quién cuelga.
+
+# --- 7b. ¿Por qué haría falta targetear? (Figura 2) --------------------------
+# Los autores simularon la difusión sobre la RED REAL de cada aldea, bajo dos
+# modelos teóricos:
+#   aprendizaje SIMPLE   — basta un vecino informado para adoptar.
+#   aprendizaje COMPLEJO — hacen falta dos.
+# Cada aldea trae la simulación del brazo que efectivamente recibió, así que se
+# pueden comparar las predicciones de cada modelo con lo que de verdad pasó.
+comparacion_sim <- aldeas |>
+  summarise(`Simulación: aprendizaje simple`   = mean(sim_simple_a2,   na.rm = TRUE),
+            `Simulación: aprendizaje complejo` = mean(sim_complejo_a2, na.rm = TRUE),
+            `Datos reales`                     = mean(adopcion_alguna_a2),
+            .by = brazo) |>
+  arrange(brazo)
+
+print(as.data.frame(comparacion_sim), digits = 3)
+# esperado (Figura 2, año 2): simple 0,80/0,81/0,94/0,92 | complejo 0,37/0,42/0,33/0,72
+#   real 0,42/0,52/0,56/0,68   (orden Benchmark, Geo, Simple, Complejo)
+
+g5 <- comparacion_sim |>
+  pivot_longer(-brazo, names_to = "fuente", values_to = "adopcion") |>
+  mutate(fuente = factor(fuente, levels = c("Simulación: aprendizaje simple",
+                                            "Simulación: aprendizaje complejo",
+                                            "Datos reales"))) |>
+  ggplot(aes(brazo, adopcion, fill = brazo)) +
+  geom_col(width = 0.7) +
+  facet_wrap(~ fuente) +
+  scale_fill_manual(values = colores_brazo, guide = "none") +
+  scale_y_continuous(labels = label_percent(), limits = c(0, 1)) +
+  labs(title = "Los datos se parecen al contagio COMPLEJO, no al simple",
+       subtitle = "Aldeas donde alguien adoptó en el año 2: predicho por cada modelo y observado",
+       x = NULL, y = "Aldeas donde alguien adoptó",
+       caption = "Fuente: Beaman et al. (2021), datos de réplica; réplica de la Figura 2.") +
+  theme_minimal(base_size = 13) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+print(g5)
+
+# ACÁ ESTÁ EL ARGUMENTO COMPLETO. Si bastara un vecino para convencerse
+# (aprendizaje simple), la difusión habría arrancado en más del 80% de las
+# aldeas SIN IMPORTAR a quién se capacitara: el targeting sería irrelevante y
+# la teoría de redes, un lujo. La realidad está muy por debajo de eso.
+#
+# El modelo de aprendizaje complejo predice niveles parecidos a los observados Y
+# reproduce el patrón entre brazos: el brazo Complejo arriba, el resto abajo.
+#
+# Por eso el targeting importa. Cuando hace falta ver a DOS vecinos adoptar, la
+# información se muere si no entra por una parte densa de la red. Y por eso
+# elegir bien a dos personas cambia el destino de una aldea entera.
+
+# =============================================================================
+# 8. SIMPLE CONTRA COMPLEJO  (lo que el titular no dice)
 # =============================================================================
 # El titular del paper es "Complejo > Benchmark". La pregunta interesante es
 # otra: ¿le ganó el contagio complejo al simple? Para eso no sirve mirar si cada
@@ -458,13 +579,14 @@ print(igualdades)
 # lector tiene que ver la prueba de igualdad para calibrar cuánto creerle.
 
 # =============================================================================
-# 8. GUARDAR LAS GRÁFICAS Y LOS NÚMEROS TITULARES
+# 9. GUARDAR LAS GRÁFICAS Y LOS NÚMEROS TITULARES
 # =============================================================================
 dir.create("figuras", showWarnings = FALSE)
 ggsave("figuras/1-centralidad-por-brazo.png",    g1, width = 8, height = 5, dpi = 150)
 ggsave("figuras/2-balance-aleatorizacion.png",   g2, width = 8, height = 5, dpi = 150)
 ggsave("figuras/3-adopcion-por-brazo.png",       g3, width = 8, height = 5, dpi = 150)
 ggsave("figuras/4-inferencia-aleatorizacion.png", g4, width = 8, height = 5, dpi = 150)
+ggsave("figuras/5-simulaciones-vs-datos.png",      g5, width = 8, height = 5, dpi = 150)
 
 # results.json: los números que el deck de la sesión cita, resueltos desde
 # la corrida real y no escritos a mano.
@@ -486,7 +608,7 @@ writeLines(sprintf(
   n_distinct(aldeas$distrito)), "results.json")
 
 # =============================================================================
-# 9. SÍNTESIS (para discutir en clase)
+# 10. SÍNTESIS (para discutir en clase)
 # =============================================================================
 # - Elegir a los dos capacitados con el algoritmo de contagio COMPLEJO sube
 #   ~25 puntos porcentuales la probabilidad de que la difusión arranque, sobre
@@ -494,6 +616,11 @@ writeLines(sprintf(
 #   presupuesto, otra lista de invitados.
 # - El resultado no depende de los controles y sobrevive a la inferencia por
 #   aleatorización: el sorteo es el que está haciendo el trabajo.
+# - El canal es HABLAR, y es delgado: capacitar a alguien sube unos 5 puntos la
+#   probabilidad de que un vecino reporte haber hablado con él del tema.
+# - El targeting importa porque la difusión se parece al CONTAGIO COMPLEJO: si
+#   bastara un vecino para convencerse, la difusión habría arrancado en más del
+#   80% de las aldeas sin importar a quién se capacitara.
 # - Pero NO se puede rechazar que los tres algoritmos den lo mismo. La lección
 #   robusta es "targetear con algún criterio de red le gana al criterio del
 #   extensionista", no "el contagio complejo es el mejor algoritmo".

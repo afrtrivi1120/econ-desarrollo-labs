@@ -6,11 +6,16 @@
 #  Se incluye para que el ejercicio sea 100% reproducible.)
 #
 # Entradas esperadas en datos/_crudos/  (ver datos/SOURCE.md):
-#   mnw_public.dta  — nivel AGRICULTOR x TEMPORADA (20.652 x 294). De acá salen,
-#                     construidos, los resultados de aldea de la Tabla 2.
-#   panel_seed.dta  — nivel AGRICULTOR CANDIDATO (1.294 x 25). Es la base de la
-#                     Tabla 1: centralidad de los socios que elegiría cada
-#                     algoritmo.
+#   mnw_public.dta   — nivel AGRICULTOR x TEMPORADA (20.652 x 294). De acá salen,
+#                      construidos, los resultados de aldea de la Tabla 2.
+#   panel_seed.dta   — nivel AGRICULTOR CANDIDATO (1.294 x 25). Base de la Tabla 1:
+#                      centralidad de los socios que elegiría cada algoritmo.
+#   conversation.dta — nivel RESPONDENTE x SOCIO x AÑO (52.814 x 24). Base de la
+#                      Tabla 3: ¿con quién habló cada quien de la siembra en hoyos?
+#   census.dta       — nivel AGRICULTOR (15.957 x 23). Base de la Tabla A5: el
+#                      balance fino, con las 12 variables del censo de redes.
+#   ap_vout.dta      — nivel ALDEA x AÑO (402 x 10). Las SIMULACIONES ya corridas
+#                      de la Figura 2, bajo aprendizaje simple y complejo.
 #
 # OJO — EL PAQUETE NO TRAE UN ARCHIVO A NIVEL DE ALDEA. Las dos variables de
 # resultado se CONSTRUYEN, y este script replica paso por paso lo que hace
@@ -38,8 +43,11 @@ buscar <- function(patron) {
   hallazgo[1]
 }
 
-ruta_agricultores <- buscar("^mnw_public\\.dta$")
-ruta_candidatos   <- buscar("^panel_seed\\.dta$")
+ruta_agricultores  <- buscar("^mnw_public\\.dta$")
+ruta_candidatos    <- buscar("^panel_seed\\.dta$")
+ruta_conversacion  <- buscar("^conversation\\.dta$")
+ruta_censo         <- buscar("^census\\.dta$")
+ruta_simulaciones  <- buscar("^ap_vout\\.dta$")
 
 # Falla fuerte y con ayuda: dice qué falta y qué sí hay.
 exigir <- function(datos, necesarias, archivo) {
@@ -154,6 +162,48 @@ aldeas <- aldea_anio |>
 # Un brazo y solo uno por aldea: si esto falla, el mapa de tratamientos está mal.
 stopifnot(all(aldeas$complex + aldeas$simple + aldeas$geo <= 1))
 
+# --- 1d. Las simulaciones de la Figura 2 ---------------------------------------
+# ap_vout.dta trae, para cada aldea y año, qué FRACCIÓN de veces la difusión
+# arrancaría según dos modelos teóricos, simulados sobre la red real de la aldea:
+#   SL (simple learning)  — basta un vecino informado para adoptar.
+#   CL (complex learning) — hacen falta dos.
+# Cada modelo trae una columna por algoritmo de selección; a cada aldea le
+# corresponde la del brazo que efectivamente recibió.
+simulaciones <- read_dta(ruta_simulaciones) |>
+  zap_labels() |>
+  as_tibble()
+
+exigir(simulaciones,
+       c("s_v_code", "year",
+         paste0("any_adopters_", rep(c("simple", "complex", "geo", "control"), each = 2),
+                "seed_", c("SL", "CL"))),
+       basename(ruta_simulaciones))
+
+sim_larga <- simulaciones |>
+  inner_join(select(aldeas, aldea, brazo, en_a3), by = c("s_v_code" = "aldea")) |>
+  # El año 3 solo existe donde se midió: si no se filtra, las medias del año 3
+  # se calculan sobre 200 aldeas en vez de 141 y dejan de ser las de la figura.
+  filter(year == 2 | (year == 3 & en_a3 == 1)) |>
+  mutate(
+    sim_complejo = case_when(brazo == "Simple"   ~ any_adopters_simpleseed_CL,
+                             brazo == "Complejo" ~ any_adopters_complexseed_CL,
+                             brazo == "Geo"      ~ any_adopters_geoseed_CL,
+                             TRUE                ~ any_adopters_controlseed_CL),
+    sim_simple   = case_when(brazo == "Simple"   ~ any_adopters_simpleseed_SL,
+                             brazo == "Complejo" ~ any_adopters_complexseed_SL,
+                             brazo == "Geo"      ~ any_adopters_geoseed_SL,
+                             TRUE                ~ any_adopters_controlseed_SL)
+  ) |>
+  select(aldea = s_v_code, year, sim_simple, sim_complejo)
+
+aldeas <- aldeas |>
+  left_join(
+    sim_larga |>
+      pivot_wider(names_from = year, values_from = c(sim_simple, sim_complejo),
+                  names_glue = "{.value}_a{year}"),
+    by = "aldea"
+  )
+
 # =============================================================================
 # 2. SOCIOS — los candidatos de cada algoritmo (Tabla 1)
 # =============================================================================
@@ -213,7 +263,96 @@ socios <- candidatos |>
   arrange(aldea, tipo, rango_ev)
 
 # =============================================================================
-# 3. VERIFICACIÓN — ¿reproducimos las Tablas 1 y 2 de Beaman et al.?
+# 3. CONVERSACIONES — ¿de qué habló la gente? (Tabla 3)
+# =============================================================================
+# Una fila por (respondente, socio del que se le preguntó, año). La encuesta solo
+# pregunta por SOCIOS: unos capacitados y otros sombra. Eso monta un segundo
+# experimento adentro del primero — cuál de esos socios resultó capacitado es
+# aleatorio— y permite leer el efecto de la capacitación sobre las conversaciones.
+conversacion <- read_dta(ruta_conversacion) |>
+  zap_labels() |>
+  as_tibble()
+
+exigir(conversacion,
+       c("s_v_code", "district", "year", "seed", "s_shadow_farmer", "trained",
+         "pitorprep", "s_target", "c_target", "g_target",
+         "compost_vbase", "fert_vbase", "pp_vbase", "villagesize"),
+       basename(ruta_conversacion))
+
+conversaciones <- conversacion |>
+  # Se excluyen semillas y sombras: interesa qué oyeron los VECINOS.
+  filter(seed == 0, s_shadow_farmer == 0) |>
+  select(
+    aldea    = s_v_code,
+    distrito = district,
+    anio     = year,
+    capacitado = trained,        # 1 = el socio por el que se pregunta fue capacitado
+    hablaron   = pitorprep,      # 1 = reportan haber hablado de siembra en hoyos
+    socio_simple   = s_target,   # de qué algoritmo era socio ese contacto
+    socio_complejo = c_target,
+    socio_geo      = g_target,
+    compost_base      = compost_vbase,
+    fertilizante_base = fert_vbase,
+    hoyos_base        = pp_vbase,
+    tam_aldea         = villagesize
+  ) |>
+  filter(!is.na(hablaron), !is.na(capacitado), !is.na(tam_aldea)) |>
+  arrange(aldea, anio)
+
+# =============================================================================
+# 4. CENSO — el balance fino, a nivel de agricultor (Tabla A5)
+# =============================================================================
+# El balance de aldea usa 4 variables; el paper hace el suyo con 12 del censo de
+# redes, a nivel de agricultor. Es donde aparece la única diferencia incómoda.
+censo_crudo <- read_dta(ruta_censo) |>
+  zap_labels() |>
+  as_tibble()
+
+# OJO: los do-files usan nombres ABREVIADOS que Stata completa solo. Acá van los
+# nombres reales: `provganyu` es `provganyu_intro` y `useganyu` es `useganyu_intro`.
+variables_censo <- c("housing_pc1", "assets_pc1", "livestock_pc1", "basal_qty_adj",
+                     "topfert_qty_adj", "adults", "num_children", "farmsize_adj",
+                     "land_own", "yield", "provganyu_intro", "useganyu_intro")
+
+exigir(censo_crudo,
+       c("numvill", "district", "seed_shadow", "t_complex", "t_simple", "t_geo",
+         "pp_vbase", "fert_vbase", "compost_vbase", variables_censo),
+       basename(ruta_censo))
+
+censo <- censo_crudo |>
+  filter(seed_shadow == 0) |>       # ni semillas ni sombras: la población de base
+  select(
+    aldea    = numvill,
+    distrito = district,
+    complex = t_complex, simple = t_simple, geo = t_geo,
+    all_of(variables_censo),
+    compost_base      = compost_vbase,
+    fertilizante_base = fert_vbase,
+    hoyos_base        = pp_vbase
+  ) |>
+  rename(                            # nombres legibles para las 12 de la Tabla A5
+    vivienda_pc      = housing_pc1,
+    activos_pc       = assets_pc1,
+    ganado_pc        = livestock_pc1,
+    fert_basal       = basal_qty_adj,
+    fert_cobertura   = topfert_qty_adj,
+    adultos          = adults,
+    ninos            = num_children,
+    tam_finca        = farmsize_adj,
+    tierra_propia    = land_own,
+    rendimiento      = yield,
+    presta_ganyu     = provganyu_intro,
+    usa_ganyu        = useganyu_intro
+  ) |>
+  mutate(brazo = factor(case_when(complex == 1 ~ "Complejo",
+                                  simple  == 1 ~ "Simple",
+                                  geo     == 1 ~ "Geo",
+                                  TRUE         ~ "Benchmark"),
+                        levels = c("Benchmark", "Geo", "Simple", "Complejo"))) |>
+  arrange(aldea)
+
+# =============================================================================
+# 5. VERIFICACIÓN — ¿reproducimos las tablas de Beaman et al.?
 # =============================================================================
 # Tabla 2, columna 1: "alguna adopción no-semilla" en el año 2, sobre las 200
 # aldeas, con los tres controles de la re-aleatorización, tamaño de aldea y su
@@ -252,6 +391,49 @@ print(as.data.frame(tabla1), digits = 4)
 cat("Publicado: complejo 0,28/0,19 y 17,49/13,39 | simple 0,27/0,07 y 16,59/6,70\n")
 cat("           geo 0,15/0,10 y 9,48/6,34        | benchmark 0,21/0,13 y 13,29/9,80\n")
 
+# --- Tabla 3: ¿hablaron más con los capacitados? -------------------------------
+tabla3 <- map_dfr(1:3, function(y) {
+  muestra <- filter(conversaciones, anio == y)
+  m <- feols(hablaron ~ capacitado + socio_simple + socio_complejo + socio_geo +
+               compost_base + fertilizante_base + hoyos_base + tam_aldea + I(tam_aldea^2) | distrito,
+             data = muestra, cluster = ~aldea, notes = FALSE)
+  tibble(anio = y, coef = coef(m)[["capacitado"]], ee = se(m)[["capacitado"]], n = nobs(m))
+})
+
+cat("\n--- Verificación contra la Tabla 3 ---\n")
+print(as.data.frame(tabla3), digits = 3)
+cat("Publicado: 0,037 (0,008) | 0,050 (0,008) | 0,064 (0,009); n = 15.115 / 16.704 / 11.607\n")
+
+# --- Tabla A5: el balance fino, 12 variables -----------------------------------
+balance_censo <- map_dfr(
+  c("vivienda_pc", "activos_pc", "ganado_pc", "fert_basal", "fert_cobertura",
+    "adultos", "ninos", "tam_finca", "tierra_propia", "rendimiento",
+    "presta_ganyu", "usa_ganyu"),
+  function(v) {
+    m <- feols(as.formula(paste(v, "~ complex + simple + geo +",
+                                "hoyos_base + fertilizante_base + compost_base | distrito")),
+               data = censo, cluster = ~aldea, notes = FALSE)
+    tibble(variable = v, p_conjunta = wald(m, "complex|simple|geo", print = FALSE)$p,
+           n = nobs(m))
+  })
+
+cat("\n--- Verificación contra la Tabla A5 (balance a nivel de agricultor) ---\n")
+print(as.data.frame(balance_censo), digits = 3)
+cat(sprintf("Variables con p conjunta < 0,10: %d (publicado: 2 de 12, vivienda y tam_finca)\n",
+            sum(balance_censo$p_conjunta < 0.10)))
+
+# --- Figura 2: simulaciones contra datos ---------------------------------------
+cat("\n--- Verificación contra la Figura 2 (medias por brazo) ---\n")
+print(as.data.frame(
+  aldeas |>
+    summarise(sim_complejo_a2 = mean(sim_complejo_a2, na.rm = TRUE),
+              sim_simple_a2   = mean(sim_simple_a2,   na.rm = TRUE),
+              real_a2         = mean(adopcion_alguna_a2),
+              .by = brazo) |>
+    arrange(brazo)), digits = 3)
+cat("Publicado (año 2): sim complejo 0,37/0,42/0,33/0,72 | sim simple 0,80/0,81/0,94/0,92\n")
+cat("                   real 0,42/0,52/0,56/0,68   (orden Benchmark, Geo, Simple, Complejo)\n")
+
 # --- La puerta: si el número titular no da, no se guarda nada ------------------
 titular   <- coef(m_principal)[["complex"]]
 objetivo  <- 0.252
@@ -264,12 +446,20 @@ if (abs(titular - objetivo) > tolerancia || nobs(m_principal) != 200) {
 }
 
 # =============================================================================
-# 4. GUARDAR LOS SUBSETS
+# 6. GUARDAR LOS SUBSETS
 # =============================================================================
-write_rds(aldeas, "datos/beaman_redes_aldeas.rds")
+# write_rds NO comprime por defecto: sin compress="gz" estos .rds pesan 10 veces
+# más que su .csv.gz y se quedan así en el historial de git para siempre.
+write_rds(aldeas, "datos/beaman_redes_aldeas.rds", compress = "gz")
 write_csv(aldeas, "datos/beaman_redes_aldeas.csv.gz")   # write_csv comprime si termina en .gz
-write_rds(socios, "datos/beaman_redes_socios.rds")
+write_rds(socios, "datos/beaman_redes_socios.rds", compress = "gz")
 write_csv(socios, "datos/beaman_redes_socios.csv.gz")
+write_rds(conversaciones, "datos/beaman_redes_conversaciones.rds", compress = "gz")
+write_csv(conversaciones, "datos/beaman_redes_conversaciones.csv.gz")
+write_rds(censo, "datos/beaman_redes_censo.rds", compress = "gz")
+write_csv(censo, "datos/beaman_redes_censo.csv.gz")
 
-cat(sprintf("\nGuardado: aldeas %d x %d | socios %d x %d\n",
-            nrow(aldeas), ncol(aldeas), nrow(socios), ncol(socios)))
+cat(sprintf(paste0("\nGuardado: aldeas %d x %d | socios %d x %d\n",
+                   "          conversaciones %d x %d | censo %d x %d\n"),
+            nrow(aldeas), ncol(aldeas), nrow(socios), ncol(socios),
+            nrow(conversaciones), ncol(conversaciones), nrow(censo), ncol(censo)))

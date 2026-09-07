@@ -31,16 +31,22 @@ que resuelve el problema de la selección sin pedirle nada al investigador.
 
 ## ¿Qué vamos a ver en clase?
 
-| Sección | Qué hacemos | Gráfica |
-|---|---|---|
-| 1 | Los datos: los cuatro brazos, el resultado y los estratos del sorteo | — |
-| 2 | ¿Mordió el tratamiento? La **centralidad** de los elegidos por cada algoritmo | `figuras/1-centralidad-por-brazo.png` |
-| 3 | ¿Funcionó la aleatorización? Pruebas de **balance** en línea base | `figuras/2-balance-aleatorizacion.png` |
-| 4 | La **diferencia de medias**: el estimador más honesto de un experimento | `figuras/3-adopcion-por-brazo.png` |
-| 5 | La **regresión** (Tabla 2 del paper) y sus cuatro columnas | — |
-| 6 | ¿Aguanta? Controles, **inferencia por aleatorización** y la atrición del año 3 | `figuras/4-inferencia-aleatorizacion.png` |
-| 7 | **Simple contra complejo**: lo que el titular no dice | — |
-| 8–9 | Guardar gráficas y **síntesis** para discutir | — |
+| Sección | Qué hacemos | Réplica de | Gráfica |
+|---|---|---|---|
+| 1 | Los datos: los cuatro brazos, el resultado y los estratos del sorteo | — | — |
+| 2 | ¿Mordió el tratamiento? La **centralidad** de los elegidos por cada algoritmo | Tabla 1 | `figuras/1-centralidad-por-brazo.png` |
+| 3 | ¿Funcionó la aleatorización? **Balance** de aldea y el balance fino de 12 variables | Tabla A5 | `figuras/2-balance-aleatorizacion.png` |
+| 4 | La **diferencia de medias**: el estimador más honesto de un experimento | — | `figuras/3-adopcion-por-brazo.png` |
+| 5 | La **regresión** y sus cuatro columnas | Tabla 2 | — |
+| 6 | ¿Aguanta? Controles, **inferencia por aleatorización** y la atrición del año 3 | — | `figuras/4-inferencia-aleatorizacion.png` |
+| 7 | **El mecanismo**: ¿hablaron? ¿y por qué haría falta targetear? | Tabla 3 y Figura 2 | `figuras/5-simulaciones-vs-datos.png` |
+| 8 | **Simple contra complejo**: lo que el titular no dice | — | — |
+| 9–10 | Guardar gráficas y **síntesis** para discutir | — | — |
+
+> ⏱ **Si el tiempo aprieta**, las dos secciones que se pueden dejar de tarea son la
+> **inferencia por aleatorización** (6b) y el **balance fino** (3a): ninguna cambia la
+> conclusión y las dos se leen bien solas. Lo que no debería saltarse es la sección 7, que
+> es donde el lab pasa de «funcionó» a «por qué funcionó».
 
 **Los números del paper que el código replica:**
 
@@ -55,6 +61,11 @@ que resuelve el problema de la selección sin pedirle nada al investigador.
   siendo un fenómeno pequeño.
 - **No se puede rechazar que los tres algoritmos den lo mismo**: contagio simple contra
   complejo da p = 0,300, y complejo contra geográfico p = 0,102.
+- El canal es **hablar**, y es delgado: capacitar a alguien sube entre **3,7 y 6,4 puntos**
+  la probabilidad de que un vecino reporte haber hablado con él del tema.
+- Bajo **aprendizaje simple** las simulaciones predicen que la difusión arrancaría en más
+  del **80 %** de las aldeas sin importar a quién se capacite; bajo **aprendizaje
+  complejo** predicen 33–72 %, que es lo que se observa. Por eso el targeting importa.
 
 Ese último punto es el que hay que llevarse. Lo que el experimento muestra con firmeza es
 que **alguna** regla de selección le gana al criterio del extensionista; cuál de las tres
@@ -95,15 +106,17 @@ Abra `lab3-rct-redes.html` (ya incluido en el repo) para leer el lab con prosa, 
 gráficas, sin necesidad de correr nada.
 
 La parte más pesada es la **inferencia por aleatorización** de la sección 6: son 2.000
-re-sorteos con su regresión, y toma unos pocos segundos. Todo lo demás es instantáneo.
+re-sorteos con su regresión. El lab completo corre en unos 15 segundos.
 
 ---
 
 ## Los datos
 
-`datos/beaman_redes_aldeas.rds` son las **200 aldeas** del experimento —la muestra exacta
-de la Tabla 2 del paper—, y `datos/beaman_redes_socios.rds` son los **agricultores
-socios**: los que cada algoritmo elegiría, con su centralidad en la red de la aldea. Ver
+Cuatro archivos: `beaman_redes_aldeas.rds` son las **200 aldeas** del experimento —la
+muestra exacta de la Tabla 2—, `beaman_redes_socios.rds` son los **agricultores socios**
+que cada algoritmo elegiría, `beaman_redes_conversaciones.rds` son los **43.525 pares**
+respondente-socio de la Tabla 3, y `beaman_redes_censo.rds` es el **censo de línea base**
+del balance fino. Ver
 el [**codebook**](datos/codebook.md) para la descripción de cada columna y la
 [**procedencia**](datos/SOURCE.md) de cada archivo.
 
