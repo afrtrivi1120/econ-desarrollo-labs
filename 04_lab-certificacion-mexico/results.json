@@ -1,0 +1,22 @@
+{
+  "certif_coef": 0.0149,
+  "certif_se": 0.0061,
+  "n_obs": 27189,
+  "n_hogares": 7577,
+  "n_ejidos": 127,
+  "media_dep": 0.0532,
+  "efecto_relativo": 0.28,
+  "certif_coef_col6": 0.013,
+  "p_pretendencias": 0.19,
+  "sunab_att": 0.0135,
+  "sunab_att_se": 0.0068,
+  "cs_att": 0.0108,
+  "cs_att_se": 0.0068,
+  "pob_log_coef": -0.0404,
+  "pob_log_se": 0.0128,
+  "pob_placebo_coef": -0.0082,
+  "n_localidades": 17328,
+  "jovenes_coef": 0.0035,
+  "area_agricola_coef": 0.0013,
+  "area_x_prod_1994": 0.124
+}

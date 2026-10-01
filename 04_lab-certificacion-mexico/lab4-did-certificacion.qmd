@@ -1,0 +1,773 @@
+---
+title: "Lab 4 — Certificar la tierra y migrar"
+subtitle: "PROCEDE en los ejidos de México (réplica de de Janvry et al., 2015)"
+author: "Economía del Desarrollo (06230) · Universidad ICESI"
+lang: es
+date: today
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-title: "Contenido"
+    number-sections: true
+    embed-resources: true
+    fig-width: 8
+    fig-height: 5
+    df-print: kable
+execute:
+  warning: false
+  message: false
+---
+
+## De qué se trata
+
+Hasta 1992, la tierra de los **ejidos** mexicanos —las comunidades agrarias creadas por la
+reforma agraria de 1914–1992— no se podía vender ni arrendar, y el derecho a la parcela se
+mantenía de una sola forma: **trabajándola**, uno mismo y su familia. La Constitución
+ordenaba quitarle la parcela a quien no la cultivara **dos años seguidos** y dársela a otro
+beneficiario. El derecho dependía de estar.
+
+En 1992 una reforma constitucional cambió eso, y entre 1993 y 2006 el programa
+**PROCEDE** recorrió los ejidos midiendo parcelas y entregando **certificados** a cada
+ejidatario. Con el certificado el derecho ya no dependía de usar la tierra: se podía
+arrendar o vender a otros ejidatarios, y uno se podía ir sin perderla.
+
+La pregunta de de Janvry, Emerick, Gonzalez-Navarro y Sadoulet es directa:
+
+> **Si la tierra ya no exige que uno se quede, ¿la gente se va?**
+
+Es el canal de Besley y Ghatak (2010) que llamamos «dejar de vigilar con el cuerpo»:
+cuando los derechos son inseguros, la gente gasta su propio tiempo en protegerlos. Un
+certificado libera ese tiempo.
+
+::: {.callout-warning}
+## Acá no hay sorteo: hay calendario
+PROCEDE llegó a casi todos los ejidos, pero **en años distintos**. La identificación sale
+de comparar a los que se certificaron **antes** con los que todavía no: una **diferencia en
+diferencias con adopción escalonada**.
+
+Funciona bajo un supuesto que no se puede probar: que, sin PROCEDE, la migración habría
+evolucionado **igual** en los ejidos tempranos y en los tardíos (**tendencias paralelas**).
+Si PROCEDE llegó primero adonde la migración ya venía subiendo, el método confunde esa
+tendencia con un efecto. @sec-paralelas y @sec-cs ponen el supuesto a prueba, y
+@sec-otras busca la misma respuesta en otras dos bases.
+:::
+
+## Preparación
+
+```{r setup}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, scales, fixest, broom, did)
+
+hogares     <- read_rds("datos/janvry_hogares.rds")            # Tabla 1 y A4
+localidades <- read_rds("datos/janvry_localidades.rds")        # Tabla 2, cols. 1-5
+placebo     <- read_rds("datos/janvry_localidades_80_90.rds")  # Tabla 2, col. 6
+censo       <- read_rds("datos/janvry_censo_ejidal.rds")       # Tabla 3
+procampo    <- read_rds("datos/janvry_procampo.rds")           # Figura 2
+satelite    <- read_rds("datos/janvry_satelite.rds")           # Tabla 4 y Figura 1
+
+# El azul del control y el naranja del tratamiento son los mismos de los Labs 2 y 3.
+azul    <- "#2c7fb8"
+naranja <- "#d95f0e"
+colores_cohorte <- c("Certificado en 1997" = "#d95f0e",
+                     "Certificado en 1998" = "#fdae61",
+                     "Certificado en 1999" = "#a6bddb",
+                     "Aún sin certificar en 2000" = "#2c7fb8")
+
+# Saca el coeficiente de una variable de un modelo como una fila de tibble.
+fila <- function(modelo, variable, columna) {
+  tidy(modelo) |>
+    filter(term == variable) |>
+    transmute(columna, coef = estimate, ee = std.error, p = p.value,
+              n = nobs(modelo))
+}
+
+# Para escribir números en el texto con coma decimal.
+num <- function(x, d = 4) formatC(x, format = "f", digits = d, decimal.mark = ",")
+```
+
+Seis archivos, uno por cada base del paper. El corazón del lab es **hogares**: el panel de
+hogares de PROGRESA, 1997–2000, cruzado con el año en que su ejido terminó PROCEDE. Las
+otras cinco sirven para ver si la misma historia aparece con otra unidad, otra fuente y
+otro período. Ver el [codebook](datos/codebook.md).
+
+## Una mirada a los datos
+
+```{r mirada}
+dim(hogares)
+
+hogares |>
+  summarise(hogares = n_distinct(hogar), ejidos = n_distinct(ejido),
+            estados = n_distinct(estado), anios = n_distinct(anio))
+```
+
+Es un **panel**: los mismos hogares observados cuatro años seguidos, en ejidos de siete
+estados pobres (Guerrero, Hidalgo, Michoacán, Puebla, Querétaro, San Luis Potosí y
+Veracruz). El paper habla de 195 ejidos empatados con PROGRESA; la muestra de la Tabla 1 se
+queda solo con los que se certificaron **después de 1996**, porque los que ya estaban
+certificados en 1997 no tienen ningún «antes» que aportar.
+
+```{r resultado}
+hogares |>
+  group_by(anio) |>
+  summarise(hogares = n(), tasa_migrante = mean(migrante))
+```
+
+El resultado es `migrante`: **1 si el hogar ya tiene un migrante permanente**. Ojo con la
+palabra «ya»: la variable es **acumulada**, vale 1 si alguien se fue ese año o cualquier
+año anterior de la muestra. Por eso solo puede subir, y sube en todos lados. Lo que importa
+no es que suba, sino **dónde sube más**.
+
+```{r tratamiento}
+hogares |>
+  count(anio_procede, anio, certificado) |>
+  pivot_wider(names_from = anio, values_from = n)
+```
+
+El tratamiento, `certificado`, no es otra cosa que comparar el año de la encuesta con el
+año en que el ejido terminó PROCEDE. Un ejido que terminó en 1997 cuenta como certificado
+**desde el inicio de 1998**. Los que terminaron en 2000 o después nunca aparecen tratados
+en el panel.
+
+## El calendario de PROCEDE {#sec-calendario}
+
+```{r calendario}
+calendario <- satelite |>
+  distinct(ejido, anio_procede) |>
+  count(anio_procede, name = "ejidos")
+
+hasta_1997 <- with(calendario, sum(ejidos[anio_procede <= 1997]) / sum(ejidos))
+```
+
+```{r}
+#| label: fig-calendario
+#| fig-cap: "Ejidos que terminaron PROCEDE cada año. En naranja, los que cambian de estado dentro del panel PROGRESA."
+g1 <- calendario |>
+  mutate(ventana = if_else(anio_procede %in% 1997:1999,
+                           "Cambian de estado dentro del panel 1997-2000",
+                           "Fuera de esa ventana")) |>
+  ggplot(aes(anio_procede, ejidos, fill = ventana)) +
+  geom_col(width = 0.8) +
+  scale_fill_manual(values = c("Cambian de estado dentro del panel 1997-2000" = naranja,
+                               "Fuera de esa ventana" = "grey70")) +
+  scale_x_continuous(breaks = seq(1993, 2007, by = 2)) +
+  scale_y_continuous(labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  labs(title = "PROCEDE no llegó a todos al mismo tiempo",
+       subtitle = "Ejidos que terminaron la certificación cada año (los 26.481 de la base satelital)",
+       x = "Año en que el ejido terminó PROCEDE", y = "Ejidos", fill = NULL,
+       caption = "Fuente: de Janvry et al. (2015), datos de réplica (imágenes Landsat + PROCEDE).") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+g1
+```
+
+El programa fue rapidísimo: el `r num(100 * hasta_1997, 0)` % de los ejidos ya había
+terminado en 1997. Pero dejó una cola larga hasta 2006, y esa es la variación que usa el
+paper: en cualquier año hay ejidos certificados y ejidos que todavía esperan.
+
+Dentro del panel, los ejidos se parten en **cohortes** según el primer año en que aparecen
+certificados:
+
+```{r cohortes}
+hogares <- hogares |>
+  mutate(
+    primer_anio_cert = if_else(anio_procede <= 1999, anio_procede + 1, 0),
+    cohorte = case_when(
+      anio_procede == 1997 ~ "Certificado en 1997",
+      anio_procede == 1998 ~ "Certificado en 1998",
+      anio_procede == 1999 ~ "Certificado en 1999",
+      TRUE                 ~ "Aún sin certificar en 2000"
+    ),
+    cohorte = factor(cohorte, levels = names(colores_cohorte))
+  )
+
+hogares |>
+  distinct(ejido, cohorte) |>
+  count(cohorte, name = "ejidos")
+```
+
+```{r}
+#| label: fig-tendencias
+#| fig-cap: "Hogares con un migrante permanente, por cohorte de certificación."
+tendencias <- hogares |>
+  group_by(cohorte, anio) |>
+  summarise(tasa_migrante = mean(migrante), .groups = "drop")
+
+g2 <- ggplot(tendencias, aes(anio, tasa_migrante, color = cohorte)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.5) +
+  scale_color_manual(values = colores_cohorte) +
+  scale_y_continuous(labels = label_percent(accuracy = 1)) +
+  labs(title = "La migración sube en todos lados; la pregunta es dónde sube MÁS",
+       subtitle = "Hogares con un migrante permanente, por cohorte de certificación",
+       x = NULL, y = "Hogares con migrante", color = NULL,
+       caption = "Fuente: de Janvry et al. (2015), panel PROGRESA 1997-2000.") +
+  guides(color = guide_legend(nrow = 2)) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "bottom")
+g2
+```
+
+::: {.callout-tip}
+## Cómo se lee esta gráfica
+El **nivel** de cada línea no dice nada: los ejidos difieren en mil cosas fijas —lejanía,
+tamaño, tradición migratoria— y el efecto fijo de ejido se las va a llevar todas. Lo que
+importa es la **pendiente**: ¿se empina la línea de una cohorte justo después de
+certificarse, más de lo que se empinan las de quienes todavía no se certifican?
+:::
+
+## El resultado titular {#sec-titular}
+
+### Antes de la regresión: un 2×2 hecho a mano
+
+La cohorte certificada en 1998 cambia de estado entre 1998 y 1999. Los que siguen sin
+certificar en 2000 no cambian. La diferencia en diferencias más simple posible:
+
+```{r dd}
+dd <- hogares |>
+  filter(anio %in% c(1998, 1999),
+         cohorte %in% c("Certificado en 1998", "Aún sin certificar en 2000")) |>
+  group_by(cohorte, anio) |>
+  summarise(tasa = mean(migrante), .groups = "drop") |>
+  pivot_wider(names_from = anio, values_from = tasa, names_prefix = "a") |>
+  mutate(cambio = a1999 - a1998)
+
+dd
+did_2x2 <- diff(rev(dd$cambio))
+```
+
+La cohorte tratada subió `r num(dd$cambio[1])`; el control, `r num(dd$cambio[2])`. La
+resta de las restas da **`r num(did_2x2)`**. El segundo «menos» es el que hace el trabajo:
+se lleva todo lo que le pasó a todos en 1999 —una crisis, una sequía, el dólar— y deja solo
+lo que le pasó de más a quien se certificó.
+
+### La regresión de efectos fijos
+
+La ecuación (1) del paper generaliza esa resta a todas las cohortes y todos los años:
+
+$$
+y_{ijt} = \delta\,\text{Certif}_{jt} + \gamma_j + \alpha_t + \varepsilon_{ijt}
+$$
+
+con $\gamma_j$ un efecto fijo de **ejido** (todo lo fijo del ejido) y $\alpha_t$ un efecto
+fijo de **año** (todo lo que le pasa a todos en $t$). Los errores estándar se agrupan por
+ejido, porque el tratamiento se asigna a nivel de ejido.
+
+```{r titular}
+m_titular <- feols(migrante ~ certificado | ejido + anio,
+                   data = hogares, cluster = ~ejido)
+summary(m_titular)
+
+media_dep <- mean(hogares$migrante)
+efecto_relativo <- coef(m_titular)[["certificado"]] / media_dep
+```
+
+**El paper reporta 0,0149 (EE 0,0061) con 27.189 observaciones** (Tabla 1, col. 1). La
+réplica da **`r num(coef(m_titular)[["certificado"]])`** (EE
+`r num(se(m_titular)[["certificado"]])`) con `r format(nobs(m_titular), big.mark = ".", decimal.mark = ",")`
+observaciones: el mismo número.
+
+Tener el certificado sube `r num(100 * coef(m_titular)[["certificado"]], 1)` **puntos** la
+probabilidad de que el hogar tenga un migrante. Suena a poco, pero sobre una media de
+`r num(100 * media_dep, 1)` % es un aumento de **`r num(100 * efecto_relativo, 0)` %**. Esa
+es la cifra del resumen del paper.
+
+## ¿Aguanta? Las otras cinco columnas de la Tabla 1 {#sec-robustez}
+
+Cada columna ataca una amenaza distinta. Lea la pregunta antes que el número.
+
+```{r tabla1}
+# (2) ¿Cambiaron los hogares, o NAFTA cambió los precios agrícolas?
+m2 <- feols(migrante ~ certificado + propietario + hombres_17a30 + jefa_mujer +
+              edad_jefe + valor_agricola | ejido + anio,
+            data = hogares, cluster = ~ejido)
+
+# (3) ¿Y si el efecto fijo de ejido no basta? Uno por HOGAR.
+#     fixef.rm = "none" deja los hogares observados un solo año, como Stata.
+m3 <- feols(migrante ~ certificado | hogar + anio,
+            data = hogares, cluster = ~ejido, fixef.rm = "none")
+
+# (4) ¿Y si cada estado tuvo su propia evolución? Año x estado.
+m4 <- feols(migrante ~ certificado | ejido + estado^anio,
+            data = hogares, cluster = ~ejido)
+
+# (5) ¿Y si los hogares con más jóvenes migraban más con el tiempo de todos modos?
+m5 <- feols(migrante ~ certificado + propietario + hombres_17a30 + jefa_mujer + edad_jefe +
+              i(anio, propietario, 1997) + i(anio, hombres_17a30, 1997) +
+              i(anio, jefa_mujer, 1997) + i(anio, edad_jefe, 1997) | ejido + anio,
+            data = hogares, cluster = ~ejido)
+
+# (6) ¿Y si PROCEDE llegó antes a ejidos que iban a migrar más de todos modos?
+m6 <- feols(migrante ~ certificado +
+              i(anio, ejidatarios, 1997) + i(anio, area_total, 1997) +
+              i(anio, no_votantes, 1997) + i(anio, latitud, 1997) +
+              i(anio, longitud, 1997) + i(anio, dist_ciudad_km, 1997) +
+              i(anio, prop_parcelada, 1997) + i(anio, marginacion, 1997) | ejido + anio,
+            data = hogares, cluster = ~ejido)
+
+tabla1 <- bind_rows(
+  fila(m_titular, "certificado", "(1) Efectos fijos de ejido y año"),
+  fila(m2, "certificado", "(2) + controles de hogar y valor agrícola"),
+  fila(m3, "certificado", "(3) Efectos fijos de hogar"),
+  fila(m4, "certificado", "(4) Año x estado"),
+  fila(m5, "certificado", "(5) Características del hogar x año"),
+  fila(m6, "certificado", "(6) Características del ejido x año")
+)
+tabla1 |> mutate(across(c(coef, ee, p), \(x) round(x, 4)))
+```
+
+| Columna | Publicado | N publicado |
+|---|---|---|
+| (1) | 0,0149 (0,0061) | 27.189 |
+| (2) | 0,0147 (0,0066) | 23.421 |
+| (3) | 0,0153 (0,0062) | 27.189 |
+| (4) | 0,0172 (0,0059) | 27.189 |
+| (5) | 0,0157 (0,0063) | 24.533 |
+| (6) | 0,0130 (0,0062) | 27.189 |
+
+Los coeficientes y las N coinciden. Algún error estándar difiere en el cuarto decimal
+porque Stata y `fixest` no cuentan igual los grados de libertad cuando hay efectos fijos
+(volvemos sobre esto en @sec-paralelas, donde sí importa).
+
+La columna 6 es la más importante. PROCEDE terminó antes en ejidos **más cerca de las
+ciudades**, por ejemplo. El efecto fijo ya se lleva la distancia, pero no que los ejidos
+cercanos a las ciudades hayan migrado cada vez más en esos años **por estar cerca de las
+ciudades**. Interactuar las características del ejido con el año controla justo eso, y el
+coeficiente apenas se mueve.
+
+::: {.callout-important}
+## Lo que esta tabla NO prueba
+Las seis columnas son la **misma comparación** con más cosas a la derecha. Si hay algo que
+**no se observa** y que cambió justo cuando llegó PROCEDE, ninguna columna lo ve. Que el
+coeficiente sea estable es buena señal, no una prueba.
+:::
+
+## ¿Tendencias paralelas? {#sec-paralelas}
+
+El supuesto no se puede probar, pero sí se puede **atacar por su lado visible**: antes de
+certificarse, ¿los ejidos tempranos y los tardíos se movían igual?
+
+### La Tabla A4 del apéndice
+
+Se colapsa a nivel de ejido × año y se miran **solo los años antes de certificarse**. Si el
+año de PROCEDE predice los cambios de migración *antes* del programa, el calendario no es
+inocente.
+
+```{r a4}
+ejido_anio <- hogares |>
+  group_by(ejido, anio_procede, anio) |>
+  summarise(migrante = mean(migrante), .groups = "drop") |>
+  arrange(ejido, anio) |>
+  group_by(ejido) |>
+  # El cambio contra el año anterior, solo si el año anterior existe (como l. en Stata)
+  mutate(cambio = if_else(lag(anio) == anio - 1, migrante - lag(migrante), NA_real_)) |>
+  ungroup() |>
+  mutate(py99 = anio_procede == 1999, py00 = anio_procede == 2000,
+         py01 = anio_procede > 2000)
+
+pre <- ejido_anio |> filter(!is.na(cambio), anio <= anio_procede)
+
+a4_1 <- feols(cambio ~ py99 + py00 + py01, data = filter(pre, anio == 1998), vcov = "hetero")
+a4_2 <- feols(cambio ~ py00 + py01 | anio, cluster = ~ejido,
+              data = filter(pre, anio <= 1999, anio_procede >= 1999))
+a4_3 <- feols(cambio ~ py01 | anio, cluster = ~ejido,
+              data = filter(pre, anio <= 2000, anio_procede >= 2000))
+
+etable(a4_1, a4_2, a4_3, digits = 4)
+
+p_pre_1 <- wald(a4_1, keep = "py", print = FALSE)$p
+p_pre_2 <- wald(a4_2, keep = "py", print = FALSE)$p
+```
+
+Las pruebas conjuntas dan p = `r num(p_pre_1, 3)` y p = `r num(p_pre_2, 3)` (el apéndice
+publica 0,190 y 0,493). No se rechaza que el año de PROCEDE sea irrelevante para la
+migración **antes** del programa.
+
+La columna 4 busca otra cosa: una **caída justo antes** de certificarse (el *Ashenfelter
+dip*). Si los hogares se quedaron a cuidar la parcela mientras PROCEDE medía linderos, el
+«efecto» podría ser solo la vuelta a lo normal.
+
+```{r a4-4}
+a4_4 <- feols(migrante ~ anio_de + anio_antes + dos_antes | anio + ejido,
+              data = ejido_anio |>
+                filter(anio <= anio_procede) |>
+                mutate(anio_de    = as.numeric(anio == anio_procede),
+                       anio_antes = as.numeric(anio == anio_procede - 1),
+                       dos_antes  = as.numeric(anio == anio_procede - 2)),
+              fixef.rm = "none",
+              vcov = vcov_cluster(~ejido, ssc = ssc(fixef.K = "full")))
+summary(a4_4)
+```
+
+Publicado: 0,0018 (0,0150), −0,0021 (0,0107) y −0,0015 (0,0089), N = 406. Igual.
+
+::: {.callout-note}
+## Una trampa de réplica: los grados de libertad
+Fíjese en la línea `ssc(fixef.K = "full")`. Stata, al correr `reg` con dummies de ejido,
+cuenta los 127 efectos fijos como parámetros cuando corrige los errores estándar por
+muestra pequeña; `fixest`, por defecto, no. Con 27.189 observaciones eso no cambia nada
+(es el cuarto decimal de @sec-robustez). Con **406 observaciones y 127 efectos fijos**, sí:
+sin esa línea los coeficientes salen idénticos pero los EE salen alrededor de 20 % **más
+chicos**, y por eso demasiado optimistas. Ninguno de los dos programas avisa.
+:::
+
+**Lo que el Escéptico debe decir.** «No rechazar» no es «probar». Los EE de la columna 4
+son del mismo tamaño que el efecto que estamos buscando (0,015). Con 127 ejidos, una
+pre-tendencia de ese tamaño pasaría sin ser detectada.
+
+### El estudio de evento
+
+En vez de **un** coeficiente, uno por cada año relativo a la certificación. Los de antes de
+0 son la prueba visual de tendencias paralelas; los de después muestran cómo se acumula el
+efecto. Usamos `sunab()` (Sun y Abraham, 2021), que compara cada cohorte solo contra
+quienes no están tratados; @sec-cs explica por qué eso importa.
+
+```{r evento}
+hogares <- hogares |>
+  mutate(cohorte_sa = if_else(primer_anio_cert == 0, 10000, primer_anio_cert))
+
+m_evento <- feols(migrante ~ sunab(cohorte_sa, anio) | ejido + anio,
+                  data = hogares, cluster = ~ejido)
+
+evento <- tidy(m_evento) |>
+  mutate(t = as.integer(str_extract(term, "-?\\d+$"))) |>
+  select(t, coef = estimate, ee = std.error) |>
+  bind_rows(tibble(t = -1L, coef = 0, ee = 0)) |>
+  arrange(t)
+evento |> mutate(across(c(coef, ee), \(x) round(x, 4)))
+```
+
+```{r}
+#| label: fig-evento
+#| fig-cap: "Estudio de evento (Sun y Abraham). Año −1 como referencia; intervalos al 95 %."
+g3 <- ggplot(evento, aes(t, coef)) +
+  geom_hline(yintercept = 0, color = "grey40") +
+  geom_vline(xintercept = -0.5, linetype = "dashed", color = "grey50") +
+  geom_errorbar(aes(ymin = coef - 1.96 * ee, ymax = coef + 1.96 * ee),
+                width = 0.12, color = ifelse(evento$t < 0, azul, naranja)) +
+  geom_point(size = 3, color = ifelse(evento$t < 0, azul, naranja)) +
+  scale_x_continuous(breaks = -3:2) +
+  scale_y_continuous(labels = label_number(decimal.mark = ",")) +
+  labs(title = "Antes de certificarse, nada claro; después, el efecto se acumula",
+       subtitle = "Estudio de evento (Sun y Abraham), año -1 como referencia; IC al 95 %",
+       x = "Años desde la certificación", y = "Efecto sobre P(hogar con migrante)",
+       caption = "Fuente: de Janvry et al. (2015), datos de réplica; cálculo propio.") +
+  theme_minimal(base_size = 13)
+g3
+```
+
+Después de certificarse, el efecto crece año a año, como debe crecer en una variable
+acumulada. Antes, los puntos son **negativos** aunque no significativos: si algo, los
+ejidos tratados migraban un poco **menos** que el año previo a certificarse. El año −3 solo
+existe para una cohorte y el −2 para dos, por eso sus intervalos son tan anchos. ¿Es eso
+una tendencia que ya venía subiendo? Los datos no alcanzan para decidirlo, y esa es una
+buena pregunta para el Escéptico.
+
+## El problema del TWFE con adopción escalonada {#sec-cs}
+
+La regresión de @sec-titular se llama TWFE (*two-way fixed effects*). Por dentro promedia
+**muchas comparaciones 2×2**, y no todas son limpias. Cuando la cohorte de 1999 se
+certifica, el TWFE usa como «control» a la cohorte de 1998, **que ya estaba tratada**. Si
+el efecto **crece con el tiempo** —y acá crece—, esa comparación resta parte del efecto y
+sesga el promedio. Es la crítica de Goodman-Bacon (2021) y de Callaway y Sant'Anna
+(2021), posterior al paper.
+
+La solución de Callaway y Sant'Anna: estimar un efecto por cada cohorte $g$ y cada año
+$t$, el $ATT(g,t)$, usando como control **solo a quienes todavía no están tratados**, y
+después promediar.
+
+```{r cs}
+set.seed(2026)   # los intervalos simultáneos salen de un bootstrap
+cs <- att_gt(yname = "migrante", tname = "anio", idname = "hogar",
+             gname = "primer_anio_cert", data = as.data.frame(hogares),
+             panel = TRUE, allow_unbalanced_panel = TRUE,
+             control_group = "notyettreated", clustervars = "ejido",
+             est_method = "reg", base_period = "universal")
+
+cs_simple   <- aggte(cs, type = "simple")
+cs_dinamico <- aggte(cs, type = "dynamic")
+
+tidy(cs) |>
+  select(cohorte = group, anio = time, att = estimate, ee = std.error) |>
+  mutate(across(c(att, ee), \(x) round(x, 4)))
+```
+
+```{r comparacion}
+sa_att <- summary(m_evento, agg = "ATT")$coeftable["ATT", ]
+
+comparacion <- tibble(
+  estimador = c("TWFE (paper, Tabla 1 col. 1)",
+                "Sun y Abraham (promedio post)",
+                "Callaway y Sant'Anna (no aún tratados)"),
+  att = c(coef(m_titular)[["certificado"]], sa_att[["Estimate"]], cs_simple$overall.att),
+  ee  = c(se(m_titular)[["certificado"]], sa_att[["Std. Error"]], cs_simple$overall.se)
+)
+comparacion |> mutate(across(c(att, ee), \(x) round(x, 4)))
+```
+
+```{r}
+#| label: fig-cs
+#| fig-cap: "Tres estimadores del mismo efecto, con intervalos al 95 %."
+#| fig-height: 4.5
+g4 <- comparacion |>
+  mutate(estimador = fct_rev(fct_inorder(estimador))) |>
+  ggplot(aes(att, estimador)) +
+  geom_vline(xintercept = 0, color = "grey40") +
+  geom_errorbar(aes(xmin = att - 1.96 * ee, xmax = att + 1.96 * ee),
+                width = 0.15, orientation = "y", color = naranja) +
+  geom_point(size = 3.5, color = naranja) +
+  scale_x_continuous(labels = label_number(decimal.mark = ",")) +
+  labs(title = "Con estimadores modernos el efecto se achica",
+       subtitle = "Efecto sobre P(hogar con migrante); IC al 95 %. El de Callaway y Sant'Anna toca el cero",
+       x = "Efecto promedio", y = NULL,
+       caption = "Fuente: de Janvry et al. (2015), datos de réplica; cálculo propio.") +
+  theme_minimal(base_size = 13) +
+  theme(plot.title.position = "plot")
+g4
+```
+
+::: {.callout-important}
+## Lectura honesta
+El **signo y el orden de magnitud sobreviven**: los tres estimadores dicen que certificar
+aumentó la migración en algo más de un punto. Pero el punto baja de
+`r num(comparacion$att[1])` a `r num(comparacion$att[3])` con Callaway y Sant'Anna, y su
+intervalo (`r num(comparacion$att[3] - 1.96 * comparacion$ee[3])` a
+`r num(comparacion$att[3] + 1.96 * comparacion$ee[3])`) incluye el cero. Con 127 ejidos y un
+solo año antes del tratamiento para la primera cohorte, los datos de hogares no dan para
+mucho más.
+
+Esta no es una crítica a los autores: el estimador no existía cuando escribieron. Pero es
+la razón por la que importa que el paper **no descanse en una sola base**.
+:::
+
+## Otras dos bases, el mismo signo {#sec-otras}
+
+### Población de las localidades: censos 1990 y 2000 (Tabla 2)
+
+Otra unidad (la localidad), otra fuente (el censo), otro período y **todo el país**, no
+solo localidades pobres. Solo dos fotos: 1990 (antes) y 2000 (después). La comparación es
+entre localidades de ejidos certificados en 1993–1999 y las de ejidos certificados después.
+La regla de muestra del paper (nota 14) deja solo las localidades con más de 20 habitantes
+en 1990, porque las muy pequeñas desaparecen o se reagrupan.
+
+```{r tabla2}
+loc <- localidades |>
+  filter(pob_1990 > 20) |>
+  mutate(
+    despues = as.numeric(anio == 2000),
+    cert_93_99 = as.numeric(anio_procede >= 1993 & anio_procede <= 1999),
+    cert_x_2000 = cert_93_99 * despues,
+    anios_cert  = if_else(anio_procede < 2000, 2000 - anio_procede, 0),
+    cert_x_2000_x_anios = cert_x_2000 * anios_cert,
+    temprano_x_2000 = as.numeric(anio_procede <= 1996) * despues,
+    tardio_x_2000   = as.numeric(anio_procede %in% 1997:1999) * despues
+  )
+
+t2_1 <- feols(poblacion ~ despues + cert_x_2000 | ejido, loc, cluster = ~ejido)
+t2_2 <- feols(log_pob ~ despues + cert_x_2000 | ejido, loc, cluster = ~ejido)
+t2_3 <- feols(log_pob ~ despues + cert_x_2000 + valor_agricola | ejido, loc, cluster = ~ejido)
+t2_4 <- feols(log_pob ~ despues + cert_x_2000 + cert_x_2000_x_anios | ejido, loc, cluster = ~ejido)
+t2_5 <- feols(log_pob ~ despues + temprano_x_2000 + tardio_x_2000 | ejido, loc, cluster = ~ejido)
+
+# Col. 6, el PLACEBO: la misma comparación una década antes, cuando PROCEDE no existía.
+t2_6 <- feols(log_pob ~ I(anio == 1990) + cert_93_99_x_1990 | ejido,
+              data = filter(placebo, pob_1980 > 20), cluster = ~ejido)
+
+etable(t2_1, t2_2, t2_3, t2_4, t2_5, t2_6, digits = 4, fitstat = ~n)
+```
+
+::: {.callout-note}
+## Otra trampa de réplica: `%in%` y los faltantes
+Para construir `cert_93_99` usamos `anio_procede >= 1993 & anio_procede <= 1999` y no
+`anio_procede %in% 1993:1999`, que parece lo mismo. No lo es: `%in%` le da `FALSE` a una
+localidad **sin** año de PROCEDE y la mete como control; la comparación le da `NA` y la
+saca de la muestra, que es lo que hace Stata. Con `%in%` la columna 2 da −0,0401 en vez de
+−0,0404. No hay error, no hay advertencia: simplemente la tabla deja de ser la del paper.
+:::
+
+Toda la Tabla 2 replica exacta: −3,6893 (1,1485) personas, −0,0404 (0,0128) en logaritmos,
+−0,0592 (0,0144) para los certificados antes de 1997 y −0,0196 (0,0151) para los de
+1997–1999, con `r format(nobs(t2_2), big.mark = ".", decimal.mark = ",")` observaciones
+(`r format(nobs(t2_2) / 2, big.mark = ".", decimal.mark = ",")` localidades).
+
+```{r temprano-tardio}
+V <- vcov(t2_5)
+dif <- coef(t2_5)[["temprano_x_2000"]] - coef(t2_5)[["tardio_x_2000"]]
+ee_dif <- sqrt(V["temprano_x_2000", "temprano_x_2000"] + V["tardio_x_2000", "tardio_x_2000"] -
+                 2 * V["temprano_x_2000", "tardio_x_2000"])
+p_dif <- 2 * pt(-abs(dif / ee_dif), df = degrees_freedom(t2_5, "t"))
+```
+
+Las localidades de ejidos certificados perdieron un
+`r num(-100 * coef(t2_2)[["cert_x_2000"]], 1)` % más de población, y la pérdida es mayor
+donde el certificado llevaba más años: temprano contra tardío difieren en
+`r num(dif)` (p = `r num(p_dif, 3)`). El **placebo** de 1980–1990 da
+`r num(coef(t2_6)[["cert_93_99_x_1990"]])` (EE `r num(se(t2_6)[["cert_93_99_x_1990"]])`):
+antes de PROCEDE, las dos poblaciones evolucionaban igual. Esta es, de hecho, la prueba de
+tendencias paralelas **más convincente** del paper: tiene una década entera de «antes».
+
+### El censo ejidal 2007 (Tabla 3)
+
+La tercera base es la más débil: es un **corte transversal**. En 2007 todos los ejidos ya
+estaban certificados, así que solo se puede comparar **cuántos años** llevaba cada uno.
+
+```{r tabla3}
+t3_1 <- feols(jovenes_migran ~ anios_certificado | estado, censo, cluster = ~municipio)
+t3_2 <- feols(jovenes_migran ~ anios_certificado + semilla_mejorada + tractor +
+                electricidad + log_dist_pa | estado, censo, cluster = ~municipio)
+etable(t3_1, t3_2, digits = 4, fitstat = ~n)
+```
+
+Publicado: 0,0035 (0,0013) y 0,0039 (0,0013), con 19.670 y 19.600 ejidos. Igual. Cada año
+más con certificado sube cerca de 0,4 puntos la probabilidad de que la mayoría de los
+jóvenes se vaya. Sin efecto fijo de ejido, esta regresión vale lo que valga el supuesto de
+que los ejidos tempranos y tardíos eran iguales en todo lo demás. Sirve como **coherencia**,
+no como prueba independiente.
+
+## ¿Y la tierra? Migración sin abandono {#sec-tierra}
+
+Si la gente se va, ¿la tierra queda baldía? Ese es el temor clásico contra liberalizar los
+mercados de tierra. El paper dice que no: los que se quedan cultivan la tierra de los que
+se fueron.
+
+### PROCAMPO, 1995 contra 2012 (Figura 2)
+
+PROCAMPO es el programa de pagos por hectárea creado para compensar a los agricultores por
+el TLCAN. Sus registros dicen, ejido por ejido, cuántos productores cobraron y por cuánta
+área. Se compara el cambio 1995–2012 según el año en que el ejido se certificó, contra los
+certificados en 2005 o después.
+
+```{r procampo}
+procampo <- procampo |>
+  mutate(d_productores = log_productores_2012 - log_productores_1995,
+         d_area        = log_area_2012 - log_area_1995,
+         d_area_x_prod = (log_area_2012 - log_productores_2012) -
+                         (log_area_1995 - log_productores_1995),
+         anio_cert     = pmin(anio_procede, 2005))
+
+m_fig2 <- feols(c(d_productores, d_area, d_area_x_prod) ~ i(anio_cert, ref = 2005) | estado,
+                data = procampo, cluster = ~municipio)
+
+fig2 <- map_dfr(1:3, function(k) {
+  tidy(m_fig2[[k]]) |>
+    mutate(panel = c("Cambio en log de productores", "Cambio en log del área",
+                     "Cambio en log del área por productor")[k],
+           anio = as.integer(str_extract(term, "\\d{4}")))
+}) |>
+  mutate(panel = fct_inorder(panel))
+```
+
+```{r}
+#| label: fig-procampo
+#| fig-cap: "Réplica de la Figura 2 del paper. Referencia: ejidos certificados en 2005 o después; intervalos al 95 %."
+#| fig-width: 10
+#| fig-height: 4.5
+g5 <- ggplot(fig2, aes(anio, estimate)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_errorbar(aes(ymin = estimate - 1.96 * std.error, ymax = estimate + 1.96 * std.error),
+                width = 0.3, color = azul) +
+  geom_point(size = 2.5, color = naranja) +
+  facet_wrap(~ panel) +
+  scale_x_continuous(breaks = c(1993, 1996, 1999, 2002)) +
+  scale_y_continuous(labels = label_number(decimal.mark = ",")) +
+  labs(title = "Menos productores, la misma área: las fincas se agrandaron",
+       subtitle = "Cambio 1995-2012 según el año de certificación, contra los certificados en 2005 o después",
+       x = "Año en que el ejido terminó PROCEDE", y = "Coeficiente",
+       caption = "Fuente: de Janvry et al. (2015), datos de réplica (PROCAMPO); réplica de la Figura 2.") +
+  theme_minimal(base_size = 12)
+g5
+```
+
+Los ejidos certificados primero (1993–1997) perdieron entre 10 y 15 % de sus productores,
+pero **no** perdieron área cultivada. Resultado: el área por productor subió, por ejemplo,
+`r num(100 * coef(m_fig2[[3]])[["anio_cert::1994"]], 0)` % en los certificados en 1994. Es
+la **consolidación** que predice la teoría cuando se abre el mercado de tierras.
+
+### Imágenes satelitales, 1993–2002–2007 (Tabla 4)
+
+```{r tabla4}
+t4 <- feols(log_area_agricola ~ certificado | ejido + anio,
+            data = satelite, cluster = ~ejido, fixef.rm = "none")
+summary(t4)
+```
+
+Publicado: 0,0013 (0,0093), N = 63.392. Un **cero bien medido**: certificar no cambió el
+área cultivada del ejido.
+
+## Guardar las gráficas y los números titulares
+
+```{r guardar}
+dir.create("figuras", showWarnings = FALSE)
+ggsave("figuras/1-calendario-procede.png",        g1, width = 8,  height = 5,   dpi = 150)
+ggsave("figuras/2-tendencias-por-cohorte.png",    g2, width = 8,  height = 5,   dpi = 150)
+ggsave("figuras/3-estudio-de-evento.png",         g3, width = 8,  height = 5,   dpi = 150)
+ggsave("figuras/4-twfe-vs-callaway-santanna.png", g4, width = 8,  height = 4.5, dpi = 150)
+ggsave("figuras/5-consolidacion-procampo.png",    g5, width = 10, height = 4.5, dpi = 150)
+
+jsonlite::write_json(list(
+  certif_coef       = round(coef(m_titular)[["certificado"]], 4),
+  certif_se         = round(se(m_titular)[["certificado"]], 4),
+  n_obs             = nobs(m_titular),
+  n_hogares         = n_distinct(hogares$hogar),
+  n_ejidos          = n_distinct(hogares$ejido),
+  media_dep         = round(media_dep, 4),
+  efecto_relativo   = round(efecto_relativo, 3),
+  certif_coef_col6  = round(coef(m6)[["certificado"]], 4),
+  p_pretendencias   = round(p_pre_1, 3),
+  sunab_att         = round(comparacion$att[2], 4),
+  sunab_att_se      = round(comparacion$ee[2], 4),
+  cs_att            = round(cs_simple$overall.att, 4),
+  cs_att_se         = round(cs_simple$overall.se, 4),
+  pob_log_coef      = round(coef(t2_2)[["cert_x_2000"]], 4),
+  pob_log_se        = round(se(t2_2)[["cert_x_2000"]], 4),
+  pob_placebo_coef  = round(coef(t2_6)[["cert_93_99_x_1990"]], 4),
+  n_localidades     = nobs(t2_2) / 2,
+  jovenes_coef      = round(coef(t3_1)[["anios_certificado"]], 4),
+  area_agricola_coef = round(coef(t4)[["certificado"]], 4),
+  area_x_prod_1994  = round(coef(m_fig2[[3]])[["anio_cert::1994"]], 3)
+), "results.json", auto_unbox = TRUE, pretty = TRUE)
+```
+
+## Síntesis y discusión
+
+- Certificar la tierra subió `r num(100 * coef(m_titular)[["certificado"]], 1)` puntos
+  (`r num(100 * efecto_relativo, 0)` %) la probabilidad de que un hogar ejidal tuviera un
+  migrante permanente (@sec-titular). El resultado aguanta controles, efectos fijos de
+  hogar y tendencias por estado y por características del ejido (@sec-robustez).
+- Otra base, otra unidad, otro período: las localidades de ejidos certificados perdieron
+  `r num(-100 * coef(t2_2)[["cert_x_2000"]], 1)` % más de población, más cuanto antes se
+  certificaron, y el placebo 1980–1990 da cero (@sec-otras).
+- La tierra **no se abandonó**: menos productores, la misma área, fincas más grandes
+  (@sec-tierra). Migración y consolidación son dos caras del mismo mercado que se abre.
+- Con los estimadores modernos de DiD escalonado, el efecto en hogares se achica y pierde
+  precisión (@sec-cs). El signo sobrevive; la precisión de la Tabla 1, no del todo. La
+  fuerza del paper está en que **tres bases independientes** apuntan para el mismo lado.
+
+::: {.callout-note}
+## Para discutir en clase
+1. ¿Por qué deberíamos creer que esto es causal si no hubo sorteo? Compare lo que hubo que
+   defender acá con lo que compró el sorteo en el Lab 3 y la frontera en el Lab 2.
+2. **Para el Escéptico.** ¿Qué determinó el orden en que PROCEDE llegó a los ejidos? Si llegó
+   primero a los más organizados o mejor conectados, ¿no son esos también los que tienen
+   redes de migración que maduran justo en esos años? ¿Qué prueba de @sec-paralelas o de
+   @sec-otras responde mejor a eso, y cuál no lo responde?
+3. En @sec-cs, el efecto pasa de 0,015 a cerca de 0,011 y su intervalo toca el cero.
+   ¿Cambia eso la conclusión del paper? ¿Cuál de las tres bases le parece ahora la
+   evidencia más fuerte, y por qué?
+4. Besley y Ghatak (2010) describen varios canales por los que los derechos de propiedad
+   afectan el desarrollo. ¿Cuál es el que este paper documenta? Compare con Goldstein et
+   al. (2018) en Benín: allá demarcar cambió la **inversión**; acá certificar cambió la
+   **asignación del trabajo**.
+5. Galán (2024) encuentra que la tierra de la reforma agraria colombiana de 1968 tampoco
+   «ató» a las familias al campo: los hijos de los beneficiarios migraron más a las
+   ciudades. ¿Qué tienen en común los dos casos? ¿Qué le diría a quien diseña hoy una
+   política de formalización de tierras en Colombia?
+:::
+
+---
+
+*Datos: paquete de réplica de de Janvry, A., Emerick, K., Gonzalez-Navarro, M. y Sadoulet,
+E. (2015), "Delinking Land Rights from Land Use: Certification and Migration in Mexico",
+American Economic Review 105(10), 3125–3149. Depósito openICPSR-112931, datos bajo licencia
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0). Ver
+[`datos/SOURCE.md`](datos/SOURCE.md).*

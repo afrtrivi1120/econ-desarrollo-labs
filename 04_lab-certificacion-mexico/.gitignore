@@ -1,0 +1,19 @@
+# Paquete de réplica crudo de de Janvry et al. (2015) (openICPSR-112931; licencia por auditar,
+# no se redistribuye). Solo entra al repo el subset de enseñanza derivado.
+datos/_crudos/
+*.zip
+*.dta
+
+# Artefactos de R y Quarto
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+.quarto/
+lab4-did-certificacion_files/
+
+# Sistema
+.DS_Store
+
+# Dispositivo PDF por defecto de Rscript
+Rplots.pdf
