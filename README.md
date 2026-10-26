@@ -2,14 +2,15 @@
 
 **Economía del Desarrollo (06230) · Universidad ICESI · Departamento de Economía**
 
-Este repositorio reúne **todos los laboratorios del semestre**. Cada lab es una
+Este repositorio reúne **los cuatro laboratorios del semestre**. Cada lab es una
 **réplica guiada** de uno de los papers que discutimos en clase: abrimos los datos
 reales, corremos el código por bloques y discutimos qué se puede y qué **no** se puede
 concluir con ellos.
 
 El hilo que los une es la **inferencia causal aplicada**: cada lab agrega una
-herramienta más al kit, y cada uno pone sobre la mesa el supuesto de identificación
-del que depende su respuesta.
+herramienta más al kit (medición, regresión discontinua, experimento aleatorizado y
+diferencias en diferencias), y cada uno pone sobre la mesa el supuesto de
+identificación del que depende su respuesta.
 
 ---
 
@@ -21,8 +22,6 @@ del que depende su respuesta.
 | [**2**](02_lab-mita-peru/) | 2 | La *mita* minera del Perú y sus efectos persistentes | Regresión discontinua (RDD) geográfica | Dell (2010), *Econometrica* |
 | [**3**](03_lab-redes-malawi/) | 3 | Transformación agrícola y adopción de tecnología | Experimento aleatorizado (RCT) | Beaman, BenYishay, Magruder y Mobarak (2021), *AER* |
 | [**4**](04_lab-certificacion-mexico/) | 4 | Derechos de propiedad: certificar la tierra y migrar | Diferencias en diferencias con adopción escalonada (TWFE y Callaway–Sant'Anna) | de Janvry, Emerick, Gonzalez-Navarro y Sadoulet (2015), *AER* |
-| 5 | 9–10 | Crédito, riesgo y seguros | Experimentos aleatorizados (RCT) | *(en preparación)* |
-| 6 | 11–12 | Migración e informalidad | Estructural vs. forma reducida | *(en preparación)* |
 
 ---
 
