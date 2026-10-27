@@ -37,24 +37,12 @@ En la práctica, GPT Base sube el puntaje 0,137 y GPT Tutor 0,361 (sobre 1), fre
 - **Dificultad:** baja para la Tabla 1 (el código ya está en R y los datos son pequeños); media para la Tabla 2 (hay que entender el emparejamiento práctica–examen).
 - **Trabajo en R:** pasar de `lm()` + `sandwich::vcovCL()` + `stargazer` a `fixest::feols()` con efectos fijos (`| teacher + Session + Grader + Year`) y `cluster = ~Class`; tablas con `modelsummary`.
 
-## Ideas para el análisis adicional
-
-1. **¿A quién perjudica la muleta?** — Estime efectos heterogéneos del brazo GPT Base en el examen según el promedio previo (`gpa_prev`), el sexo (`female`) y la experiencia previa con ChatGPT (`chatgpt_use`; el código advierte que esta variable no se recogió al mismo tiempo que las demás). Los autores encuentran poca heterogeneidad en variables preregistradas (p. 4) y su código de heterogeneidad está en Stata (`additional_results/perception_heterogeneity_hhi_attendance.do`): tradúzcalo a R y discuta el riesgo de buscar subgrupos sin preregistro. *Datos:* el mismo repositorio.
-2. **¿Siguen equivocándose los modelos en español?** — El paper estima errores de GPT-4 repitiendo diez veces la pregunta más común de los estudiantes en cada problema (p. 5). Repita el ejercicio, en español, con un modelo gratuito actual y los enunciados de `text_analysis/data/raw/question_list.csv`, y compare sus tasas de error con `main_regressions/gpt_answers_full.csv`. ¿Seguiría siendo GPT Base una mala muleta hoy? *Datos:* el mismo repositorio.
-3. **¿Quién en Colombia tendría IA sin salvaguardas en el hogar?** — Con los resultados de Saber 11, describa por estrato (`fami_estratovivienda`), zona (`cole_area_ubicacion`) y naturaleza del colegio (`cole_naturaleza`) el acceso a computador (`fami_tienecomputador`) e internet (`fami_tieneinternet`) y su relación con `punt_matematicas`. En el experimento el colegio puso los computadores; aquí, el acceso en el hogar define quién usaría IA sin supervisión. *Datos:* [Resultados únicos Saber 11 (2010–2022), datos.gov.co](https://www.datos.gov.co/Educaci-n/Resultados-nicos-Saber-11/kgxf-xxbe).
-
-## Para el Escéptico
-
-- **Tratamiento conjunto:** el control no tuvo dispositivos; los brazos GPT recibieron un portátil, un video instructivo y la IA (p. 3). ¿El efecto negativo es de la IA o de practicar en pantalla? (Pista: GPT Tutor recibió el mismo paquete.)
-- **Pocos clústeres y cumplimiento imperfecto:** la aleatorización es por salón (unos cincuenta) y cinco sesiones no usaron el tratamiento asignado (p. 4). ¿Cuánto cambian los resultados al excluirlas (segundo bloque de `main_analysis.R`)?
-- **¿Viaja a Colombia?** Es un solo colegio en Turquía, en otoño de 2023, con aprendizaje medido el mismo día (p. 7). En Colombia la conectividad, el nivel de partida en matemáticas y la supervisión docente son distintos, y los modelos han mejorado desde entonces.
-
 ## Descargas
 
 - **Paper:** `paper/bastani2025_pnas.pdf` (CC BY-NC-ND 4.0). Corrección: `paper/bastani2025_correccion.pdf` ([10.1073/pnas.2518204122](https://doi.org/10.1073/pnas.2518204122)); corrige únicamente la afiliación de Osbert Bastani; la nota no modifica datos, tablas ni conclusiones.
 - **Paquete de réplica:** [github.com/obastani/GenAICanHarmLearning](https://github.com/obastani/GenAICanHarmLearning).
-- **Script de descarga:** `R/descargar-datos.R` (baja el paquete a `datos/_crudos/`).
+- **Script de descarga:** `R/descargar-datos.R` (descarga el paquete a `datos/_crudos/`).
 
 ## Licencias
 
-Paper y corrección: CC BY-NC-ND 4.0 (se redistribuyen sin modificación). Repositorio de datos y código: **sin licencia declarada**; los autores piden citar el paper. Saber 11 en datos.gov.co: CC BY-SA 4.0 (ICFES).
+Paper y corrección: CC BY-NC-ND 4.0 (se redistribuyen sin modificación). Repositorio de datos y código: **sin licencia declarada**; los autores piden citar el paper.

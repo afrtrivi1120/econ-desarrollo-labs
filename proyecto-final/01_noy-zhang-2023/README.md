@@ -37,23 +37,11 @@ Los tratados tardaron 11 minutos menos (0,75 desviaciones estándar) en la segun
 - **Dificultad:** media-alta — datos pequeños, pero la limpieza en Stata es larga (filtros de muestra, control de calidad de evaluadores, cambio de formato).
 - **Trabajo en R:** limpieza con `tidyverse` y `readxl`; estimación con `fixest::feols()`; reescalar por la desviación estándar pretratamiento; gráficas con `ggplot2` y tablas con `modelsummary`.
 
-## Ideas para el análisis adicional
-
-1. **Del efecto de la asignación al efecto del uso (variables instrumentales)** — Solo el 80 % de los tratados usó ChatGPT (p. 4) y algunos controles también lo usaron. ¿Cuánto cambia el efecto si se instrumenta el uso con la asignación, por mínimos cuadrados en dos etapas (MC2E)? El paquete trae la versión en Stata (`ivregress 2sls` en `code/5 - appendix figures.do`); repítala con `fixest` y discuta la restricción de exclusión. *Datos:* el mismo paquete de OSF.
-2. **¿Homogeniza ChatGPT los textos?** — Con los ensayos completos de `raw/fullsurvey_fulltext.csv`, compare longitud, diversidad léxica y similitud entre textos tratados y de control en la segunda tarea (`tidytext`, `stringdist`). *Datos:* el mismo paquete de OSF.
-3. **¿Cuántos colombianos hacen este tipo de trabajo?** — Identifique en la GEIH 2024 a los ocupados en las seis ocupaciones del experimento (pregunta de oficio del módulo de Ocupados y clasificación de ocupaciones del diccionario de datos) y describa su peso en el empleo, su formalidad y sus ingresos por ciudad. *Datos:* [GEIH 2024, catálogo 819 del DANE](https://microdatos.dane.gov.co/index.php/catalog/819).
-
-## Para el Escéptico
-
-- **Deserción diferencial:** salieron más tratados (11 %) que controles (6 %) (p. 3). Si los tratados que abandonaron eran los más lentos, el efecto sobre el tiempo está sobrestimado. ¿Qué tan anchas son las cotas de Lee del material suplementario?
-- **Tareas a la medida de la herramienta:** los autores reconocen que las tareas pedían escritura genérica, sin conocimiento del contexto ni exactitud factual (p. 7). En el trabajo real hay que verificar datos, y eso consume parte del ahorro de tiempo.
-- **¿Viaja a Colombia?** Profesionales de habla inglesa en una plataforma en línea, evaluados por pares del mismo mercado, con GPT-3.5. Aquí las tareas se escriben en español, buena parte del empleo es informal y el acceso a computador en el trabajo es desigual.
-
 ## Descargas
 
 - **Paper:** no se puede redistribuir (copyright de *Science*). Versión editorial: [doi.org/10.1126/science.adh2586](https://doi.org/10.1126/science.adh2586). Versión de trabajo abierta (marzo de 2023, muestra distinta): [Noy_Zhang_1_0.pdf](https://economics.mit.edu/sites/default/files/inline-files/Noy_Zhang_1_0.pdf).
 - **Paquete de réplica:** [osf.io/xd7qw](https://osf.io/xd7qw).
-- **Script de descarga:** `R/descargar-datos.R` (baja el paquete a `datos/_crudos/`).
+- **Script de descarga:** `R/descargar-datos.R` (descarga el paquete a `datos/_crudos/`).
 
 ## Licencias
 
