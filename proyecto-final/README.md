@@ -4,7 +4,7 @@
 
 En el proyecto final usted escoge **un paper**, **replica** en R uno de sus resultados
 centrales, lo **expone** en clase y **propone un análisis adicional** que el paper no
-hace. Este semestre los seis papers tratan una misma pregunta: **¿qué le está haciendo la
+hace. Este semestre los cinco papers tratan una misma pregunta: **¿qué le está haciendo la
 inteligencia artificial (IA) generativa al trabajo, a la educación y al desarrollo?**
 
 Todos los papers de esta carpeta cumplen cuatro condiciones:
@@ -25,14 +25,14 @@ Todos los papers de esta carpeta cumplen cuatro condiciones:
 | [**03**](03_bastani-2025/) | Bastani et al. (2025), *PNAS* | IA sin salvaguardas en clase de matemáticas | Experimento aleatorizado por salón | Turquía | Baja |
 | [**04**](04_nejad-2026/) | Abbas Nejad, Musillo, Zaccaria y Wicker (2026), *Journal of Labor Economics* | ChatGPT y las cartas de presentación como señal en el mercado laboral | Dos experimentos aleatorizados de campo | Países Bajos | Baja-media |
 | [**05**](05_ravanilla-2026/) | Ravanilla (2026), documento de trabajo en SSRN (Social Science Research Network) | IA generativa y empleo en el sector de servicios tercerizados (BPO) | Diferencias en diferencias con exposición y estudio de evento | Filipinas | Media-baja |
-| [**06**](06_brodeur-2026/) | Brodeur et al. (2026), *PNAS* | Equipos humanos, asistidos por IA o dirigidos por IA reproduciendo estudios | Experimento aleatorizado | Varios países, incluida Colombia (Bogotá) | Baja-media |
 
 Cada carpeta trae:
 
 - `README.md` — el resumen: la pregunta, los datos, la estrategia de identificación y
   su supuesto clave, el resultado principal y **qué replicar**.
-- `paper/` — el PDF, **cuando la licencia permite redistribuirlo**. Si no, el README
-  enlaza la versión de la revista y una versión abierta.
+- `paper/` — el PDF del paper. En 01, 04 y 05 es el documento de trabajo de los autores
+  (sin revisión de pares o anterior a la versión de la revista); el README indica
+  su procedencia y enlaza la versión publicada.
 - `R/descargar-datos.R` — descarga el paquete de réplica original a `datos/_crudos/`.
 
 > ⚠️ **Advertencia de fuente.** El **05** es un documento de trabajo de un solo autor que no
@@ -78,7 +78,8 @@ Reglas de juego:
   Una diferencia bien explicada vale más que un número copiado.
 - **Cite todas las fuentes**: el paper, el paquete de réplica y cada base de datos que
   agregue (por ejemplo, "Fuente: DANE, www.dane.gov.co" para la Gran Encuesta Integrada de Hogares, GEIH).
-- Respete la **licencia** de cada paquete; está anotada en el README del paper.
+- Respete la **licencia** de cada paquete y de cada PDF; está anotada en el README del paper.
+  Los PDF se comparten solo para uso académico en este curso: no los redistribuya.
 
 ---
 

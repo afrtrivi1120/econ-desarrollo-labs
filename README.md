@@ -27,9 +27,9 @@ identificación del que depende su respuesta.
 
 ## Proyecto final
 
-La carpeta [**`proyecto-final/`**](proyecto-final/) reúne los seis papers recientes, todos con diseño causal, sobre
+La carpeta [**`proyecto-final/`**](proyecto-final/) reúne los cinco papers recientes, todos con diseño causal, sobre
 **inteligencia artificial y economía** entre los que usted escoge para el proyecto final:
-un resumen de cada uno, el PDF cuando la licencia lo permite y un script para descargar
+un resumen de cada uno, su PDF y un script para descargar
 su paquete de réplica.
 
 ---

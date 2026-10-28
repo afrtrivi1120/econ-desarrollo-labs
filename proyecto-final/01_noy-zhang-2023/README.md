@@ -39,10 +39,10 @@ Los tratados tardaron 11 minutos menos (0,75 desviaciones estándar) en la segun
 
 ## Descargas
 
-- **Paper:** no se puede redistribuir (copyright de *Science*). Versión editorial: [doi.org/10.1126/science.adh2586](https://doi.org/10.1126/science.adh2586). Versión de trabajo abierta (marzo de 2023, muestra distinta): [Noy_Zhang_1_0.pdf](https://economics.mit.edu/sites/default/files/inline-files/Noy_Zhang_1_0.pdf).
+- **Paper:** `paper/noyzhang2023_wp-mit.pdf`, el documento de trabajo del 2 de marzo de 2023 que los autores publicaron en la página del MIT. Hoy ese enlace ([Noy_Zhang_1_0.pdf](https://economics.mit.edu/sites/default/files/inline-files/Noy_Zhang_1_0.pdf)) sirve una revisión del 10 de marzo de 2023, con diferencias de texto y gráficas. Es anterior a la revisión de pares y usa una muestra distinta (444 profesionales), así que sus cifras no coinciden exactamente con las de la versión publicada. Las páginas que cita este README son las del manuscrito aceptado en *Science*, no las de este documento de trabajo; replique las cifras de la versión publicada. Versión de *Science*: [doi.org/10.1126/science.adh2586](https://doi.org/10.1126/science.adh2586) (acceso por la biblioteca de Icesi).
 - **Paquete de réplica:** [osf.io/xd7qw](https://osf.io/xd7qw).
 - **Script de descarga:** `R/descargar-datos.R` (descarga el paquete a `datos/_crudos/`).
 
 ## Licencias
 
-Paper: © AAAS (*Science*); no se incluye en el repositorio. Paquete de réplica en OSF: público, **sin licencia declarada**; úselo con fines académicos y cite el paper.
+Paper: la versión de *Science* es © AAAS y no se incluye. El documento de trabajo de `paper/` no declara licencia abierta; se comparte solo con fines académicos para este curso. Paquete de réplica en OSF: público, **sin licencia declarada**; úselo con fines académicos y cite el paper.
