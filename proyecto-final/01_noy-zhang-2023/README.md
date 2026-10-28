@@ -2,6 +2,8 @@
 
 **Noy, S. y Zhang, W. (2023).** "Experimental evidence on the productivity effects of generative artificial intelligence." *Science*, 381(6654), 187–192. DOI: [10.1126/science.adh2586](https://doi.org/10.1126/science.adh2586)
 
+Las páginas que se citan son las del manuscrito aceptado en *Science*, no las de `paper/noyzhang2023_wp-mit.pdf`. Ese documento de trabajo usa una muestra distinta (444 profesionales) y sus cifras no coinciden exactamente con las publicadas; replique las de *Science*.
+
 | Tema | Método | Dónde | Código original | Paquete de réplica |
 |---|---|---|---|---|
 | Trabajo / productividad | Experimento aleatorizado en línea (preregistrado) | Estados Unidos (plataforma Prolific) | Stata (+ Python auxiliar) | OSF `xd7qw`, ~10 MB comprimido |
@@ -39,7 +41,7 @@ Los tratados tardaron 11 minutos menos (0,75 desviaciones estándar) en la segun
 
 ## Descargas
 
-- **Paper:** `paper/noyzhang2023_wp-mit.pdf`, el documento de trabajo del 2 de marzo de 2023 que los autores publicaron en la página del MIT. Hoy ese enlace ([Noy_Zhang_1_0.pdf](https://economics.mit.edu/sites/default/files/inline-files/Noy_Zhang_1_0.pdf)) sirve una revisión del 10 de marzo de 2023, con diferencias de texto y gráficas. Es anterior a la revisión de pares y usa una muestra distinta (444 profesionales), así que sus cifras no coinciden exactamente con las de la versión publicada. Las páginas que cita este README son las del manuscrito aceptado en *Science*, no las de este documento de trabajo; replique las cifras de la versión publicada. Versión de *Science*: [doi.org/10.1126/science.adh2586](https://doi.org/10.1126/science.adh2586) (acceso por la biblioteca de Icesi).
+- **Paper:** `paper/noyzhang2023_wp-mit.pdf`, el documento de trabajo del 2 de marzo de 2023 que los autores publicaron en la página del MIT, anterior a la revisión de pares.
 - **Paquete de réplica:** [osf.io/xd7qw](https://osf.io/xd7qw).
 - **Script de descarga:** `R/descargar-datos.R` (descarga el paquete a `datos/_crudos/`).
 

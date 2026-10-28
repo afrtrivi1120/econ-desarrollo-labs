@@ -85,8 +85,7 @@ Las tablas del paquete lo muestran así:
 
 ## Descargas
 
-- **Paper:** `paper/nejad2026_ssrn.pdf`, el documento de trabajo de los autores en SSRN (<https://doi.org/10.2139/ssrn.5185035>). Su texto es idéntico al del documento de enero de 2026 que los autores publican en <https://twicker97.github.io/JM_documents/ChatGPT.pdf>.
-  - Versión publicada en JOLE: <https://doi.org/10.1086/744669> (acceso por la biblioteca de Icesi).
+- **Paper:** `paper/nejad2026_ssrn.pdf`, el documento de trabajo de los autores en SSRN (<https://doi.org/10.2139/ssrn.5185035>).
 - **Paquete de réplica:** <https://doi.org/10.7910/DVN/LPIREO> (Harvard Dataverse, archivo único `ChatGPT_ReplicationPackage.zip`).
 - **Script de descarga:** `R/descargar-datos.R` (descarga el paquete a `datos/_crudos/`).
 
