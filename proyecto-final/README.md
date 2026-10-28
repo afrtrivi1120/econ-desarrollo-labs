@@ -35,9 +35,6 @@ Cada carpeta trae:
   su procedencia y enlaza la versión publicada.
 - `R/descargar-datos.R` — descarga el paquete de réplica original a `datos/_crudos/`.
 
-> ⚠️ **Advertencia de fuente.** El **05** es un documento de trabajo de un solo autor que no
-> ha pasado por revisión de pares. Léalo con más cuidado que un artículo publicado.
-
 ---
 
 ## Cómo descargar un paper y sus datos
@@ -52,34 +49,11 @@ Cada carpeta trae:
    source("R/descargar-datos.R")
    ```
 
-   El paquete de réplica queda en `datos/_crudos/`. Esa carpeta **no se versiona**: no
-   suba datos crudos a GitHub.
+   El paquete de réplica queda en `datos/_crudos/`.
 
 Varios paquetes originales están en **Stata o Python**. Parte del trabajo de réplica es
 traducir a R el núcleo del análisis (`tidyverse`, `fixest`, `modelsummary`); el README de
 cada paper dice qué hay que traducir.
-
----
-
-## Qué se espera de usted
-
-| Entrega | Cuándo | Qué |
-|---|---|---|
-| Propuesta | Semana 8 | 1 página: paper escogido, resultado que va a replicar y pregunta del análisis adicional, con su fuente de datos. |
-| Avance | Semana 12 | La réplica corriendo en R y un primer resultado de la extensión. |
-| Mini-conferencia | Final del semestre | 10 minutos: el paper, su réplica y su extensión. |
-| Informe | Final del semestre | Documento Quarto de 6 páginas, reproducible. |
-
-Reglas de juego:
-
-- **Su réplica debe correr de principio a fin** desde los datos originales, con rutas
-  relativas.
-- **Reporte diferencias** entre su número y el del paper, y explique de dónde salen.
-  Una diferencia bien explicada vale más que un número copiado.
-- **Cite todas las fuentes**: el paper, el paquete de réplica y cada base de datos que
-  agregue (por ejemplo, "Fuente: DANE, www.dane.gov.co" para la Gran Encuesta Integrada de Hogares, GEIH).
-- Respete la **licencia** de cada paquete y de cada PDF; está anotada en el README del paper.
-  Los PDF se comparten solo para uso académico en este curso: no los redistribuya.
 
 ---
 
