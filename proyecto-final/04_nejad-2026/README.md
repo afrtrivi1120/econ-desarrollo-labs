@@ -33,7 +33,7 @@ Buena parte de la desigualdad en el acceso al empleo formal pasa por señales: e
 
 **Modelo.** Una sección final calibra un modelo estructural para cuantificar la pérdida de eficiencia en el emparejamiento (código en `Code_Simulation/`, MATLAB). No hace parte de lo que se pide replicar.
 
-Las páginas que se citan son las del documento de trabajo de enero de 2026 que publican los autores (enlace en Descargas); pueden no coincidir con las de la versión de la revista (*Journal of Labor Economics*, JOLE).
+Las páginas que se citan son las del documento de trabajo de enero de 2026 de los autores, cuyo texto es idéntico al de `paper/nejad2026_ssrn.pdf`; pueden no coincidir con las de la versión de la revista (*Journal of Labor Economics*, JOLE).
 
 ## Estrategia de identificación
 
@@ -85,14 +85,12 @@ Las tablas del paquete lo muestran así:
 
 ## Descargas
 
-- **Paper:** no se redistribuye en este repositorio.
+- **Paper:** `paper/nejad2026_ssrn.pdf`, el documento de trabajo de los autores en SSRN (<https://doi.org/10.2139/ssrn.5185035>). Su texto es idéntico al del documento de enero de 2026 que los autores publican en <https://twicker97.github.io/JM_documents/ChatGPT.pdf>.
   - Versión publicada en JOLE: <https://doi.org/10.1086/744669> (acceso por la biblioteca de Icesi).
-  - Documento de trabajo de enero de 2026, publicado por los autores: <https://twicker97.github.io/JM_documents/ChatGPT.pdf>.
-  - Versión previa en SSRN (CentER Discussion Paper 2025-003): <https://doi.org/10.2139/ssrn.5185035>.
 - **Paquete de réplica:** <https://doi.org/10.7910/DVN/LPIREO> (Harvard Dataverse, archivo único `ChatGPT_ReplicationPackage.zip`).
 - **Script de descarga:** `R/descargar-datos.R` (descarga el paquete a `datos/_crudos/`).
 
 ## Licencias
 
 - **Paquete de réplica:** CC0 1.0 (dominio público), según los metadatos de Harvard Dataverse.
-- **Paper:** derechos reservados del editor. Según Crossref, el editor de JOLE es University of Chicago Press. La versión de SSRN es la versión previa de los autores. No se redistribuye ninguna de las dos.
+- **Paper:** derechos reservados del editor. Según Crossref, el editor de JOLE es University of Chicago Press. La versión de JOLE no se incluye. El documento de trabajo de `paper/` (SSRN) no declara licencia abierta; se comparte solo con fines académicos para este curso.
